@@ -1,12 +1,15 @@
 __author__ = 'Kyle Vitautas Lopin'
 
+import logging
 import Tkinter as tk
-import amp_usb
+import usb_comm
+import Amp_GUI
 
 TIA_resistor_values = [20, 30, 40, 80, 120, 250, 500, 1000]
-current_limit_values = [50, 33, 25, 12.5, 8.4, 4, 2, 1]
+current_limit_values = [50, 33, 25, 12.5, 8.4, 4, 2, 1, 0.5, 0.25, 0.125]
 
-class setting_changes(tk.Toplevel):
+
+class SettingChanges(tk.Toplevel):
     """
     A modified tkinter toplevel that allows the user to input new voltage ranges to measure and to set
     the frequency
@@ -19,6 +22,11 @@ class setting_changes(tk.Toplevel):
         :return:
         """
         tk.Toplevel.__init__(self, master=_master)
+        """Initialize values needed later """
+        self._low_volt = 0
+        self._high_volt = 0
+        self._freq = 0.0
+        self._current_range = ""
 
         self.title("Change Cyclic Voltammetry Settings")
 
@@ -54,9 +62,13 @@ class setting_changes(tk.Toplevel):
                                     u'\u00B18.3 \u00B5A',
                                     u'\u00B14 \u00B5A',
                                     u'\u00B12 \u00B5A',
-                                    u'\u00B11 \u00B5A']
+                                    u'\u00B11 \u00B5A',
+                                    u'\u00B10.5 \u00B5A',
+                                    u'\u00B10.25 \u00B5A',
+                                    u'\u00B10.125 \u00B5A']
 
-        self.current_options.set(self.current_option_list[0])
+        current_option_list_index = TIA_resistor_values.index(_master.operation_params['TIA_resistor'])
+        self.current_options.set(self.current_option_list[current_option_list_index])
 
         current = tk.OptionMenu(self, self.current_options, *self.current_option_list)
         current.grid(row=3, column=1)
@@ -66,69 +78,86 @@ class setting_changes(tk.Toplevel):
         tk.Button(self,
                   text='Save Changes',
                   command=lambda: self.save_cv_changes(low_volt.get(),
-                  high_volt.get(), freq.get(), self.current_options.get(),
-                  _master, cv_graph)).grid(row=4, column=0)
+                                                       high_volt.get(),
+                                                       freq.get(),
+                                                       self.current_options.get(),
+                                                       _master, cv_graph)).grid(row=4, column=0)
 
         # make a button to exit the toplevel by destroying it
         tk.Button(self,
                   text='Exit',
-                  command=lambda : self.destroy()).grid(row=4, column=1)
+                  command=lambda: self.destroy()).grid(row=4, column=1)
 
     def save_cv_changes(self, _low_volt, _high_volt, _freq, _range, _master, cv_graph):
         """
-
+        Commit all changes the user entered
         :param _low_volt: user inputted value, should be an integer that will be the lower level of the triangle wave
         :param _high_volt: user inputted value, should be an integer that will be the upper level of the triangle wave
         :param _freq: user inputted value, should be a float that will be the rate of change of the triangle wave
+        :param _range: string from self.current_option_list that the user picked
         :param _master: main window of the program, used so that the operational parameters of the main window
          can be changed
         :return: the parameters are updated in the main windows operational_params dictionary
         """
-        #save the voltage and frequency parameters to the current instance so they don't have to passed all the time
-        # to the functions
+        """ Save the voltage and frequency parameters to the current instance so they don't have to passed
+        all the time to the functions  """
         self._low_volt = _low_volt
         self._high_volt = _high_volt
         self._freq = _freq
         self._current_range = _range
 
-        changing_flag = True  # flag to turn off if for any reason the cyclic voltammetry settings should not be changed
+        """ set a flag that tells the program to send a parameter change to the MCU
+         turn this flag off if there is a problem later on and the MCU should not be sent new parameters"""
+        changing_flag = True
 
-        # try to convert the voltages to integers and sweep rate to a float
+        """ try to convert the voltages to integers and sweep rate to a float """
         try:
             self._low_volt = int(self._low_volt)
             self._high_volt = int(self._high_volt)
             self._freq = float(self._freq)
-            # dont have to check current range cause it was choosen from optionmenu
-        except ValueError:
-            print "Error in data input format"
+            # don't have to check current range cause it was chosen from an option menu
+        except ValueError:  # user input values failed
+            logging.info("Error in data input format")
             changing_flag = False  # if the inputted data is not correct, change the flag so that the program will
-                                   # no try to send bad data to the MCU
+            # not try to send bad data to the MCU
 
-        # check for changes to any of the values, do not bother the amplifier if there is no update
+        """ check for changes to any of the values, do not bother the amplifier if there is no update """
         if self.sweep_param_is_changed(_master.operation_params):
-
-            #make sure the lower amplitude is lower than the high amplitude and that there were no errors from the user
+            """ make sure the lower amplitude is lower than the high amplitude
+            and that there were no errors from the user """
             if (self._low_volt < self._high_volt) and changing_flag:
-                self.change_saved_settings(_master)
+                """ update the operation_params dict for the master and send all the parameters to the MCU """
+                self.save_changed_settings(_master)
                 _master.device.send_cv_parameters()
-                cv_graph.resize_x(_master.operation_params)
+                """ change the axis of the graph to fit the voltage values """
+                x_lim_low = _master.operation_params['low_cv_voltage']
+                x_lim_high = _master.operation_params['high_cv_voltage']
+                cv_graph.resize_x(x_lim_low, x_lim_high)
             else:
-                print "no change of settings low > high"
+                logging.debug("no change of settings low > high")
+
         """ figure out if the current range has changed and update the device if it has
-        not the best solution but there are some encoding errors on the other ways tried"""
-        position = self.current_option_list.index(_range)
-        if _master.operation_params['TIA_resistor'] is not TIA_resistor_values[position]:
-            _master.device.usb_write('A' + str(position))
-            # self.current_options.set(self.current_option_list[position])
-            _master.operation_params['TIA_resistor'] = TIA_resistor_values[position]
-            print _master.operation_params['TIA_resistor']
-            print 'test1'
-            # _master.cv_label_update()
+        NOTE: not the best solution but there are some encoding errors on the other ways tried"""
+        position = self.current_option_list.index(_range)  # get user's choice from the option menu
+        max_tia_setting = 7  # max value you an send the TIA in the device
+        if position > max_tia_setting:  # the largest setting change the ADC gain but not the TIA value
+            adc_gain_setting = position % max_tia_setting  # the last 3 settings increase the adc gain setting
+            tia_position = max_tia_setting  # but leaves the TIA setting at the highest setting available
+        else:
+            tia_position = position  # the setting to send to the MCU is the same as the index
+            adc_gain_setting = 0  # the gain setting is 0 for no gain on the adc
+
+        """ Check if the gain setting has changed and the TIA resistor value should be updated """
+        if _master.operation_params['TIA_resistor'] is not TIA_resistor_values[tia_position]:
+            _master.device.usb_write('A' + str(tia_position) + '|' + str(adc_gain_setting))  # update device
+            _master.operation_params['TIA_resistor'] = TIA_resistor_values[tia_position]  # update program
+            logging.debug("TIA resistor changed to: %s", _master.operation_params['TIA_resistor'])
+
+            """ Change the value for the current limits displayed to the user and update the graph's scale """
             _master.current_varstr.set(self.current_option_list[position])
             cv_graph.resize_y(current_limit_values[position])
-        print 'position: ', position
-
-
+        logging.debug('position: %s', position)
+        """ destroy the top level now that every is saved and updated """
         self.destroy()
 
     def sweep_param_is_changed(self, _old_params):
@@ -140,56 +169,25 @@ class setting_changes(tk.Toplevel):
         if (self._low_volt != _old_params['low_cv_voltage']
             or self._high_volt != _old_params['high_cv_voltage']
             or self._freq != _old_params['sweep_rate']):
-            print "sweep_param is_changed"
+
+            logging.debug("sweep_param is_changed")
             return True
         else:
+            logging.debug("sweep_param are not changed")
             return False
 
-    def send_settings(self, _master):
+    def save_changed_settings(self, _master):
         """
-        DEPRECATED, CHECK IF STILL NEEDED
-        Convert the input voltages 11 bit numbers to set the parallel current digital to analog converters (PIDACs)
-        version 0.1: PIDACs are running on 11 bits with a maximum of 255 uA of current through a fixed 8.2 kohms
-        resistor with the output buffered by a voltage following opamp
-
-        The voltage out of the DAC is given by the equation Vout = 8200 ohms * 255 uA * (D / 2**11)
-        where D is the integer set by the microcontroller
-
-        to set D use the equation D = (Vout * 2*11) / (8200 ohms * 255 uA)
-
-        TODO: FIX THIS SECTION WHEN THE MCU SIDE IS MORE SET
-
-        :param _low_volt: integer (mV), lowest voltage of the triangle sweep to be given
-        :param _high_volt: integer (mV), highest voltage of the triangle
-        :param _freq: float (V/s), rate that the voltage of the triangle wave changes
+        Update all of the main programs operations_params settings so the User's choices will be remembered
+        :param _master: The main program to save the data to
         :return:
         """
-        resistor = 8200  # ohms
-        max_current = .255  # mA
-        _lower_setting = int(( (self._low_volt+1024) * 2**11) / (resistor*max_current))  # mv/(ohms*mA) = mV/mV
-        _upper_setting = int(( (self._high_volt+1024) * 2**11) / (resistor*max_current))  # mv/(ohms*mA) = mV/mV
-        _range = _upper_setting - _lower_setting
-        _data_points = 2 * _range - 1
-
-        # changing the DACs by 1 bit chnages the voltage by 1 mV,
-        # therefor the voltage should be stepped 1000 mV/V * rate (V/s)
-
-        _freq_setting = int(round(1000 * self._freq))  #  NOT CORRECT, FIGURE THIS OUT ON MCU SIDE
-
-        print "sending"
-        _master.device.usb_write("S|{0:04d}|{1:04d}|{2:06d}".format(_lower_setting, _upper_setting, _freq_setting))
-        print "end sending"
-
-
-
-    def change_saved_settings(self, _master):
-
-        print "change saved settings called"
-
+        logging.debug("change saved settings called")
         _master.operation_params['low_cv_voltage'] = self._low_volt
         _master.operation_params['high_cv_voltage'] = self._high_volt
         _master.operation_params['sweep_rate'] = self._freq
-        _master.update_param_dict()
+        Amp_GUI.update_param_dict()
         _master.cv_label_update()
-        print _master.operation_params
+        logging.debug("updating new operational params to:")
+        logging.debug(_master.operation_params)
 
