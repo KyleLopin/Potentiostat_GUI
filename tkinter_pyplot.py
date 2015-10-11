@@ -32,12 +32,12 @@ class PyplotEmbed(tk.Frame):
         self.master = _master_frame
         """ Make an area to graph the data """
         self.graph_area = tk.Frame(self)
-        """ Initialize the class to hold the data """
 
-        self.data = data_class.PyplotData()
-        root.data = self.data
+        self.plotted_lines = [] # make a list to hold the Line2D to display in the graph
+        self.data = root.data  # alias the data for this class to the main data
         """ Create a list to hold the matplotlib lines """
-        self.plotted_lines = []
+        # self.plotted_lines = []
+        # root.plotted_lines = self.plotted_lines
 
         self.params = _params
         self.legend_displayed = False
@@ -72,19 +72,14 @@ class PyplotEmbed(tk.Frame):
         self.graph_area.canvas = FigureCanvasTkAgg(self.graph_area.figure_bed, master=self)
         self.graph_area.canvas._tkcanvas.config(highlightthickness=0)
         """ Make a binding for the user to change the data legend """
-        self.graph_area.canvas.mpl_connect('button_press_event', self.legend_handler)
-        # self.graph_area.canvas.mpl_connect('pick_event', self.artist_onpick)  # not working for some reason
+        # uncomment below to start making a data legend editor
+        # self.graph_area.canvas.mpl_connect('button_press_event', self.legend_handler)
         """ Make the toolbar and then unpack it.  allow the user to display or remove it later """
         self.toolbar = NavToolbar(self.graph_area.canvas, toolbox_frame)
         self.toolbar.pack_forget()
 
         self.graph_area.canvas.draw()
         self.graph_area.canvas.get_tk_widget().pack(side='top', fill=tk.BOTH, expand=1)
-
-    def artist_onpick(self, event):  # not working for some reason
-        picked_item = event.artist
-        self.a = 1
-        print "picked item: ", picked_item
 
     def update_data(self, x_data, y_data, _raw_y_data=None, label=None):
         self.data.add_data(x_data, y_data, _raw_y_data, label)
@@ -114,7 +109,7 @@ class PyplotEmbed(tk.Frame):
         """ add the data to the plot area and update the legend """
 # this is where the line is added
         l = self.graph_area.axis.plot(x_data, y_data, label="data {}".format(_index))
-        self.plotted_lines.append((self.data.index, l))
+        self.plotted_lines.append(l)
 
         self.graph_area.axis.legend(loc='center left',
                                     bbox_to_anchor=(1, 0.5),
@@ -123,6 +118,26 @@ class PyplotEmbed(tk.Frame):
                                     fancybox=True)  # not adding all this screws it up for some reason
         # self.graph_area.axis.legend.get_frame().set_alpha(0.5)
         self.graph_area.canvas.show()  # update the canvas where the data is beeing shown
+
+    def delete_all_lines(self):
+        logging.debug("deleting all lines")
+        while self.plotted_lines:
+            l = self.plotted_lines.pop(0)
+            l.pop().remove()  # self.plotted_lines is a list of list so you have to pop twice
+            del l  # see stackoverflow "how to remove lines in a matplotlib", this is needed to release the memory
+
+        """ Update the legend with an empty data set but will keep the title and box showing in the graph area """
+        self.graph_area.axis.legend([], [], loc='center left',
+                                    bbox_to_anchor=(1, 0.5),
+                                    title = 'Data series',
+                                    prop={'size': 10},
+                                    fancybox=True)  # not adding all this screws it up for some reason
+
+        self.graph_area.canvas.show()
+
+    def update_graph(self):
+        self.graph_area.canvas.show()
+
 
     def toolbar_toggle(self):
         """

@@ -2,7 +2,6 @@ __author__ = 'Kyle Vitautas Lopin'
 
 import logging
 import Tkinter as tk
-import usb_comm
 import Amp_GUI
 
 TIA_resistor_values = [20, 30, 40, 80, 120, 250, 500, 1000]
@@ -54,7 +53,7 @@ class SettingChanges(tk.Toplevel):
         """make labels and option menu for the user to change current range the device detects"""
         tk.Label(self, text="Current Range: ", padx=10, pady=10).grid(row=3, column=0)
         self.current_options = tk.StringVar(self)
-        # TODO: change the default to the value already chosen
+
         self.current_option_list = [u'\u00B150 \u00B5A',  # there are sometimes problems with encoding with this
                                     u'\u00B133 \u00B5A',
                                     u'\u00B125 \u00B5A',
@@ -167,8 +166,8 @@ class SettingChanges(tk.Toplevel):
         :return:
         """
         if (self._low_volt != _old_params['low_cv_voltage']
-            or self._high_volt != _old_params['high_cv_voltage']
-            or self._freq != _old_params['sweep_rate']):
+           or self._high_volt != _old_params['high_cv_voltage']
+           or self._freq != _old_params['sweep_rate']):
 
             logging.debug("sweep_param is_changed")
             return True
@@ -191,3 +190,34 @@ class SettingChanges(tk.Toplevel):
         logging.debug("updating new operational params to:")
         logging.debug(_master.operation_params)
 
+
+class ChangeCompareValue(tk.Toplevel):
+
+    def __init__(self, _master):
+        tk.Toplevel.__init__(self, _master)
+        self.title("Change PWM timing compare value")
+
+        tk.Label(self, text="Enter value to place in timing PWM compare register").pack(side='top')
+        tk.Label(self, text="Value must be between 500 and "
+                            +str(_master.operation_params['PWM_period'])).pack(side='top')
+        tk.Label(self, text="Current value is "
+                            + str(_master.operation_params['PWM_compare'])).pack(side='top')
+        value_varstring = tk.StringVar()
+        value_varstring.set(_master.operation_params['PWM_compare'])
+        value_box = tk.Entry(self, textvariable=value_varstring)
+        value_box.pack(side='top')
+
+        button_frame = tk.Frame(self)
+        button_frame.pack(side='top')
+
+        tk.Button(button_frame, text="Quit", command=lambda: self.destroy()).pack(side='left')
+
+        tk.Button(button_frame, text="Send",
+                  command=lambda: self.compare_reg_change(_master, value_varstring.get())).pack(side='left')
+
+        logging.error("put in here something to check if the number for compare is correct")
+
+    def compare_reg_change(self, master, _value):
+
+
+        master.device.write_timer_compare(_value)

@@ -3,6 +3,7 @@ __author__ = 'Kyle Vitautas Lopin'
 
 import Tkinter as tk
 
+color_choices = ['black', 'gray', 'red', 'green', 'blue', 'orange', 'magenta']
 
 class DataLegendTop(tk.Toplevel):
     """
@@ -16,6 +17,7 @@ class DataLegendTop(tk.Toplevel):
         legend_entries = []
         delete_selection = []
         var_delete = []
+        vert_frame = []  # make a list to keep the vertical frames in
         tk.Label(self, text="Configure Data Legend").pack(side="top")
         print "master index: ", _master.data.index
         for i in range(_master.data.index):

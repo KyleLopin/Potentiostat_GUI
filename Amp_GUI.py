@@ -12,6 +12,7 @@ import csv
 import tkFileDialog
 import usb.util
 import option_menu
+import pyplot_data_class as data_class
 
 operation_params = {'low_cv_voltage': -500,  # units: mv
                     'high_cv_voltage': 500,  # units: mv
@@ -25,17 +26,27 @@ operation_params = {'low_cv_voltage': -500,  # units: mv
                     'clk_freq_isr_pwm': 24000000,  # frequency of the clock that is driving the PWM that triggers isrs
                     'virtual_ground_shift': 1024,  # mv shift in
                     'bits_PIDAC': 11,  # number of bits of the PIDAC
+                    'adc_channel': 0,  # which adc channel to get
+                    'PWM_period': 30000,  # value in the timing PWM period register
+                    'PWM_compare': 15000,  # value in the timing PWM period register
                     'should_process': False}  # variable if the program should export the raw adc numbers or convert it
 options_background = 'LightCyan4'
 
 
 class AmpGUI(tk.Tk):
+    """
+
+    Notes:
+    self.data is a pyplot_data_class object and handles all the data to be saved, loaded, displayed, etc.  look in
+    pyplot_data_class for documentation about self.data
+    """
 
     def __init__(self, parent=None):
 
         logging.basicConfig(level=logging.DEBUG, format="%(levelname)s %(module)s %(lineno)d: %(message)s")
         self.data_save_type = "Converted"
         self.device = None  # no device connected yet
+        self.data = data_class.PyplotData()
 
         self.operation_params = operation_params
         self.display_type = check_display_type()
@@ -217,7 +228,7 @@ class AmpGUI(tk.Tk):
         """ Confirm that the user supplied a file """
         if _file_name:
             print "insert function here"
-            logging.info("filenamed %s opened", _file_name)
+            logging.info("a file named %s opened", _file_name)
             with open(_file_name, 'rb') as _file:
                 _reader = csv.reader(_file)  # create reader from file
 
@@ -242,14 +253,11 @@ class AmpGUI(tk.Tk):
                 logging.error("%s - exception called", e)
                 pass
 
-
     def save_all_data(self):
-        print "TODO: save all data"
-        logging.error("save all data here")
-        """ Make the options for the save file dialog box for the user """
-        # file_opt = options = {}
-        # options['defaultextension'] = ".csv"
-        # options['filetypes'] = [('All files', '*.*'), ("Comma separate values", "*.csv")]
+        logging.debug("saving all data")
+        if len(self.data.values) == 0:  # no data to save
+            logging.info("No data to save")
+            return
 
         """ ask the user for a filename to save the data in """
         _file = self.open_file('saveas')
@@ -258,24 +266,47 @@ class AmpGUI(tk.Tk):
         if _file:
             """ make a csv writer, go through each data point and save the voltage and current at each point, then
             close the file """
-            writer = csv.writer(_file, dialect='excel')
-            l = ["voltage"]
-            for i in range(self.data.index):
-                l.append(self.data.values[i].label)
-            writer.writerow(l)
-            length = len(self.data.values[0].x)
-            width = self.data.index
-            print l
-            for i in range(length):
-                l[0] = self.data.values[0].x[i]
-                for j in range(width):
-                    l[j+1] = self.data.values[j].y[i]
+            try:
+                writer = csv.writer(_file, dialect='excel')
+                l = ["voltage"]
+                for i in range(self.data.index):
+                    l.append(self.data.values[i].label)
                 writer.writerow(l)
-            _file.close()
+                length = len(self.data.values[0].x)
+                width = self.data.index
+                print l
+
+                if self.data_save_type == "Converted":
+                    _data_array = self.data.values
+                elif self.data_save_type == "Raw Counts":
+                    _data_array = self.data.raw_values
+
+                for i in range(length):
+                    l[0] = _data_array[0].x[i]
+                    for j in range(width):
+                        l[j+1] = _data_array[j].y[i]
+                    writer.writerow(l)
+                _file.close()
+            except Exception as e:
+                logging.error("failed saving")
+                logging.error(e)
+                _file.close()
 
     def save_selected_data(self):
         print "TODO: save selected data"
         logging.error("save selected data here")
+
+    def delete_all_data(self):
+        """
+        Delete all the data collected so far and clear the lines from the plot area
+        :return:
+        """
+        """ Clear data """
+        # self.plotted_lines
+        print "len self.data.values: ", len(self.data.values)
+        """ Delete all displayed lines """
+        self.graph.delete_all_lines()
+        self.data = data_class.PyplotData()
 
     def quit(self):
         self.destroy()
@@ -337,6 +368,9 @@ class AmpGUI(tk.Tk):
         self.high_voltage_varstr.set('End voltage: '+str(operation_params['high_cv_voltage'])+' mV')
         self.freq_varstr.set('Sweep rate: '+str(operation_params['sweep_rate'])+' V/s')
         self.current_varstr.set(u'Current range: \u00B1'+str(1000/operation_params['TIA_resistor'])+u' \u00B5A')
+
+    def set_adc_channel(self, _channel):
+        self.operation_params['adc_channel'] = _channel
 
     def change_cv_settings(self, cv_graph):
         """

@@ -1,6 +1,7 @@
 __author__ = 'HMT'
 
 import Tkinter as tk
+import change_toplevel
 
 
 class OptionMenu(tk.Menu):
@@ -13,16 +14,26 @@ class OptionMenu(tk.Menu):
         """ Make the main menu to put all the submenus on """
         menubar = tk.Menu(master)
         """ Make a menus along the top of the gui """
-        options_menu = tk.Menu(menubar, tearoff=0)
         file_menu = tk.Menu(menubar, tearoff=0)
+        options_menu = tk.Menu(menubar, tearoff=0)
+        data_menu = tk.Menu(menubar, tearoff=0)
+        developer_menu = tk.Menu(menubar, tearoff=0)
         """ Different options the user can change """
-        self.make_data_option_menu(options_menu, master)
+        self.make_option_menu(options_menu, master)
         self.make_file_option_menu(file_menu, master)
+        self.make_data_menu(data_menu, master)
+        make_developer_menu(developer_menu, master)
 
-        menubar.add_cascade(label="File", menu=file_menu)  # empty now, to fill later
+        menubar.add_cascade(label="File", menu=file_menu)
+        menubar.add_cascade(label="Data", menu=data_menu)
         menubar.add_cascade(label="Options", menu=options_menu)
+        menubar.add_cascade(label="Developers", menu=developer_menu)
 
         master.config(menu=menubar)
+
+    def make_data_menu(self, data_menu, master):
+        data_menu.add_command(label="Delete all data traces",
+                              command=lambda: master.delete_all_data())
 
     def make_file_option_menu(self, file_menu, master):
         file_menu.add_command(label="Open",
@@ -35,9 +46,27 @@ class OptionMenu(tk.Menu):
         file_menu.add_command(label="Quit",
                               command=lambda: master.quit())
 
-    def make_data_option_menu(self, options_menu, master):
+    def make_option_menu(self, options_menu, master):
         data_option_menu = tk.Menu(options_menu, tearoff=0)
         options_menu.add_cascade(label="Choose data export", menu=data_option_menu)
 
+        channel_option_menu = tk.Menu(options_menu, tearoff=0)
+        options_menu.add_cascade(label="Choose channel to export", menu=channel_option_menu)
+
         data_option_menu.add_cascade(label="Converted data", command=lambda: master.set_data_type("Converted"))
         data_option_menu.add_cascade(label="Raw adc data", command=lambda: master.set_data_type("Raw Counts"))
+
+        for i in range(4):
+            channel_option_menu.add_cascade(label=str(i), command=lambda: master.set_adc_channel(i))
+
+
+def make_developer_menu(developer_menu, master):
+    developer_option_menu = tk.Menu(developer_menu, tearoff=0)
+    developer_menu.add_cascade(label="Get channel data", menu=developer_option_menu)
+
+    for i in range(4):
+            developer_option_menu.add_cascade(label="channel " + str(i),
+                                              command=lambda channel=i: master.device.get_export_channel(channel))
+
+    developer_menu.add_cascade(label="Change timing PWM compare value",
+                               command=lambda: change_toplevel.ChangeCompareValue(master))

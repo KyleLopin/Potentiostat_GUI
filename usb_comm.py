@@ -57,7 +57,7 @@ class AmpUsb(object):
             self.connected = False
             logging.info("Initializing run parameters")
             usb_helper.initialize(self)
-            usb_helper.send_cv_parameters(self)
+            # usb_helper.send_cv_parameters(self)
             self.usb_write("A0")  # set the TIA resistor to 20k ohm on startup
         else:
             logging.info("not working")
@@ -130,8 +130,13 @@ class AmpUsb(object):
         """ return the device and endpoints if the exist or None if no device is found """
         return amp_device, ep_out, ep_in
 
-    def send_cv_parameters(device):
+    def send_cv_parameters(self, device):
+        logging.debug("sending cv params here")
         usb_helper.send_cv_parameters(device)
+
+    def write_timer_compare(self, value):
+        logging.debug("compare value is %s", value)
+        usb_helper.write_timer_compare(self, value)
 
     def run_scan(self, canvas, master):
         """
@@ -141,6 +146,10 @@ class AmpUsb(object):
         :return: bind the data to the master instead of returning anything
         """
         usb_helper.run_scan(self, canvas, master)
+
+    def get_export_channel(self, channel=None):
+        canvas = self.master.graph
+        usb_helper.get_and_display_data_from_export_channel(self, canvas, channel)
 
     def format_divider(self, _sweep_rate):
         """
@@ -163,7 +172,7 @@ class AmpUsb(object):
         """ take the clock frequency that is driving the PWM and divide it by the number of voltage steps per second:
         this is how many clk ticks between each interrupt """
         raw_divider = int(round(clk_freq / (_sweep_rate * 1000 / voltage_step_size)))
-        return '{0:05d}'.format(raw_divider)
+        return '{0:05d}'.format(raw_divider), raw_divider
 
     def format_voltage(self, _in_volts):
         """
