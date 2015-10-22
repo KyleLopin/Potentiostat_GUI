@@ -1,18 +1,20 @@
-__author__ = 'Kyle Vitautas Lopin'
-
+# standard libraries
 import logging
 import Tkinter as tk
-import usb_comm
 import ttk
+import csv
+import tkFileDialog
+import traceback
+# local files
+import option_menu
+import pyplot_data_class as data_class
+import usb_comm
 import change_toplevel as change_top
 import tkinter_canvas_graph
 import tkinter_pyplot
 import graph_properties
-import csv
-import tkFileDialog
-import usb.util
-import option_menu
-import pyplot_data_class as data_class
+
+__author__ = 'Kyle Vitautas Lopin'
 
 operation_params = {'low_cv_voltage': -500,  # units: mv
                     'high_cv_voltage': 500,  # units: mv
@@ -29,7 +31,9 @@ operation_params = {'low_cv_voltage': -500,  # units: mv
                     'adc_channel': 0,  # which adc channel to get
                     'PWM_period': 30000,  # value in the timing PWM period register
                     'PWM_compare': 15000,  # value in the timing PWM period register
-                    'should_process': False}  # variable if the program should export the raw adc numbers or convert it
+                    'should_process': False,  # variable if the program should export the raw adc numbers or convert it
+                    'user_sets_labels_after_run': True}  # lets the user set the data label and make a note after a run
+
 options_background = 'LightCyan4'
 
 
@@ -144,11 +148,25 @@ class AmpGUI(tk.Tk):
         # make a button to run a cyclic voltammetry scan
         tk.Button(_frame,
                   text="Run CV Scan",
-                  command=lambda: self.device.run_scan(cv_graph, self)).pack(side='bottom', fill=tk.BOTH)
+                  command=lambda: self.device.run_scan(cv_graph, self)
+                  ).pack(side='bottom', fill=tk.BOTH)
         """Make a button to allow the user to export the data"""
         tk.Button(_frame,
                   text="Save data",
-                  command=lambda: self.save_data()).pack(side='bottom', fill=tk.BOTH)
+                  command=lambda: self.save_all_data()
+                  ).pack(side='bottom', fill=tk.BOTH)
+
+        # make button to change data labels
+        tk.Button(_frame,
+                  text="Change data style",
+                  command=lambda: self.change_data_labels()
+                  ).pack(side='bottom', fill=tk.BOTH)
+
+        # make a button to delete some of the data
+        tk.Button(_frame,
+                  text="Delete Data",
+                  command=lambda: self.user_select_delete_some_data()
+                  ).pack(side='bottom', fill=tk.BOTH)
 
         # make a button to allow the user to view the toolbar
         toolbar_button = tk.Button(_frame,
@@ -212,6 +230,9 @@ class AmpGUI(tk.Tk):
             self.connect_button.config(text="No Device", bg='red')
         self.connect_button.pack(side='bottom')
 
+    def change_data_labels(self):
+        change_top.ChangeDataLegend(self)
+
     def open_data(self):
         """
         Open a csv file that has the data saved in it, in the same format as this program
@@ -255,7 +276,7 @@ class AmpGUI(tk.Tk):
 
     def save_all_data(self):
         logging.debug("saving all data")
-        if len(self.data.values) == 0:  # no data to save
+        if self.data.index == 0:  # no data to save
             logging.info("No data to save")
             return
 
@@ -268,33 +289,52 @@ class AmpGUI(tk.Tk):
             close the file """
             try:
                 writer = csv.writer(_file, dialect='excel')
-                l = ["voltage"]
+                # make the first line of the file with the data labels
+                l = ["voltage"]  # first line will be the voltages
                 for i in range(self.data.index):
-                    l.append(self.data.values[i].label)
+                    l.append(self.data.label[i])
                 writer.writerow(l)
-                length = len(self.data.values[0].x)
+                length = len(self.data.x_data[0])
                 width = self.data.index
-                print l
 
+                # the second row are the notes
+                l = [" "]  # first line is voltages so it has no notes
+                for i in range(self.data.index):
+                    l.append(self.data.notes[i])
+                writer.writerow(l)
+
+                # check to see what type of data the user wants to save
                 if self.data_save_type == "Converted":
-                    _data_array = self.data.values
+                    _data_array = self.data.y_data
                 elif self.data_save_type == "Raw Counts":
-                    _data_array = self.data.raw_values
-
+                    _data_array = self.data.y_raw_dat
+                # go through each data point and save the a list l that is saved in the file with writerow
                 for i in range(length):
-                    l[0] = _data_array[0].x[i]
+                    l[0] = self.data.x_data[0][i]  # this is only take the voltage of the first run
                     for j in range(width):
-                        l[j+1] = _data_array[j].y[i]
+                        l[j + 1] = _data_array[j][i]
                     writer.writerow(l)
+
                 _file.close()
             except Exception as e:
                 logging.error("failed saving")
                 logging.error(e)
+                traceback.print_exc()
                 _file.close()
 
     def save_selected_data(self):
         print "TODO: save selected data"
         logging.error("save selected data here")
+
+    def user_select_delete_some_data(self):
+        change_top.UserSelectDataDelete(self)
+
+    def delete_some_data(self, list_of_index_to_delete):
+        for index in reversed(list_of_index_to_delete):
+            self.graph.delete_a_line(index)
+
+    def delete_all_data_user_prompt(self):
+        change_top.UserDeleteDataWarning(self)
 
     def delete_all_data(self):
         """
@@ -303,61 +343,13 @@ class AmpGUI(tk.Tk):
         """
         """ Clear data """
         # self.plotted_lines
-        print "len self.data.values: ", len(self.data.values)
+        logging.debug("len self.data.values: %i", self.data.index)
         """ Delete all displayed lines """
         self.graph.delete_all_lines()
         self.data = data_class.PyplotData()
 
     def quit(self):
         self.destroy()
-
-    def open_file(self, type):
-        """
-        Make a method to return an open file or a file name depending on the type asked for
-        :param type:
-        :return:
-        """
-        """ Make the options for the save file dialog box for the user """
-        file_opt = options = {}
-        options['defaultextension'] = ".csv"
-        options['filetypes'] = [('All files', '*.*'), ("Comma separate values", "*.csv")]
-        if type == 'saveas':
-            """ Ask the user what name to save the file as """
-            _file = tkFileDialog.asksaveasfile(mode='wb', **file_opt)
-        elif type == 'open':
-            _filename = tkFileDialog.askopenfilename(**file_opt)
-            return _filename
-        return _file
-
-    def save_data(self):
-        """
-        Save the data displayed on the graph to a csv format
-        The user will be prompted to name the file to save the data to
-
-        :return:
-
-        TODO: ADD HEADER LABELS TO THE FILE
-        """
-        """ Make the options for the save file dialog box for the user """
-        file_opt = options = {}
-        options['defaultextension'] = ".csv"
-        options['filetypes'] = [('All files', '*.*'), ("Comma separate values", "*.csv")]
-
-        """ Confirm that there is data to save """
-        if hasattr(self, "current_data"):
-            """ Ask the user what name to save the file as """
-            _file = tkFileDialog.asksaveasfile(mode='wb', **file_opt)
-
-            """ Confirm that the user supplied a file """
-            if _file:
-                """ make a csv writer, go through each data point and save the voltage and current at each point, then
-                close the file """
-                writer = csv.writer(_file, dialect='excel')
-                for voltage, current in zip(self.voltage_data, self.current_data):
-                    writer.writerow([voltage, current])
-                _file.close()
-        else:
-            print 'no data'
 
     def cv_label_update(self):
         """
@@ -433,6 +425,25 @@ class AmpGUI(tk.Tk):
             bottom_frame.append(tk.Frame(main_bottom, width=220, height=35))  # this works, not sure why though
             bottom_frame[i].pack(side='left', fill=tk.X, expand=1)
         return bottom_frame
+
+
+def open_file(self, type):
+    """
+    Make a method to return an open file or a file name depending on the type asked for
+    :param type:
+    :return:
+    """
+    """ Make the options for the save file dialog box for the user """
+    file_opt = options = {}
+    options['defaultextension'] = ".csv"
+    options['filetypes'] = [('All files', '*.*'), ("Comma separate values", "*.csv")]
+    if type == 'saveas':
+        """ Ask the user what name to save the file as """
+        _file = tkFileDialog.asksaveasfile(mode='wb', **file_opt)
+    elif type == 'open':
+        _filename = tkFileDialog.askopenfilename(**file_opt)
+        return _filename
+    return _file
 
 
 def get_data_from_csv_file(_filename):

@@ -8,6 +8,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.backends.backend_tkagg import NavigationToolbar2TkAgg as NavToolbar
 import pyplot_data_class as data_class
 import data_legend_toplevel as legend_top
+import change_toplevel as toplevel
 
 
 legend_space_ratio = 0.9
@@ -30,9 +31,10 @@ class PyplotEmbed(tk.Frame):
         """
         tk.Frame.__init__(self, master=_master_frame)  # initialize with the parent class
         self.master = _master_frame
+        self.label_instance = ""
         """ Make an area to graph the data """
         self.graph_area = tk.Frame(self)
-
+        self.params = root.operation_params
         self.plotted_lines = [] # make a list to hold the Line2D to display in the graph
         self.data = root.data  # alias the data for this class to the main data
         """ Create a list to hold the matplotlib lines """
@@ -43,6 +45,7 @@ class PyplotEmbed(tk.Frame):
         self.legend_displayed = False
 
         """ initiate the pyplot area """
+
         self.init_graph_area(plt_props, toolbox_frame)
 
         self.toolbar_status = False
@@ -81,43 +84,68 @@ class PyplotEmbed(tk.Frame):
         self.graph_area.canvas.draw()
         self.graph_area.canvas.get_tk_widget().pack(side='top', fill=tk.BOTH, expand=1)
 
-    def update_data(self, x_data, y_data, _raw_y_data=None, label=None):
-        self.data.add_data(x_data, y_data, _raw_y_data, label)
+    def update_data(self, x_data, y_data, _raw_y_data=None):
+
+        if self.params['user_sets_labels_after_run']:
+            self.data.add_data(x_data, y_data, _raw_y_data)
+            self.display_data()
+            toplevel.UserSetDataLabel(self)
+        else:
+            self.data.add_data(x_data, y_data, _raw_y_data)
+            self.display_data()
+
+    def change_label(self, label, index=None):
+
+        if not index:
+            index = self.data.index - 1
+
+        self.data.change_label(label, index)
+        self.update_legend()
+
+    def add_notes(self, _notes):
+        print 'adding notes: ', _notes
+        self.data.notes[-1] = _notes
+
+    def display_data_user_input(self, x_data, y_data):
+        label = self.label_instance
+
         self.display_data(x_data, y_data, self.data.index-1)
 
-    def display_data(self, x_data, y_data, index):
+    def display_data(self):
         """
         Take in a x and y data set and plot them in the self instance of the pyplot
         :param x_data: x axis data
         :param y_data: y axis data
         :return:
         """
-        print index
-        label = self.data.values[index].label
-        x_test = self.data.values[index].x
-        y_test = self.data.values[index].y
-
-        print label
-        # self.debug_show(x_data, y_data)
-        _index = self.data.index  # index of which data series the incoming data is
+        index = self.data.index - 1  # it was incremented at the end of the add_data method
+        x_data = self.data.x_data[index]
+        y_data = self.data.y_data[index]
+        _label = self.data.label[index]
         """ if this is the first data series to be added the legend has to be displayed also """
         if not self.legend_displayed:
             _box = self.graph_area.axis.get_position()
             self.graph_area.axis.set_position([_box.x0, _box.y0, _box.width * legend_space_ratio, _box.height])
             self.legend_displayed = True
-        logging.debug("len test: %d, %d", len(x_data), len(y_data))  # debug if uneven x and y data are being relieved
         """ add the data to the plot area and update the legend """
-# this is where the line is added
-        l = self.graph_area.axis.plot(x_data, y_data, label="data {}".format(_index))
+        l = self.graph_area.axis.plot(x_data, y_data, label=_label)
+        print l
+        self.data.colors.append(l[0].get_color())
+        print self.data.colors
         self.plotted_lines.append(l)
+        self.update_legend()
 
-        self.graph_area.axis.legend(loc='center left',
+    def update_legend(self):
+        handle, labels = self.graph_area.axis.get_legend_handles_labels()
+
+        self.graph_area.axis.legend(handle, self.data.label,
+                                    loc='center left',
                                     bbox_to_anchor=(1, 0.5),
-                                    title = 'Data series',
+                                    title='Data series',
                                     prop={'size': 10},
                                     fancybox=True)  # not adding all this screws it up for some reason
         # self.graph_area.axis.legend.get_frame().set_alpha(0.5)
-        self.graph_area.canvas.show()  # update the canvas where the data is beeing shown
+        self.graph_area.canvas.show()  # update the canvas where the data is being shown
 
     def delete_all_lines(self):
         logging.debug("deleting all lines")
@@ -127,17 +155,26 @@ class PyplotEmbed(tk.Frame):
             del l  # see stackoverflow "how to remove lines in a matplotlib", this is needed to release the memory
 
         """ Update the legend with an empty data set but will keep the title and box showing in the graph area """
-        self.graph_area.axis.legend([], [], loc='center left',
-                                    bbox_to_anchor=(1, 0.5),
-                                    title = 'Data series',
-                                    prop={'size': 10},
-                                    fancybox=True)  # not adding all this screws it up for some reason
+        self.update_legend()
 
-        self.graph_area.canvas.show()
+    def delete_a_line(self, index):
+        logging.debug("deleting line: %i", index)
+        line = self.plotted_lines.pop(index)
+        self.data.remove_data(index)
+        line.pop().remove()
+        del line
+
+        self.update_legend()
+
+    def change_line_color(self, _color, index):
+        logging.debug("change line color: ", _color, index)
+        print self.plotted_lines
+        print self.plotted_lines[index]
+        self.plotted_lines[index][0].set_color(_color)
+        self.data.colors[index] = _color
 
     def update_graph(self):
         self.graph_area.canvas.show()
-
 
     def toolbar_toggle(self):
         """

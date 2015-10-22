@@ -33,7 +33,7 @@ class AmpUsb(object):
         :return:
         """
         self.found = False
-        self.data_set = data_class.PyplotData()
+        # self.data_set = data_class.PyplotData()
         if not vendor_id:
             vendor_id = 0x04B4
         if not product_id:
@@ -57,7 +57,6 @@ class AmpUsb(object):
             self.connected = False
             logging.info("Initializing run parameters")
             usb_helper.initialize(self)
-            # usb_helper.send_cv_parameters(self)
             self.usb_write("A0")  # set the TIA resistor to 20k ohm on startup
         else:
             logging.info("not working")

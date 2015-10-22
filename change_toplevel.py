@@ -1,12 +1,14 @@
-__author__ = 'Kyle Vitautas Lopin'
-
 import logging
 import Tkinter as tk
+import tkFont
+
 import Amp_GUI
+
+__author__ = 'Kyle Vitautas Lopin'
 
 TIA_resistor_values = [20, 30, 40, 80, 120, 250, 500, 1000]
 current_limit_values = [50, 33, 25, 12.5, 8.4, 4, 2, 1, 0.5, 0.25, 0.125]
-
+color_choices = ['black', 'gray', 'red', 'green', 'blue', 'orange', 'magenta']
 
 class SettingChanges(tk.Toplevel):
     """
@@ -218,6 +220,211 @@ class ChangeCompareValue(tk.Toplevel):
         logging.error("put in here something to check if the number for compare is correct")
 
     def compare_reg_change(self, master, _value):
-
-
         master.device.write_timer_compare(_value)
+        self.destroy()
+
+
+class UserDeleteDataWarning(tk.Toplevel):
+    def __init__(self, master):
+        tk.Toplevel.__init__(self, master)
+        self.title("Delete all data")
+
+        warning_frame = tk.Frame(self)
+        tk.Label(warning_frame, text="Do you really want to delete all recorded data?"
+                 ).pack(side='top')
+
+        buttons_frame = tk.Frame(self)
+        tk.Button(buttons_frame, text="Delete Data",
+                  command=lambda: self.call_delete_data(master)).pack(side='left', padx=10)
+
+        tk.Button(buttons_frame, text="Don't Delete",
+                  command=lambda: self.destroy()).pack(side='left', padx=10)
+        warning_frame.pack(side='top')
+        buttons_frame.pack(side='top', pady=10)
+
+    def call_delete_data(self, master):
+        master.delete_all_data()
+        self.destroy()
+
+
+class UserSetDataLabel(tk.Toplevel):
+    def __init__(self, master):
+        tk.Toplevel.__init__(self, master)
+        self.title("Save data options")
+
+        label_frame = tk.Frame(self)
+        label_frame.pack(side='top')
+        tk.Label(label_frame, text="Data label: ").pack(side='left')
+        _label = tk.StringVar()
+        label_box = tk.Entry(label_frame, textvariable=_label)
+        label_box.pack(side='left')
+
+        tk.Label(self, text="Notes:").pack(side='top')
+
+        user_notes = tk.Text(self, width=20, height=5, wrap=tk.WORD)
+
+        user_notes.pack(side='top')
+
+        buttons_frame = tk.Frame(self)
+        buttons_frame.pack(side='bottom', fill=tk.X, expand=1, pady=10)
+
+        # master is the instance of tkinter_pyplot calling this
+        tk.Button(buttons_frame,
+                  text="Save",
+                  command=lambda:
+                  self.save_user_input(master, _label.get(),
+                                       user_notes.get("1.0", 'end-1c'))
+                  ).pack(side='left', fill=tk.X, expand=1, padx=10)
+
+        tk.Button(buttons_frame,
+                  text="Quit",
+                  command=lambda: self.destroy()
+                  ).pack(side='left', fill=tk.X, expand=1, padx=10)
+
+    def save_user_input(self, master_pyplot, label, notes):
+        master_pyplot.change_label(label)
+        master_pyplot.add_notes(notes)
+        self.destroy()
+
+
+class UserSetDataLabelPostRun(tk.Toplevel):
+    def __init__(self):
+        pass
+
+
+class UserSelectDataDelete(tk.Toplevel):
+    def __init__(self, master):
+        tk.Toplevel.__init__(self, master)
+        big_font = tkFont.Font(family="Helvetica", size=14)
+        small_font = tkFont.Font(family="Helvetica", size=12)
+        self.geometry("200x200+200+200")
+        self.title("Select data to delete")
+        tk.Label(self,
+                 text="Select data to delete",
+                 font=big_font).pack(side='top')
+        frames = []
+        choices = []
+        index = 0
+        for _label in master.data.label:
+            frames.append(tk.Frame(self))
+            choices.append(tk.IntVar())
+            tk.Checkbutton(frames[index],
+                           text=_label,
+                           font=small_font,
+                           variable=choices[index]
+                           ).pack(padx=5)
+
+            frames[index].pack(side='top', fill=tk.X, expand=1)
+            index += 1
+
+        tk.Label(self, text="Delete on selected data?")
+
+        button_frame = tk.Frame(self)
+        tk.Button(button_frame,
+                  text="Yes",
+                  width=10,
+                  command=lambda: self.send_delete_selection(master, choices)
+                  ).pack(side='left', padx=10, fill=tk.X, expand=1)
+
+        tk.Button(button_frame,
+                  text="No",
+                  width=10,
+                  command=lambda: self.destroy()
+                  ).pack(side='left', padx=10, fill=tk.X, expand=1)
+
+        button_frame.pack(side='top', fill=tk.X, expand=1)
+
+    def send_delete_selection(self, master, picks):
+        _list = []
+        _index = 0
+        for pick in picks:
+            if pick.get() == 1:
+                _list.append(_index)
+            _index += 1
+        master.delete_some_data(_list)
+        self.destroy()
+
+
+class ChangeDataLegend(tk.Toplevel):
+    """
+    Make a toplevel that will allow the user to change the color
+
+    """
+
+    def __init__(self, _master):
+
+        tk.Toplevel.__init__(self, master=_master)
+        self.legend_entries = []
+        self.color_picks = []
+        tk.Label(self, text="Configure Data Legend").pack(side="top")
+        logging.debug("master index: %i", _master.data.index)
+        for i in range(_master.data.index):
+            horizontal_frame = tk.Frame(self)
+            horizontal_frame.pack(side="top")
+            tk.Label(horizontal_frame, text="Chose color:").pack(side='left')
+            self.color_picks.append(tk.StringVar())
+            _master.data.colors[i]
+            self.color_picks[i].set(_master.data.colors[i])
+            drop_menu = tk.OptionMenu(horizontal_frame,
+                                      self.color_picks[i],
+                                      *color_choices)
+            drop_menu.pack(side='left')
+            tk.Label(horizontal_frame,
+                     text="Change data label:"
+                     ).pack(side='left')
+            self.legend_entries.append(tk.StringVar())
+            self.legend_entries[i].set(_master.data.label[i])
+            tk.Entry(horizontal_frame,
+                     textvariable=self.legend_entries[i]
+                     ).pack(side="left")
+        bottom_frame = tk.Frame(self)
+        bottom_frame.pack(side='bottom')
+        tk.Button(bottom_frame,
+                  text='Save',
+                  width=10,
+                  command=lambda: self.save(_master)
+                  ).pack(side='left', padx=10, fill=tk.X, expand=1)
+        tk.Button(bottom_frame,
+                  text='Exit',
+                  width=10,
+                  command=lambda: self.destroy()
+                  ).pack(side='left', padx=10, fill=tk.X, expand=1)
+
+    def save(self, _master):
+        i = 0
+        for pick in self.color_picks:
+            _master.data.colors[i] = pick.get()
+            _master.graph.change_line_color(pick.get(), i)
+            _master.data.label[i] = self.legend_entries[i].get()
+            i += 1
+        _master.graph.update_legend()
+
+        print "implement this"
+        self.destroy()
+
+
+class EnterLoggingInfo(tk.Toplevel):
+    def __init__(self, master):
+        tk.Toplevel.__init__(self, master)
+        self.title("Logging info")
+        tk.Label(text="Enter information to log").pack(side='top')
+        entry = tk.Text(self, width=30, height=6, wrap=tk.WORD)
+        entry.pack(side='top')
+
+        button_frame = tk.Frame(self)
+        tk.Button(button_frame,
+                  text='Save',
+                  width=10,
+                  command=lambda: self.save(entry.get("1.0", 'end-1c'))
+                  ).pack(side='left', padx=10, fill=tk.X, expand=1)
+        tk.Button(button_frame,
+                  text='Exit',
+                  width=10,
+                  command=lambda: self.destroy()
+                  ).pack(side='left', padx=10, fill=tk.X, expand=1)
+        button_frame.pack(side='top')
+
+    def save(self, message):
+        logging.info("User entered the following message")
+        logging.info(message)
+        self.destroy()

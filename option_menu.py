@@ -1,7 +1,8 @@
-__author__ = 'HMT'
-
 import Tkinter as tk
+
 import change_toplevel
+
+__author__ = 'HMT'
 
 
 class OptionMenu(tk.Menu):
@@ -19,9 +20,9 @@ class OptionMenu(tk.Menu):
         data_menu = tk.Menu(menubar, tearoff=0)
         developer_menu = tk.Menu(menubar, tearoff=0)
         """ Different options the user can change """
-        self.make_option_menu(options_menu, master)
-        self.make_file_option_menu(file_menu, master)
-        self.make_data_menu(data_menu, master)
+        make_option_menu(options_menu, master)
+        make_file_option_menu(file_menu, master)
+        make_data_menu(data_menu, master)
         make_developer_menu(developer_menu, master)
 
         menubar.add_cascade(label="File", menu=file_menu)
@@ -31,33 +32,39 @@ class OptionMenu(tk.Menu):
 
         master.config(menu=menubar)
 
-    def make_data_menu(self, data_menu, master):
-        data_menu.add_command(label="Delete all data traces",
-                              command=lambda: master.delete_all_data())
 
-    def make_file_option_menu(self, file_menu, master):
-        file_menu.add_command(label="Open",
-                              command=lambda: master.open_data())
-        file_menu.add_command(label="Save All Data",
-                              command=lambda: master.save_all_data())
-        file_menu.add_command(label="Select Data to Save",
-                              command=lambda: master.save_selected_data())
-        file_menu.add_separator()
-        file_menu.add_command(label="Quit",
-                              command=lambda: master.quit())
+def make_data_menu(data_menu, master):
+    data_menu.add_command(label="Delete all data traces",
+                          command=lambda: master.delete_all_data_user_prompt())
 
-    def make_option_menu(self, options_menu, master):
-        data_option_menu = tk.Menu(options_menu, tearoff=0)
-        options_menu.add_cascade(label="Choose data export", menu=data_option_menu)
 
-        channel_option_menu = tk.Menu(options_menu, tearoff=0)
-        options_menu.add_cascade(label="Choose channel to export", menu=channel_option_menu)
+def make_file_option_menu(file_menu, master):
+    file_menu.add_command(label="Open",
+                          command=lambda: master.open_data())
+    file_menu.add_command(label="Save All Data",
+                          command=lambda: master.save_all_data())
+    file_menu.add_command(label="Select Data to Save",
+                          command=lambda: master.save_selected_data())
+    file_menu.add_separator()
+    file_menu.add_command(label="Quit",
+                          command=lambda: master.quit())
 
-        data_option_menu.add_cascade(label="Converted data", command=lambda: master.set_data_type("Converted"))
-        data_option_menu.add_cascade(label="Raw adc data", command=lambda: master.set_data_type("Raw Counts"))
 
-        for i in range(4):
-            channel_option_menu.add_cascade(label=str(i), command=lambda: master.set_adc_channel(i))
+def make_option_menu(options_menu, master):
+    data_option_menu = tk.Menu(options_menu, tearoff=0)
+    options_menu.add_cascade(label="Choose data export", menu=data_option_menu)
+    data_option_menu.add_cascade(label="Converted data", command=lambda: master.set_data_type("Converted"))
+    data_option_menu.add_cascade(label="Raw adc data", command=lambda: master.set_data_type("Raw Counts"))
+
+    channel_option_menu = tk.Menu(options_menu, tearoff=0)
+    options_menu.add_cascade(label="Choose channel to export", menu=channel_option_menu)
+    for i in range(4):
+        channel_option_menu.add_cascade(label=str(i), command=lambda: master.set_adc_channel(i))
+
+    user_set_label_options = tk.Menu(options_menu, tearoff=0)
+    options_menu.add_cascade(label="Set data label after a scan", menu=user_set_label_options)
+    user_set_label_options.add_cascade(label="True", command=lambda: set_user_label_option(master, True))
+    user_set_label_options.add_cascade(label="False", command=lambda: set_user_label_option(master, False))
 
 
 def make_developer_menu(developer_menu, master):
@@ -70,3 +77,11 @@ def make_developer_menu(developer_menu, master):
 
     developer_menu.add_cascade(label="Change timing PWM compare value",
                                command=lambda: change_toplevel.ChangeCompareValue(master))
+
+    developer_menu.add_cascade(label="Enter comments into logging file",
+                               command=lambda: change_toplevel.EnterLoggingInfo(master))
+
+
+def set_user_label_option(master, value):
+    master.operation_params['user_sets_labels_after_run'] = value
+    print master.operation_params['user_sets_labels_after_run']
