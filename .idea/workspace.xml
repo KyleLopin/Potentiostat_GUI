@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="251b6b94-30bd-4672-9fcb-503d3e5ae2ad" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/parameters.py" />
+    <list default="true" id="251b6b94-30bd-4672-9fcb-503d3e5ae2ad" name="Default" comment="CV scans working, updated changes to work with PSoC changes">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/properties.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/Amp_simple.iml" afterPath="$PROJECT_DIR$/.idea/Amp_simple.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Amp_GUI.py" afterPath="$PROJECT_DIR$/Amp_GUI.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/amp_usb_helper.py" afterPath="$PROJECT_DIR$/amp_usb_helper.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/change_toplevel.py" afterPath="$PROJECT_DIR$/change_toplevel.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data_legend_toplevel.py" afterPath="$PROJECT_DIR$/data_legend_toplevel.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/option_menu.py" afterPath="$PROJECT_DIR$/option_menu.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyplot_data_class.py" afterPath="$PROJECT_DIR$/pyplot_data_class.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tkinter_pyplot.py" afterPath="$PROJECT_DIR$/tkinter_pyplot.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/usb_comm.py" afterPath="$PROJECT_DIR$/usb_comm.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="Amp_simple.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -21,7 +24,6 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
   </component>
@@ -30,166 +32,30 @@
     <favorites_list name="Amp_simple" />
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.48099762">
+    <splitter split-orientation="horizontal" split-proportion="0.4811066">
       <split-first>
-        <leaf>
+        <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
           <file leaf-file-name="usb_comm.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/usb_comm.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0">
-                  <caret line="150" column="82" selection-start-line="150" selection-start-column="82" selection-end-line="150" selection-end-column="82" />
-                  <folding>
-                    <element signature="e#2268#2959#0" expanded="false" />
-                    <element signature="e#3021#5394#0" expanded="false" />
-                    <element signature="e#6047#6156#0" expanded="false" />
-                    <element signature="e#6209#7640#0" expanded="false" />
-                    <element signature="e#8825#9670#0" expanded="false" />
-                    <element signature="e#9724#10381#0" expanded="false" />
-                    <element signature="e#10427#10833#0" expanded="false" />
-                    <element signature="e#10874#11225#0" expanded="false" />
-                    <element signature="e#11264#11408#0" expanded="false" />
-                    <element signature="e#11457#11583#0" expanded="false" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="change_toplevel.py" pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/change_toplevel.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.6185286">
-                  <caret line="419" column="68" selection-start-line="419" selection-start-column="68" selection-end-line="419" selection-end-column="68" />
+                <state relative-caret-position="91">
+                  <caret line="288" column="82" selection-start-line="288" selection-start-column="82" selection-end-line="288" selection-end-column="82" />
                   <folding>
                     <element signature="e#0#14#0" expanded="true" />
-                    <element signature="e#356#488#1" expanded="false" />
-                    <element signature="e#541#4535#0" expanded="false" />
-                    <element signature="e#541#685#1" expanded="false" />
-                    <element signature="e#4633#5353#1" expanded="false" />
-                    <element signature="e#9260#9763#0" expanded="false" />
-                    <element signature="e#9260#9410#1" expanded="false" />
-                    <element signature="e#9819#10451#0" expanded="false" />
-                    <element signature="e#9819#10020#1" expanded="false" />
-                    <element signature="e#10498#11774#0" expanded="false" />
-                    <element signature="e#11823#12595#0" expanded="false" />
-                    <element signature="e#14063#14095#0" expanded="false" />
+                    <element signature="e#904#1434#1" expanded="false" />
+                    <element signature="e#15824#15933#0" expanded="false" />
+                    <element signature="e#16361#16510#0" expanded="false" />
                   </folding>
                 </state>
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="Tkinter.py" pinned="false" current-in-tab="false">
-            <entry file="file://C:/Python27/Lib/lib-tk/Tkinter.py">
+          <file leaf-file-name="change_toplevel.py" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/change_toplevel.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0">
-                  <caret line="2089" column="0" selection-start-line="2089" selection-start-column="0" selection-end-line="2089" selection-end-column="0" />
+                <state relative-caret-position="2346">
+                  <caret line="142" column="40" selection-start-line="142" selection-start-column="40" selection-end-line="142" selection-end-column="40" />
                   <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="data_legend_toplevel.py" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/data_legend_toplevel.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0">
-                  <caret line="5" column="78" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="78" />
-                  <folding>
-                    <element signature="e#177#1720#0" expanded="false" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="amp_usb_helper.py" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/amp_usb_helper.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0">
-                  <caret line="129" column="76" selection-start-line="129" selection-start-column="76" selection-end-line="129" selection-end-column="76" />
-                  <folding>
-                    <element signature="e#379#693#0" expanded="false" />
-                    <element signature="e#379#662#1" expanded="false" />
-                    <element signature="e#732#3622#0" expanded="false" />
-                    <element signature="e#732#1878#1" expanded="false" />
-                    <element signature="e#3669#3871#0" expanded="false" />
-                    <element signature="e#3916#5050#0" expanded="false" />
-                    <element signature="e#5110#5907#0" expanded="false" />
-                    <element signature="e#5991#7076#0" expanded="false" />
-                    <element signature="e#7103#8104#0" expanded="false" />
-                    <element signature="e#8148#9706#0" expanded="false" />
-                    <element signature="e#9744#9920#0" expanded="false" />
-                    <element signature="e#9961#10435#0" expanded="false" />
-                    <element signature="e#10474#10810#0" expanded="false" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="pyplot_data_class.py" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/pyplot_data_class.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0">
-                  <caret line="40" column="34" selection-start-line="40" selection-start-column="34" selection-end-line="40" selection-end-column="34" />
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
-        </leaf>
-      </split-first>
-      <split-second>
-        <leaf>
-          <file leaf-file-name="Amp_GUI.py" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/Amp_GUI.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0">
-                  <caret line="266" column="20" selection-start-line="266" selection-start-column="12" selection-end-line="266" selection-end-column="20" />
-                  <folding>
-                    <element signature="e#21#35#0" expanded="true" />
-                    <element signature="e#1747#1941#1" expanded="false" />
-                    <element signature="e#2871#2955#1" expanded="false" />
-                    <element signature="e#4947#5296#1" expanded="false" />
-                    <element signature="e#6191#6614#1" expanded="false" />
-                    <element signature="e#7919#9174#0" expanded="false" />
-                    <element signature="e#9227#10513#0" expanded="false" />
-                    <element signature="e#9227#9793#1" expanded="false" />
-                    <element signature="e#10557#10590#0" expanded="false" />
-                    <element signature="e#10625#10951#1" expanded="false" />
-                    <element signature="e#12330#14377#0" expanded="false" />
-                    <element signature="e#14421#14502#0" expanded="false" />
-                    <element signature="e#14556#14593#0" expanded="false" />
-                    <element signature="e#14664#14755#0" expanded="false" />
-                    <element signature="e#14808#14846#0" expanded="false" />
-                    <element signature="e#14887#15251#0" expanded="false" />
-                    <element signature="e#14887#15003#1" expanded="false" />
-                    <element signature="e#15281#15295#0" expanded="false" />
-                    <element signature="e#15336#15871#0" expanded="false" />
-                    <element signature="e#15336#15468#1" expanded="false" />
-                    <element signature="e#15922#15969#0" expanded="false" />
-                    <element signature="e#16023#16489#0" expanded="false" />
-                    <element signature="e#16023#16392#1" expanded="false" />
-                    <element signature="e#16535#17522#0" expanded="false" />
-                    <element signature="e#16535#16792#1" expanded="false" />
-                    <element signature="e#17592#17933#0" expanded="false" />
-                    <element signature="e#17977#18806#0" expanded="false" />
-                    <element signature="e#17977#18333#1" expanded="false" />
-                    <element signature="e#18840#18969#1" expanded="false" />
-                    <element signature="e#19519#20116#0" expanded="false" />
-                    <element signature="e#20148#20638#0" expanded="false" />
-                    <element signature="e#20148#20454#1" expanded="false" />
-                    <element signature="e#20671#21042#0" expanded="false" />
-                    <element signature="e#20671#20816#1" expanded="false" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="option_menu.py" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/option_menu.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0">
-                  <caret line="80" column="86" selection-start-line="80" selection-start-column="86" selection-end-line="80" selection-end-column="86" />
-                  <folding>
-                    <element signature="e#0#20#0" expanded="true" />
-                  </folding>
                 </state>
               </provider>
             </entry>
@@ -197,22 +63,76 @@
           <file leaf-file-name="tkinter_pyplot.py" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/tkinter_pyplot.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="-0.46321526">
-                  <caret line="182" column="11" selection-start-line="182" selection-start-column="11" selection-end-line="182" selection-end-column="11" />
+                <state relative-caret-position="372">
+                  <caret line="131" column="42" selection-start-line="131" selection-start-column="42" selection-end-line="131" selection-end-column="42" />
                   <folding>
                     <element signature="e#37#51#0" expanded="true" />
-                    <element signature="e#623#1897#0" expanded="false" />
-                    <element signature="e#1964#3928#0" expanded="false" />
                   </folding>
                 </state>
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="pyplot_data_class.py" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/pyplot_data_class.py">
+          <file leaf-file-name="test.py" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/.idea/test.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0">
-                  <caret line="54" column="30" selection-start-line="54" selection-start-column="30" selection-end-line="54" selection-end-column="30" />
+                <state relative-caret-position="204">
+                  <caret line="12" column="6" selection-start-line="12" selection-start-column="6" selection-end-line="12" selection-end-column="6" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="Amp_GUI.py" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/Amp_GUI.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="425">
+                  <caret line="39" column="0" selection-start-line="39" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="option_menu.py" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/option_menu.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="1275">
+                  <caret line="77" column="11" selection-start-line="77" selection-start-column="11" selection-end-line="77" selection-end-column="11" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="amp_usb_helper.py" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/amp_usb_helper.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="2601">
+                  <caret line="156" column="0" selection-start-line="156" selection-start-column="0" selection-end-line="156" selection-end-column="0" />
+                  <folding>
+                    <marker date="1473821971669" expanded="true" signature="9433:9453" ph="..." />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+        </leaf>
+      </split-first>
+      <split-second>
+        <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+          <file leaf-file-name="properties.py" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/properties.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="561">
+                  <caret line="33" column="0" selection-start-line="33" selection-start-column="0" selection-end-line="33" selection-end-column="0" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="Amp_GUI.py" pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/Amp_GUI.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="85">
+                  <caret line="19" column="56" selection-start-line="19" selection-start-column="56" selection-end-line="19" selection-end-column="56" />
                   <folding />
                 </state>
               </provider>
@@ -235,26 +155,25 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
+        <option value="$PROJECT_DIR$/.idea/parameters.py" />
         <option value="$PROJECT_DIR$/data_legend_toplevel.py" />
         <option value="$PROJECT_DIR$/amp_usb_helper.py" />
-        <option value="$PROJECT_DIR$/.idea/parameters.py" />
-        <option value="$PROJECT_DIR$/Amp_GUI.py" />
         <option value="$PROJECT_DIR$/pyplot_data_class.py" />
         <option value="$PROJECT_DIR$/option_menu.py" />
-        <option value="$PROJECT_DIR$/usb_comm.py" />
-        <option value="$PROJECT_DIR$/change_toplevel.py" />
+        <option value="$PROJECT_DIR$/.idea/test.py" />
+        <option value="$PROJECT_DIR$/properties.py" />
         <option value="$PROJECT_DIR$/tkinter_pyplot.py" />
+        <option value="$PROJECT_DIR$/change_toplevel.py" />
+        <option value="$PROJECT_DIR$/usb_comm.py" />
+        <option value="$PROJECT_DIR$/Amp_GUI.py" />
       </list>
     </option>
   </component>
-  <component name="NamedScopeManager">
-    <order />
-  </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="450" />
-    <option name="y" value="33" />
-    <option name="width" value="880" />
-    <option name="height" value="669" />
+    <option name="x" value="189" />
+    <option name="y" value="59" />
+    <option name="width" value="1819" />
+    <option name="height" value="930" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -296,18 +215,19 @@
       <autoscrollToSource />
       <autoscrollFromSource />
       <sortByType />
+      <manualOrder />
+      <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes />
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="C:/Python27/python.exe" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Erying_rate_maker" />
     <property name="options.lastSelected" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="options.splitter.details.proportions" value="0.2" />
     <property name="recentsLimit" value="5" />
-    <property name="settings.editor.selected.configurable" value="File.Encoding" />
+    <property name="settings.editor.selected.configurable" value="reference.settings.ide.settings.notifications" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
-    <property name="FullScreen" value="false" />
   </component>
   <component name="RunManager" selected="Python.Amp_GUI">
     <configuration default="false" name="Amp_GUI" type="PythonConfigurationType" factoryName="Python" temporary="true">
@@ -329,6 +249,23 @@
       <ConfigurationWrapper RunnerId="PythonRunner" />
       <method />
     </configuration>
+    <configuration default="false" name="test" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/.idea" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="Amp_simple" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/.idea/test.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <method />
+    </configuration>
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -344,6 +281,18 @@
       <option name="SCRIPT_NAME" value="" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="Tox" factoryName="Tox">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="Amp_simple" />
       <method />
     </configuration>
     <configuration default="true" type="tests" factoryName="Attests">
@@ -451,16 +400,23 @@
       <option name="USE_KEYWORD" value="false" />
       <method />
     </configuration>
-    <list size="1">
+    <list size="2">
       <item index="0" class="java.lang.String" itemvalue="Python.Amp_GUI" />
+      <item index="1" class="java.lang.String" itemvalue="Python.test" />
     </list>
     <recent_temporary>
-      <list size="1">
+      <list size="2">
         <item index="0" class="java.lang.String" itemvalue="Python.Amp_GUI" />
+        <item index="1" class="java.lang.String" itemvalue="Python.test" />
       </list>
     </recent_temporary>
   </component>
-  <component name="ShelveChangesManager" show_recycled="false" />
+  <component name="ShelveChangesManager" show_recycled="false">
+    <option name="remove_strategy" value="false" />
+  </component>
+  <component name="StructureViewFactory">
+    <option name="ACTIVE_ACTIONS" value=",SHOW_INHERITED,SHOW_FIELDS" />
+  </component>
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -469,24 +425,34 @@
       <changelist id="251b6b94-30bd-4672-9fcb-503d3e5ae2ad" name="Default" comment="" />
       <created>1442586340622</created>
       <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
       <updated>1442586340622</updated>
     </task>
     <task id="LOCAL-00001" summary="Can save and load data traces.  Added more comments and documentation">
       <created>1442983753072</created>
       <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
       <option name="project" value="LOCAL" />
       <updated>1442983753072</updated>
     </task>
     <task id="LOCAL-00002" summary="Formats data differently now that PSoC sends data differently.  Added and options menu with some debugging and developer options.">
       <created>1444549150485</created>
       <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
       <option name="project" value="LOCAL" />
       <updated>1444549150485</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Cyclic voltammetry is complete except for documentation and some lite refactoring">
+      <created>1445487341924</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1445487341924</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
-  <component name="TodoView">
+  <component name="TodoView" selected-index="4">
     <todo-panel id="selected-file">
       <is-autoscroll-to-source value="true" />
     </todo-panel>
@@ -496,30 +462,52 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="450" y="33" width="880" height="669" extended-state="0" />
-    <editor active="true" />
+    <frame x="189" y="59" width="1819" height="930" extended-state="0" />
+    <editor active="false" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32848233" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3410302" sideWeight="0.5387674" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32421875" sideWeight="0.4957627" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2671614" sideWeight="0.4612326" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24985337" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32747805" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.325419" sideWeight="0.5431384" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.44764096" sideWeight="0.4957627" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32873276" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32747805" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.27541372" sideWeight="0.45686162" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.14823133" sideWeight="0.49130434" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32900432" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.15483871" sideWeight="0.50869566" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
+    <layout-to-restore>
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32848233" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3410302" sideWeight="0.5387674" order="9" side_tool="true" content_ui="tabs" />
+      <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3776" sideWeight="0.4612326" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4483734" sideWeight="0.4957627" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.16522811" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+    </layout-to-restore>
   </component>
   <component name="Vcs.Log.UiProperties">
     <option name="RECENTLY_FILTERED_USER_GROUPS">
@@ -535,799 +523,454 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Can save and load data traces.  Added more comments and documentation" />
     <MESSAGE value="Formats data differently now that PSoC sends data differently.  Added and options menu with some debugging and developer options." />
-    <option name="LAST_COMMIT_MESSAGE" value="Formats data differently now that PSoC sends data differently.  Added and options menu with some debugging and developer options." />
+    <MESSAGE value="Cyclic voltammetry is complete except for documentation and some lite refactoring" />
+    <MESSAGE value="CV scans working, updated changes to work with PSoC changes" />
+    <option name="LAST_COMMIT_MESSAGE" value="CV scans working, updated changes to work with PSoC changes" />
+    <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="18" />
+      <option name="time" value="34" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/pyplot_data_class.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="6" column="37" selection-start-line="6" selection-start-column="37" selection-end-line="6" selection-end-column="37" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data_legend_toplevel.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="25" column="46" selection-start-line="25" selection-start-column="46" selection-end-line="25" selection-end-column="46" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/option_menu.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="38" column="58" selection-start-line="38" selection-start-column="58" selection-end-line="38" selection-end-column="58" />
-          <folding>
-            <element signature="e#0#20#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tkinter_pyplot.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#37#51#0" expanded="true" />
-            <element signature="e#623#1897#0" expanded="false" />
-            <element signature="e#1964#3928#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Amp_GUI.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="203" column="11" selection-start-line="203" selection-start-column="11" selection-end-line="203" selection-end-column="11" />
-          <folding>
-            <element signature="e#21#35#0" expanded="true" />
-            <element signature="e#1747#1941#1" expanded="false" />
-            <element signature="e#2871#2955#1" expanded="false" />
-            <element signature="e#4947#5296#1" expanded="false" />
-            <element signature="e#6191#6614#1" expanded="false" />
-            <element signature="e#7919#9174#0" expanded="false" />
-            <element signature="e#9227#10513#0" expanded="false" />
-            <element signature="e#9227#9793#1" expanded="false" />
-            <element signature="e#10557#10590#0" expanded="false" />
-            <element signature="e#10625#10951#1" expanded="false" />
-            <element signature="e#12330#14377#0" expanded="false" />
-            <element signature="e#14421#14502#0" expanded="false" />
-            <element signature="e#14556#14593#0" expanded="false" />
-            <element signature="e#14664#14755#0" expanded="false" />
-            <element signature="e#14808#14846#0" expanded="false" />
-            <element signature="e#14887#15251#0" expanded="false" />
-            <element signature="e#14887#15003#1" expanded="false" />
-            <element signature="e#15281#15295#0" expanded="false" />
-            <element signature="e#15336#15871#0" expanded="false" />
-            <element signature="e#15336#15468#1" expanded="false" />
-            <element signature="e#15922#15969#0" expanded="false" />
-            <element signature="e#16023#16489#0" expanded="false" />
-            <element signature="e#16023#16392#1" expanded="false" />
-            <element signature="e#16535#17522#0" expanded="false" />
-            <element signature="e#16535#16792#1" expanded="false" />
-            <element signature="e#17592#17933#0" expanded="false" />
-            <element signature="e#17977#18806#0" expanded="false" />
-            <element signature="e#17977#18333#1" expanded="false" />
-            <element signature="e#18840#18969#1" expanded="false" />
-            <element signature="e#19519#20116#0" expanded="false" />
-            <element signature="e#20148#20638#0" expanded="false" />
-            <element signature="e#20148#20454#1" expanded="false" />
-            <element signature="e#20671#21042#0" expanded="false" />
-            <element signature="e#20671#20816#1" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/usb_comm.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
+        <state relative-caret-position="0">
           <caret line="132" column="0" selection-start-line="132" selection-start-column="0" selection-end-line="132" selection-end-column="0" />
           <folding>
-            <element signature="e#2268#2959#0" expanded="false" />
-            <element signature="e#3021#5394#0" expanded="false" />
-            <element signature="e#6047#6156#0" expanded="false" />
-            <element signature="e#6209#7640#0" expanded="false" />
-            <element signature="e#8825#9670#0" expanded="false" />
-            <element signature="e#9724#10381#0" expanded="false" />
-            <element signature="e#10427#10833#0" expanded="false" />
-            <element signature="e#10874#11225#0" expanded="false" />
-            <element signature="e#11264#11408#0" expanded="false" />
-            <element signature="e#11457#11583#0" expanded="false" />
+            <element signature="e#0#14#0" expanded="true" />
+            <element signature="e#904#1434#1" expanded="false" />
+            <element signature="e#15824#15933#0" expanded="false" />
+            <element signature="e#16361#16510#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/pyplot_data_class.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
+        <state relative-caret-position="0">
           <caret line="6" column="37" selection-start-line="6" selection-start-column="37" selection-end-line="6" selection-end-column="37" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/data_legend_toplevel.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
+        <state relative-caret-position="0">
           <caret line="25" column="46" selection-start-line="25" selection-start-column="46" selection-end-line="25" selection-end-column="46" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/option_menu.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
+        <state relative-caret-position="0">
           <caret line="38" column="58" selection-start-line="38" selection-start-column="58" selection-end-line="38" selection-end-column="58" />
-          <folding>
-            <element signature="e#0#20#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/tkinter_pyplot.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
+        <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#37#51#0" expanded="true" />
-            <element signature="e#623#1897#0" expanded="false" />
-            <element signature="e#1964#3928#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Amp_GUI.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
+        <state relative-caret-position="0">
           <caret line="31" column="15" selection-start-line="31" selection-start-column="15" selection-end-line="31" selection-end-column="15" />
-          <folding>
-            <element signature="e#21#35#0" expanded="true" />
-            <element signature="e#1747#1941#1" expanded="false" />
-            <element signature="e#2871#2955#1" expanded="false" />
-            <element signature="e#4947#5296#1" expanded="false" />
-            <element signature="e#6191#6614#1" expanded="false" />
-            <element signature="e#7919#9174#0" expanded="false" />
-            <element signature="e#9227#10513#0" expanded="false" />
-            <element signature="e#9227#9793#1" expanded="false" />
-            <element signature="e#10557#10590#0" expanded="false" />
-            <element signature="e#10625#10951#1" expanded="false" />
-            <element signature="e#12330#14377#0" expanded="false" />
-            <element signature="e#14421#14502#0" expanded="false" />
-            <element signature="e#14556#14593#0" expanded="false" />
-            <element signature="e#14664#14755#0" expanded="false" />
-            <element signature="e#14808#14846#0" expanded="false" />
-            <element signature="e#14887#15251#0" expanded="false" />
-            <element signature="e#14887#15003#1" expanded="false" />
-            <element signature="e#15281#15295#0" expanded="false" />
-            <element signature="e#15336#15871#0" expanded="false" />
-            <element signature="e#15336#15468#1" expanded="false" />
-            <element signature="e#15922#15969#0" expanded="false" />
-            <element signature="e#16023#16489#0" expanded="false" />
-            <element signature="e#16023#16392#1" expanded="false" />
-            <element signature="e#16535#17522#0" expanded="false" />
-            <element signature="e#16535#16792#1" expanded="false" />
-            <element signature="e#17592#17933#0" expanded="false" />
-            <element signature="e#17977#18806#0" expanded="false" />
-            <element signature="e#17977#18333#1" expanded="false" />
-            <element signature="e#18840#18969#1" expanded="false" />
-            <element signature="e#19519#20116#0" expanded="false" />
-            <element signature="e#20148#20638#0" expanded="false" />
-            <element signature="e#20148#20454#1" expanded="false" />
-            <element signature="e#20671#21042#0" expanded="false" />
-            <element signature="e#20671#20816#1" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/usb_comm.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
+        <state relative-caret-position="0">
           <caret line="132" column="0" selection-start-line="132" selection-start-column="0" selection-end-line="132" selection-end-column="0" />
           <folding>
-            <element signature="e#2268#2959#0" expanded="false" />
-            <element signature="e#3021#5394#0" expanded="false" />
-            <element signature="e#6047#6156#0" expanded="false" />
-            <element signature="e#6209#7640#0" expanded="false" />
-            <element signature="e#8825#9670#0" expanded="false" />
-            <element signature="e#9724#10381#0" expanded="false" />
-            <element signature="e#10427#10833#0" expanded="false" />
-            <element signature="e#10874#11225#0" expanded="false" />
-            <element signature="e#11264#11408#0" expanded="false" />
-            <element signature="e#11457#11583#0" expanded="false" />
+            <element signature="e#0#14#0" expanded="true" />
+            <element signature="e#904#1434#1" expanded="false" />
+            <element signature="e#15824#15933#0" expanded="false" />
+            <element signature="e#16361#16510#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/pyplot_data_class.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
+        <state relative-caret-position="0">
           <caret line="6" column="37" selection-start-line="6" selection-start-column="37" selection-end-line="6" selection-end-column="37" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/data_legend_toplevel.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
+        <state relative-caret-position="0">
           <caret line="25" column="46" selection-start-line="25" selection-start-column="46" selection-end-line="25" selection-end-column="46" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/option_menu.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
+        <state relative-caret-position="0">
           <caret line="38" column="58" selection-start-line="38" selection-start-column="58" selection-end-line="38" selection-end-column="58" />
-          <folding>
-            <element signature="e#0#20#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/tkinter_pyplot.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
+        <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#37#51#0" expanded="true" />
-            <element signature="e#623#1897#0" expanded="false" />
-            <element signature="e#1964#3928#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Amp_GUI.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
+        <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#21#35#0" expanded="true" />
-            <element signature="e#1747#1941#1" expanded="false" />
-            <element signature="e#2871#2955#1" expanded="false" />
-            <element signature="e#4947#5296#1" expanded="false" />
-            <element signature="e#6191#6614#1" expanded="false" />
-            <element signature="e#7919#9174#0" expanded="false" />
-            <element signature="e#9227#10513#0" expanded="false" />
-            <element signature="e#9227#9793#1" expanded="false" />
-            <element signature="e#10557#10590#0" expanded="false" />
-            <element signature="e#10625#10951#1" expanded="false" />
-            <element signature="e#12330#14377#0" expanded="false" />
-            <element signature="e#14421#14502#0" expanded="false" />
-            <element signature="e#14556#14593#0" expanded="false" />
-            <element signature="e#14664#14755#0" expanded="false" />
-            <element signature="e#14808#14846#0" expanded="false" />
-            <element signature="e#14887#15251#0" expanded="false" />
-            <element signature="e#14887#15003#1" expanded="false" />
-            <element signature="e#15281#15295#0" expanded="false" />
-            <element signature="e#15336#15871#0" expanded="false" />
-            <element signature="e#15336#15468#1" expanded="false" />
-            <element signature="e#15922#15969#0" expanded="false" />
-            <element signature="e#16023#16489#0" expanded="false" />
-            <element signature="e#16023#16392#1" expanded="false" />
-            <element signature="e#16535#17522#0" expanded="false" />
-            <element signature="e#16535#16792#1" expanded="false" />
-            <element signature="e#17592#17933#0" expanded="false" />
-            <element signature="e#17977#18806#0" expanded="false" />
-            <element signature="e#17977#18333#1" expanded="false" />
-            <element signature="e#18840#18969#1" expanded="false" />
-            <element signature="e#19519#20116#0" expanded="false" />
-            <element signature="e#20148#20638#0" expanded="false" />
-            <element signature="e#20148#20454#1" expanded="false" />
-            <element signature="e#20671#21042#0" expanded="false" />
-            <element signature="e#20671#20816#1" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/usb_comm.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
+        <state relative-caret-position="0">
           <caret line="132" column="0" selection-start-line="132" selection-start-column="0" selection-end-line="132" selection-end-column="0" />
           <folding>
-            <element signature="e#2268#2959#0" expanded="false" />
-            <element signature="e#3021#5394#0" expanded="false" />
-            <element signature="e#6047#6156#0" expanded="false" />
-            <element signature="e#6209#7640#0" expanded="false" />
-            <element signature="e#8825#9670#0" expanded="false" />
-            <element signature="e#9724#10381#0" expanded="false" />
-            <element signature="e#10427#10833#0" expanded="false" />
-            <element signature="e#10874#11225#0" expanded="false" />
-            <element signature="e#11264#11408#0" expanded="false" />
-            <element signature="e#11457#11583#0" expanded="false" />
+            <element signature="e#0#14#0" expanded="true" />
+            <element signature="e#904#1434#1" expanded="false" />
+            <element signature="e#15824#15933#0" expanded="false" />
+            <element signature="e#16361#16510#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/pyplot_data_class.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
+        <state relative-caret-position="0">
           <caret line="6" column="37" selection-start-line="6" selection-start-column="37" selection-end-line="6" selection-end-column="37" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/data_legend_toplevel.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
+        <state relative-caret-position="0">
           <caret line="25" column="46" selection-start-line="25" selection-start-column="46" selection-end-line="25" selection-end-column="46" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/option_menu.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
+        <state relative-caret-position="0">
           <caret line="31" column="58" selection-start-line="31" selection-start-column="58" selection-end-line="31" selection-end-column="58" />
-          <folding>
-            <element signature="e#0#20#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/tkinter_pyplot.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
+        <state relative-caret-position="0">
           <caret line="131" column="13" selection-start-line="131" selection-start-column="13" selection-end-line="131" selection-end-column="13" />
           <folding>
             <element signature="e#37#51#0" expanded="true" />
-            <element signature="e#623#1897#0" expanded="false" />
-            <element signature="e#1964#3928#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Amp_GUI.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
+        <state relative-caret-position="0">
           <caret line="273" column="23" selection-start-line="273" selection-start-column="8" selection-end-line="273" selection-end-column="23" />
-          <folding>
-            <element signature="e#21#35#0" expanded="true" />
-            <element signature="e#1747#1941#1" expanded="false" />
-            <element signature="e#2871#2955#1" expanded="false" />
-            <element signature="e#4947#5296#1" expanded="false" />
-            <element signature="e#6191#6614#1" expanded="false" />
-            <element signature="e#7919#9174#0" expanded="false" />
-            <element signature="e#9227#10513#0" expanded="false" />
-            <element signature="e#9227#9793#1" expanded="false" />
-            <element signature="e#10557#10590#0" expanded="false" />
-            <element signature="e#10625#10951#1" expanded="false" />
-            <element signature="e#12330#14377#0" expanded="false" />
-            <element signature="e#14421#14502#0" expanded="false" />
-            <element signature="e#14556#14593#0" expanded="false" />
-            <element signature="e#14664#14755#0" expanded="false" />
-            <element signature="e#14808#14846#0" expanded="false" />
-            <element signature="e#14887#15251#0" expanded="false" />
-            <element signature="e#14887#15003#1" expanded="false" />
-            <element signature="e#15281#15295#0" expanded="false" />
-            <element signature="e#15336#15871#0" expanded="false" />
-            <element signature="e#15336#15468#1" expanded="false" />
-            <element signature="e#15922#15969#0" expanded="false" />
-            <element signature="e#16023#16489#0" expanded="false" />
-            <element signature="e#16023#16392#1" expanded="false" />
-            <element signature="e#16535#17522#0" expanded="false" />
-            <element signature="e#16535#16792#1" expanded="false" />
-            <element signature="e#17592#17933#0" expanded="false" />
-            <element signature="e#17977#18806#0" expanded="false" />
-            <element signature="e#17977#18333#1" expanded="false" />
-            <element signature="e#18840#18969#1" expanded="false" />
-            <element signature="e#19519#20116#0" expanded="false" />
-            <element signature="e#20148#20638#0" expanded="false" />
-            <element signature="e#20148#20454#1" expanded="false" />
-            <element signature="e#20671#21042#0" expanded="false" />
-            <element signature="e#20671#20816#1" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/usb_comm.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
+        <state relative-caret-position="0">
           <caret line="132" column="0" selection-start-line="132" selection-start-column="0" selection-end-line="132" selection-end-column="0" />
           <folding>
-            <element signature="e#2268#2959#0" expanded="false" />
-            <element signature="e#3021#5394#0" expanded="false" />
-            <element signature="e#6047#6156#0" expanded="false" />
-            <element signature="e#6209#7640#0" expanded="false" />
-            <element signature="e#8825#9670#0" expanded="false" />
-            <element signature="e#9724#10381#0" expanded="false" />
-            <element signature="e#10427#10833#0" expanded="false" />
-            <element signature="e#10874#11225#0" expanded="false" />
-            <element signature="e#11264#11408#0" expanded="false" />
-            <element signature="e#11457#11583#0" expanded="false" />
+            <element signature="e#0#14#0" expanded="true" />
+            <element signature="e#904#1434#1" expanded="false" />
+            <element signature="e#15824#15933#0" expanded="false" />
+            <element signature="e#16361#16510#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/pyplot_data_class.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
+        <state relative-caret-position="0">
           <caret line="6" column="37" selection-start-line="6" selection-start-column="37" selection-end-line="6" selection-end-column="37" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/data_legend_toplevel.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
+        <state relative-caret-position="0">
           <caret line="25" column="46" selection-start-line="25" selection-start-column="46" selection-end-line="25" selection-end-column="46" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/option_menu.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
+        <state relative-caret-position="0">
           <caret line="31" column="70" selection-start-line="31" selection-start-column="70" selection-end-line="31" selection-end-column="70" />
-          <folding>
-            <element signature="e#0#20#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/tkinter_pyplot.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
+        <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#37#51#0" expanded="true" />
-            <element signature="e#623#1897#0" expanded="false" />
-            <element signature="e#1964#3928#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Amp_GUI.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
+        <state relative-caret-position="0">
           <caret line="241" column="53" selection-start-line="241" selection-start-column="53" selection-end-line="241" selection-end-column="53" />
-          <folding>
-            <element signature="e#21#35#0" expanded="true" />
-            <element signature="e#1747#1941#1" expanded="false" />
-            <element signature="e#2871#2955#1" expanded="false" />
-            <element signature="e#4947#5296#1" expanded="false" />
-            <element signature="e#6191#6614#1" expanded="false" />
-            <element signature="e#7919#9174#0" expanded="false" />
-            <element signature="e#9227#10513#0" expanded="false" />
-            <element signature="e#9227#9793#1" expanded="false" />
-            <element signature="e#10557#10590#0" expanded="false" />
-            <element signature="e#10625#10951#1" expanded="false" />
-            <element signature="e#12330#14377#0" expanded="false" />
-            <element signature="e#14421#14502#0" expanded="false" />
-            <element signature="e#14556#14593#0" expanded="false" />
-            <element signature="e#14664#14755#0" expanded="false" />
-            <element signature="e#14808#14846#0" expanded="false" />
-            <element signature="e#14887#15251#0" expanded="false" />
-            <element signature="e#14887#15003#1" expanded="false" />
-            <element signature="e#15281#15295#0" expanded="false" />
-            <element signature="e#15336#15871#0" expanded="false" />
-            <element signature="e#15336#15468#1" expanded="false" />
-            <element signature="e#15922#15969#0" expanded="false" />
-            <element signature="e#16023#16489#0" expanded="false" />
-            <element signature="e#16023#16392#1" expanded="false" />
-            <element signature="e#16535#17522#0" expanded="false" />
-            <element signature="e#16535#16792#1" expanded="false" />
-            <element signature="e#17592#17933#0" expanded="false" />
-            <element signature="e#17977#18806#0" expanded="false" />
-            <element signature="e#17977#18333#1" expanded="false" />
-            <element signature="e#18840#18969#1" expanded="false" />
-            <element signature="e#19519#20116#0" expanded="false" />
-            <element signature="e#20148#20638#0" expanded="false" />
-            <element signature="e#20148#20454#1" expanded="false" />
-            <element signature="e#20671#21042#0" expanded="false" />
-            <element signature="e#20671#20816#1" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/usb_comm.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
+        <state relative-caret-position="0">
           <caret line="132" column="0" selection-start-line="132" selection-start-column="0" selection-end-line="132" selection-end-column="0" />
           <folding>
-            <element signature="e#2268#2959#0" expanded="false" />
-            <element signature="e#3021#5394#0" expanded="false" />
-            <element signature="e#6047#6156#0" expanded="false" />
-            <element signature="e#6209#7640#0" expanded="false" />
-            <element signature="e#8825#9670#0" expanded="false" />
-            <element signature="e#9724#10381#0" expanded="false" />
-            <element signature="e#10427#10833#0" expanded="false" />
-            <element signature="e#10874#11225#0" expanded="false" />
-            <element signature="e#11264#11408#0" expanded="false" />
-            <element signature="e#11457#11583#0" expanded="false" />
+            <element signature="e#0#14#0" expanded="true" />
+            <element signature="e#904#1434#1" expanded="false" />
+            <element signature="e#15824#15933#0" expanded="false" />
+            <element signature="e#16361#16510#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/pyplot_data_class.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
+        <state relative-caret-position="0">
           <caret line="6" column="37" selection-start-line="6" selection-start-column="37" selection-end-line="6" selection-end-column="37" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/data_legend_toplevel.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
+        <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/tkinter_pyplot.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
+        <state relative-caret-position="0">
           <caret line="115" column="4" selection-start-line="115" selection-start-column="4" selection-end-line="115" selection-end-column="4" />
           <folding>
             <element signature="e#37#51#0" expanded="true" />
-            <element signature="e#623#1897#0" expanded="false" />
-            <element signature="e#1964#3928#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Amp_GUI.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
+        <state relative-caret-position="0">
           <caret line="241" column="53" selection-start-line="241" selection-start-column="53" selection-end-line="241" selection-end-column="53" />
-          <folding>
-            <element signature="e#21#35#0" expanded="true" />
-            <element signature="e#1747#1941#1" expanded="false" />
-            <element signature="e#2871#2955#1" expanded="false" />
-            <element signature="e#4947#5296#1" expanded="false" />
-            <element signature="e#6191#6614#1" expanded="false" />
-            <element signature="e#7919#9174#0" expanded="false" />
-            <element signature="e#9227#10513#0" expanded="false" />
-            <element signature="e#9227#9793#1" expanded="false" />
-            <element signature="e#10557#10590#0" expanded="false" />
-            <element signature="e#10625#10951#1" expanded="false" />
-            <element signature="e#12330#14377#0" expanded="false" />
-            <element signature="e#14421#14502#0" expanded="false" />
-            <element signature="e#14556#14593#0" expanded="false" />
-            <element signature="e#14664#14755#0" expanded="false" />
-            <element signature="e#14808#14846#0" expanded="false" />
-            <element signature="e#14887#15251#0" expanded="false" />
-            <element signature="e#14887#15003#1" expanded="false" />
-            <element signature="e#15281#15295#0" expanded="false" />
-            <element signature="e#15336#15871#0" expanded="false" />
-            <element signature="e#15336#15468#1" expanded="false" />
-            <element signature="e#15922#15969#0" expanded="false" />
-            <element signature="e#16023#16489#0" expanded="false" />
-            <element signature="e#16023#16392#1" expanded="false" />
-            <element signature="e#16535#17522#0" expanded="false" />
-            <element signature="e#16535#16792#1" expanded="false" />
-            <element signature="e#17592#17933#0" expanded="false" />
-            <element signature="e#17977#18806#0" expanded="false" />
-            <element signature="e#17977#18333#1" expanded="false" />
-            <element signature="e#18840#18969#1" expanded="false" />
-            <element signature="e#19519#20116#0" expanded="false" />
-            <element signature="e#20148#20638#0" expanded="false" />
-            <element signature="e#20148#20454#1" expanded="false" />
-            <element signature="e#20671#21042#0" expanded="false" />
-            <element signature="e#20671#20816#1" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/usb_comm.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
+        <state relative-caret-position="0">
           <caret line="132" column="0" selection-start-line="132" selection-start-column="0" selection-end-line="132" selection-end-column="0" />
           <folding>
-            <element signature="e#2268#2959#0" expanded="false" />
-            <element signature="e#3021#5394#0" expanded="false" />
-            <element signature="e#6047#6156#0" expanded="false" />
-            <element signature="e#6209#7640#0" expanded="false" />
-            <element signature="e#8825#9670#0" expanded="false" />
-            <element signature="e#9724#10381#0" expanded="false" />
-            <element signature="e#10427#10833#0" expanded="false" />
-            <element signature="e#10874#11225#0" expanded="false" />
-            <element signature="e#11264#11408#0" expanded="false" />
-            <element signature="e#11457#11583#0" expanded="false" />
+            <element signature="e#0#14#0" expanded="true" />
+            <element signature="e#904#1434#1" expanded="false" />
+            <element signature="e#15824#15933#0" expanded="false" />
+            <element signature="e#16361#16510#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/pyplot_data_class.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
+        <state relative-caret-position="0">
           <caret line="6" column="37" selection-start-line="6" selection-start-column="37" selection-end-line="6" selection-end-column="37" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/data_legend_toplevel.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
+        <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/tkinter_pyplot.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
+        <state relative-caret-position="0">
           <caret line="115" column="4" selection-start-line="115" selection-start-column="4" selection-end-line="115" selection-end-column="4" />
           <folding>
             <element signature="e#37#51#0" expanded="true" />
-            <element signature="e#623#1897#0" expanded="false" />
-            <element signature="e#1964#3928#0" expanded="false" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/Enthought/Canopy32/App/appdata/canopy-1.5.2.2785.win-x86/Lib/lib-tk/Tkinter.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.20052083">
-          <caret line="1469" column="0" selection-start-line="1469" selection-start-column="0" selection-end-line="1469" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://C:/Python27/Lib/lib-tk/tkFileDialog.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33333334">
+        <state relative-caret-position="0">
           <caret line="172" column="0" selection-start-line="172" selection-start-column="0" selection-end-line="172" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/.idea/parameters.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.04450262">
+        <state relative-caret-position="0">
           <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://C:/Python27/Lib/site-packages/matplotlib/axes/_axes.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33333334">
+        <state relative-caret-position="0">
           <caret line="474" column="0" selection-start-line="474" selection-start-column="0" selection-end-line="474" selection-end-column="0" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/amp_usb_helper.py">
+    <entry file="file://C:/Python27/Lib/site-packages/usb/core.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="129" column="76" selection-start-line="129" selection-start-column="76" selection-end-line="129" selection-end-column="76" />
-          <folding>
-            <element signature="e#379#693#0" expanded="false" />
-            <element signature="e#379#662#1" expanded="false" />
-            <element signature="e#732#3622#0" expanded="false" />
-            <element signature="e#732#1878#1" expanded="false" />
-            <element signature="e#3669#3871#0" expanded="false" />
-            <element signature="e#3916#5050#0" expanded="false" />
-            <element signature="e#5110#5907#0" expanded="false" />
-            <element signature="e#5991#7076#0" expanded="false" />
-            <element signature="e#7103#8104#0" expanded="false" />
-            <element signature="e#8148#9706#0" expanded="false" />
-            <element signature="e#9744#9920#0" expanded="false" />
-            <element signature="e#9961#10435#0" expanded="false" />
-            <element signature="e#10474#10810#0" expanded="false" />
-          </folding>
+        <state relative-caret-position="0">
+          <caret line="127" column="0" selection-start-line="127" selection-start-column="0" selection-end-line="127" selection-end-column="0" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data_legend_toplevel.py">
+    <entry file="file://C:/Python27/Lib/site-packages/usb/backend/libusb1.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="5" column="78" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="78" />
-          <folding>
-            <element signature="e#177#1720#0" expanded="false" />
-          </folding>
+        <state relative-caret-position="0">
+          <caret line="729" column="0" selection-start-line="729" selection-start-column="0" selection-end-line="729" selection-end-column="0" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Amp_GUI.py">
+    <entry file="file://$PROJECT_DIR$/graph_properties.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="266" column="20" selection-start-line="266" selection-start-column="12" selection-end-line="266" selection-end-column="20" />
-          <folding>
-            <element signature="e#21#35#0" expanded="true" />
-            <element signature="e#1747#1941#1" expanded="false" />
-            <element signature="e#2871#2955#1" expanded="false" />
-            <element signature="e#4947#5296#1" expanded="false" />
-            <element signature="e#6191#6614#1" expanded="false" />
-            <element signature="e#7919#9174#0" expanded="false" />
-            <element signature="e#9227#10513#0" expanded="false" />
-            <element signature="e#9227#9793#1" expanded="false" />
-            <element signature="e#10557#10590#0" expanded="false" />
-            <element signature="e#10625#10951#1" expanded="false" />
-            <element signature="e#12330#14377#0" expanded="false" />
-            <element signature="e#14421#14502#0" expanded="false" />
-            <element signature="e#14556#14593#0" expanded="false" />
-            <element signature="e#14664#14755#0" expanded="false" />
-            <element signature="e#14808#14846#0" expanded="false" />
-            <element signature="e#14887#15251#0" expanded="false" />
-            <element signature="e#14887#15003#1" expanded="false" />
-            <element signature="e#15281#15295#0" expanded="false" />
-            <element signature="e#15336#15871#0" expanded="false" />
-            <element signature="e#15336#15468#1" expanded="false" />
-            <element signature="e#15922#15969#0" expanded="false" />
-            <element signature="e#16023#16489#0" expanded="false" />
-            <element signature="e#16023#16392#1" expanded="false" />
-            <element signature="e#16535#17522#0" expanded="false" />
-            <element signature="e#16535#16792#1" expanded="false" />
-            <element signature="e#17592#17933#0" expanded="false" />
-            <element signature="e#17977#18806#0" expanded="false" />
-            <element signature="e#17977#18333#1" expanded="false" />
-            <element signature="e#18840#18969#1" expanded="false" />
-            <element signature="e#19519#20116#0" expanded="false" />
-            <element signature="e#20148#20638#0" expanded="false" />
-            <element signature="e#20148#20454#1" expanded="false" />
-            <element signature="e#20671#21042#0" expanded="false" />
-            <element signature="e#20671#20816#1" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/pyplot_data_class.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="54" column="30" selection-start-line="54" selection-start-column="30" selection-end-line="54" selection-end-column="30" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/option_menu.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="80" column="86" selection-start-line="80" selection-start-column="86" selection-end-line="80" selection-end-column="86" />
-          <folding>
-            <element signature="e#0#20#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/usb_comm.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="150" column="82" selection-start-line="150" selection-start-column="82" selection-end-line="150" selection-end-column="82" />
-          <folding>
-            <element signature="e#2268#2959#0" expanded="false" />
-            <element signature="e#3021#5394#0" expanded="false" />
-            <element signature="e#6047#6156#0" expanded="false" />
-            <element signature="e#6209#7640#0" expanded="false" />
-            <element signature="e#8825#9670#0" expanded="false" />
-            <element signature="e#9724#10381#0" expanded="false" />
-            <element signature="e#10427#10833#0" expanded="false" />
-            <element signature="e#10874#11225#0" expanded="false" />
-            <element signature="e#11264#11408#0" expanded="false" />
-            <element signature="e#11457#11583#0" expanded="false" />
-          </folding>
+        <state relative-caret-position="0">
+          <caret line="10" column="43" selection-start-line="10" selection-start-column="43" selection-end-line="10" selection-end-column="43" />
         </state>
       </provider>
     </entry>
     <entry file="file://C:/Python27/Lib/lib-tk/Tkinter.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="2089" column="0" selection-start-line="2089" selection-start-column="0" selection-end-line="2089" selection-end-column="0" />
+        <state relative-caret-position="0">
+          <caret line="1763" column="0" selection-start-line="1763" selection-start-column="0" selection-end-line="1763" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data_legend_toplevel.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="6" column="0" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/baseGUI/Lib/site-packages/matplotlib/axes/_base.py" />
+    <entry file="file://$PROJECT_DIR$/pyplot_data_class.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="53" column="25" selection-start-line="53" selection-start-column="25" selection-end-line="53" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/amp_usb_helper.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2601">
+          <caret line="156" column="0" selection-start-line="156" selection-start-column="0" selection-end-line="156" selection-end-column="0" />
+          <folding>
+            <marker date="1473821971669" expanded="true" signature="9433:9453" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/option_menu.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1275">
+          <caret line="77" column="11" selection-start-line="77" selection-start-column="11" selection-end-line="77" selection-end-column="11" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.idea/test.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="12" column="6" selection-start-line="12" selection-start-column="6" selection-end-line="12" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/properties.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="561">
+          <caret line="33" column="0" selection-start-line="33" selection-start-column="0" selection-end-line="33" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/change_toplevel.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6185286">
-          <caret line="419" column="68" selection-start-line="419" selection-start-column="68" selection-end-line="419" selection-end-column="68" />
+        <state relative-caret-position="2346">
+          <caret line="142" column="40" selection-start-line="142" selection-start-column="40" selection-end-line="142" selection-end-column="40" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Amp_GUI.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="425">
+          <caret line="39" column="0" selection-start-line="39" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/usb_comm.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="91">
+          <caret line="288" column="82" selection-start-line="288" selection-start-column="82" selection-end-line="288" selection-end-column="82" />
           <folding>
             <element signature="e#0#14#0" expanded="true" />
-            <element signature="e#356#488#1" expanded="false" />
-            <element signature="e#541#4535#0" expanded="false" />
-            <element signature="e#541#685#1" expanded="false" />
-            <element signature="e#4633#5353#1" expanded="false" />
-            <element signature="e#9260#9763#0" expanded="false" />
-            <element signature="e#9260#9410#1" expanded="false" />
-            <element signature="e#9819#10451#0" expanded="false" />
-            <element signature="e#9819#10020#1" expanded="false" />
-            <element signature="e#10498#11774#0" expanded="false" />
-            <element signature="e#11823#12595#0" expanded="false" />
-            <element signature="e#14063#14095#0" expanded="false" />
+            <element signature="e#904#1434#1" expanded="false" />
+            <element signature="e#15824#15933#0" expanded="false" />
+            <element signature="e#16361#16510#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/tkinter_pyplot.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.46321526">
-          <caret line="182" column="11" selection-start-line="182" selection-start-column="11" selection-end-line="182" selection-end-column="11" />
+        <state relative-caret-position="372">
+          <caret line="131" column="42" selection-start-line="131" selection-start-column="42" selection-end-line="131" selection-end-column="42" />
           <folding>
             <element signature="e#37#51#0" expanded="true" />
-            <element signature="e#623#1897#0" expanded="false" />
-            <element signature="e#1964#3928#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
+  </component>
+  <component name="masterDetails">
+    <states>
+      <state key="ScopeChooserConfigurable.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+    </states>
   </component>
 </project>

@@ -5,7 +5,8 @@ import Tkinter as tk
 
 color_choices = ['black', 'gray', 'red', 'green', 'blue', 'orange', 'magenta']
 
-class DataLegendTop(tk.Toplevel):
+
+class DataLegendTop2(tk.Toplevel):
     """
     Make a toplevel that will allow the user to change the color
 

@@ -13,9 +13,10 @@ import change_toplevel as change_top
 import tkinter_canvas_graph
 import tkinter_pyplot
 import graph_properties
+import properties
 
 __author__ = 'Kyle Vitautas Lopin'
-
+# this shold be obsolete now
 operation_params = {'low_cv_voltage': -500,  # units: mv
                     'high_cv_voltage': 500,  # units: mv
                     'sweep_rate': 1.0,  # units: V/s
@@ -39,12 +40,11 @@ options_background = 'LightCyan4'
 
 class AmpGUI(tk.Tk):
     """
-
+    Graphical User Interface to interact with the PSoC electrochemical device
     Notes:
     self.data is a pyplot_data_class object and handles all the data to be saved, loaded, displayed, etc.  look in
     pyplot_data_class for documentation about self.data
     """
-
     def __init__(self, parent=None):
 
         logging.basicConfig(level=logging.DEBUG, format="%(levelname)s %(module)s %(lineno)d: %(message)s")
@@ -52,11 +52,12 @@ class AmpGUI(tk.Tk):
         self.device = None  # no device connected yet
         self.data = data_class.PyplotData()
 
-        self.operation_params = operation_params
+        # self.operation_params = operation_params
+        self.device_params = properties.DeviceParameters()
         self.display_type = check_display_type()
         tk.Tk.__init__(self, parent)
         self.parent = parent
-        self.device = usb_comm.AmpUsb(self, operation_params)
+        self.device = usb_comm.AmpUsb(self, self.device_params)
 
         """Make Notebooks to separate the CV and amperometry methods"""
         self.notebook = ttk.Notebook(self)
@@ -73,24 +74,27 @@ class AmpGUI(tk.Tk):
         :return:
         """
         graph_props = graph_properties.GraphProps()
-        update_param_dict()
+        self.update_param_dict()
         bottom_frame = self.make_bottom_frames()
         self.make_connect_button(bottom_frame[1])
 
         """ Add the cyclic voltammetry graph, first decide how to make the graph and then display it
         NOTE: THE canvas_graph_embed DOES NOT WORK RIGHT NOW"""
         if self.display_type == 'matplotlib':
+            current_lim = 1.2 * 1000. / self.device_params.TIA_resistor  # calculate the max current measurable
+            low_voltage = self.device_params.low_cv_voltage
+            high_voltage = self.device_params.high_cv_voltage
             amp_graph = tkinter_pyplot.PyplotEmbed(self,
                                                    bottom_frame[0],
                                                    graph_props.amp_plot,
                                                    amp_frame,
-                                                   operation_params)
+                                                   current_lim, low_voltage, high_voltage)
             cv_graph = tkinter_pyplot.PyplotEmbed(self,
                                                   bottom_frame[0],
                                                   graph_props.cv_plot,
                                                   cv_frame,
-                                                  operation_params)
-        else:
+                                                  current_lim, low_voltage, high_voltage)
+        else:  # NOT WORKING
             amp_graph = tkinter_canvas_graph.canvas_graph_embed(master=amp_frame, properties=graph_props.amp_canvas)
             cv_graph = tkinter_canvas_graph.canvas_graph_embed(master=cv_frame, properties=graph_props.cv_canvas)
         cv_graph.pack(side='left', expand=True, fill=tk.BOTH)
@@ -281,7 +285,7 @@ class AmpGUI(tk.Tk):
             return
 
         """ ask the user for a filename to save the data in """
-        _file = self.open_file('saveas')
+        _file = open_file('saveas')
 
         """ Confirm that the user supplied a file """
         if _file:
@@ -294,7 +298,8 @@ class AmpGUI(tk.Tk):
                 for i in range(self.data.index):
                     l.append(self.data.label[i])
                 writer.writerow(l)
-                length = len(self.data.x_data[0])
+                print dir(self.data.current_data)
+                length = len(self.data.current_data[0])
                 width = self.data.index
 
                 # the second row are the notes
@@ -305,12 +310,12 @@ class AmpGUI(tk.Tk):
 
                 # check to see what type of data the user wants to save
                 if self.data_save_type == "Converted":
-                    _data_array = self.data.y_data
+                    _data_array = self.data.current_data
                 elif self.data_save_type == "Raw Counts":
                     _data_array = self.data.y_raw_dat
                 # go through each data point and save the a list l that is saved in the file with writerow
                 for i in range(length):
-                    l[0] = self.data.x_data[0][i]  # this is only take the voltage of the first run
+                    l[0] = self.data.voltage_data[0][i]  # this is only take the voltage of the first run
                     for j in range(width):
                         l[j + 1] = _data_array[j][i]
                     writer.writerow(l)
@@ -356,13 +361,13 @@ class AmpGUI(tk.Tk):
         Update the user's display of what the parameters of the cyclic voltammetry  scan are set to
         :return:
         """
-        self.low_voltage_varstr.set('Start voltage: '+str(operation_params['low_cv_voltage'])+' mV')
-        self.high_voltage_varstr.set('End voltage: '+str(operation_params['high_cv_voltage'])+' mV')
-        self.freq_varstr.set('Sweep rate: '+str(operation_params['sweep_rate'])+' V/s')
-        self.current_varstr.set(u'Current range: \u00B1'+str(1000/operation_params['TIA_resistor'])+u' \u00B5A')
+        self.low_voltage_varstr.set('Start voltage: ' + str(self.device_params.low_cv_voltage) + ' mV')
+        self.high_voltage_varstr.set('End voltage: ' + str(self.device_params.high_cv_voltage) + ' mV')
+        self.freq_varstr.set('Sweep rate: ' + str(self.device_params.sweep_rate) + ' V/s')
+        self.current_varstr.set(u'Current range: \u00B1' + str(1000 / self.device_params.TIA_resistor) + u' \u00B5A')
 
     def set_adc_channel(self, _channel):
-        self.operation_params['adc_channel'] = _channel
+        self.device_params.adc_channel = _channel
 
     def change_cv_settings(self, cv_graph):
         """
@@ -389,7 +394,7 @@ class AmpGUI(tk.Tk):
             pass  # If a device is already connected and someone hits the button, ignore it
         else:
             logging.debug("attempting to connect")
-            self.device = usb_comm.AmpUsb(self, self.operation_params)  # If no device then try to connect
+            self.device = usb_comm.AmpUsb(self, self.device_params)  # If no device then try to connect
             if self.device.working:  # If a device was just found then change the button's appearance
 
                 if button:
@@ -407,7 +412,6 @@ class AmpGUI(tk.Tk):
             pass
         if hasattr(self, "connect_button"):
             self.connect_button.config(text="Not Connected", bg='red')
-        # self.device = usb_comm.AmpUsb(self, operation_params)
 
     def make_bottom_frames(self):
         """
@@ -426,21 +430,32 @@ class AmpGUI(tk.Tk):
             bottom_frame[i].pack(side='left', fill=tk.X, expand=1)
         return bottom_frame
 
+    def update_param_dict(self):
+        """
+        update how many data points (dac voltage changes and adc voltage reads) are on each 'side' of the cyclic
+        voltammetry scan ["length_side"] and how many data points total there are
+        (dac voltage changes and adc voltage reads)
 
-def open_file(self, type):
+        :return: none, just update the global device_params
+        """
+        self.device_params.length_side = self.device_params.high_cv_voltage - self.device_params.low_cv_voltage
+        self.device_params.data_pts = 2 * (self.device_params.length_side + 1)
+
+
+def open_file(_type):
     """
     Make a method to return an open file or a file name depending on the type asked for
-    :param type:
+    :param _type:
     :return:
     """
     """ Make the options for the save file dialog box for the user """
     file_opt = options = {}
     options['defaultextension'] = ".csv"
     options['filetypes'] = [('All files', '*.*'), ("Comma separate values", "*.csv")]
-    if type == 'saveas':
+    if _type == 'saveas':
         """ Ask the user what name to save the file as """
         _file = tkFileDialog.asksaveasfile(mode='wb', **file_opt)
-    elif type == 'open':
+    elif _type == 'open':
         _filename = tkFileDialog.askopenfilename(**file_opt)
         return _filename
     return _file
@@ -461,18 +476,6 @@ def get_data_from_csv_file(_filename):
                 _data_hold[i].append(float(data))
     _file.close()
     return _data_hold
-
-
-def update_param_dict():
-    """
-    update how many data points (dac voltage changes and adc voltage reads) are on each 'side' of the cyclic
-    voltammetry scan ["length_side"] and how many data points total there are
-    (dac voltage changes and adc voltage reads)
-
-    :return: none, just update the global operation_params
-    """
-    operation_params["length_side"] = operation_params["high_cv_voltage"] - operation_params["low_cv_voltage"]
-    operation_params["data_pts"] = 2*(operation_params["length_side"]+1)
 
 
 def check_display_type():

@@ -66,6 +66,17 @@ def make_option_menu(options_menu, master):
     user_set_label_options.add_cascade(label="True", command=lambda: set_user_label_option(master, True))
     user_set_label_options.add_cascade(label="False", command=lambda: set_user_label_option(master, False))
 
+    electrode_config_options = tk.Menu(options_menu, tearoff=0)
+    options_menu.add_cascade(label="Set Electrode Configuration", menu=electrode_config_options)
+    electrode_config_options.add_cascade(label="Two electrode setting",
+                                         command=lambda: master.device.set_electrode_config(2))
+    electrode_config_options.add_cascade(label="Three electrode setting",
+                                         command=lambda: master.device.set_electrode_config(3))
+
+
+def set_user_label_option(master, value):
+    master.graph.user_sets_labels_after_run = value
+
 
 def make_developer_menu(developer_menu, master):
     developer_option_menu = tk.Menu(developer_menu, tearoff=0)
@@ -81,7 +92,5 @@ def make_developer_menu(developer_menu, master):
     developer_menu.add_cascade(label="Enter comments into logging file",
                                command=lambda: change_toplevel.EnterLoggingInfo(master))
 
-
-def set_user_label_option(master, value):
-    master.operation_params['user_sets_labels_after_run'] = value
-    print master.operation_params['user_sets_labels_after_run']
+    developer_menu.add_cascade(label="Add custom TIA resistor",
+                               command=lambda: change_toplevel.EnterCustomTIAResistor(master))

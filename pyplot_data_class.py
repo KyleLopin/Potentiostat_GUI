@@ -14,8 +14,10 @@ class PyplotData(object):
         to display
         :return:
         """
-        self.x_data = []
-        self.y_data = []
+        # self.x_data = []
+        self.voltage_data = []
+        self.time_data = []
+        self.current_data = []
         self.y_raw_data = []
         self.label = []
         self.colors = []
@@ -33,22 +35,23 @@ class PyplotData(object):
         """
         if not _label:
             _label = "data {}".format(self.name_index + 1)
-        self.x_data.append(_new_x)
-        self.y_data.append(_new_y)
+        self.voltage_data.append(_new_x)
+        self.current_data.append(_new_y)
         self.label.append(_label)
         self.notes.append(" ")
         if _new_raw_y:
             self.y_raw_data.append(_new_raw_y)
         self.index += 1  # increment data index so the next data series will be advanced
         self.name_index += 1
+        logging.debug("adding data, index: %i", self.index)
 
     def change_label(self, new_label, index):
 
         self.label[index] = new_label
 
     def remove_data(self, _index):
-        self.x_data.pop(_index)
-        self.y_data.pop(_index)
+        self.voltage_data.pop(_index)
+        self.current_data.pop(_index)
         self.y_raw_data.pop(_index)
         self.notes.pop(_index)
         self.label.pop(_index)

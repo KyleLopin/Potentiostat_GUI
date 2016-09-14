@@ -6,7 +6,6 @@ import Tkinter as tk
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.backends.backend_tkagg import NavigationToolbar2TkAgg as NavToolbar
-import pyplot_data_class as data_class
 import data_legend_toplevel as legend_top
 import change_toplevel as toplevel
 
@@ -19,7 +18,7 @@ class PyplotEmbed(tk.Frame):
     Class that will make a tkinter frame with a matplotlib plot area embedded in the frame
     """
 
-    def __init__(self, root, toolbox_frame, plt_props, _master_frame, _params):
+    def __init__(self, root, toolbox_frame, plt_props, _master_frame, y_lims, x_low, x_high):
         """
         Initialize the class with a parent of tkinter Frame and embed a pyplot graph in it
         The class also will have a list to hold the data series that is displayed
@@ -31,26 +30,25 @@ class PyplotEmbed(tk.Frame):
         """
         tk.Frame.__init__(self, master=_master_frame)  # initialize with the parent class
         self.master = _master_frame
+        self.user_sets_labels_after_run = True
         self.label_instance = ""
         """ Make an area to graph the data """
         self.graph_area = tk.Frame(self)
-        self.params = root.operation_params
         self.plotted_lines = [] # make a list to hold the Line2D to display in the graph
         self.data = root.data  # alias the data for this class to the main data
         """ Create a list to hold the matplotlib lines """
         # self.plotted_lines = []
         # root.plotted_lines = self.plotted_lines
 
-        self.params = _params
         self.legend_displayed = False
 
         """ initiate the pyplot area """
 
-        self.init_graph_area(plt_props, toolbox_frame)
+        self.init_graph_area(plt_props, toolbox_frame, y_lims, x_low, x_high)
 
         self.toolbar_status = False
 
-    def init_graph_area(self, plt_props, toolbox_frame):
+    def init_graph_area(self, plt_props, toolbox_frame, y_lim, x_low, x_high):
         """
         take the tkinter Frame (self) and embed a pyplot figure into it
         :param plt_props: dictionary of properties of the pyplot
@@ -64,12 +62,11 @@ class PyplotEmbed(tk.Frame):
             eval("plt." + key + "(" + value + ")")
         """ get the limits of the x axis from the parameters if they are not in the properties """
         if "xlim" not in plt_props:
-            plt.xlim(self.params['low_cv_voltage'], self.params['high_cv_voltage'])
+            plt.xlim(x_low, x_high)
 
         """ calculate the current limit that can be reached, which depends on the resistor value of the TIA
         assume the adc can read +- 1V (1000 mV)"""
-        current_limit = 1000 / self.params['TIA_resistor']  # units: (mV/kohms) micro amperes
-        plt.ylim(-current_limit, current_limit)
+        plt.ylim(-y_lim, y_lim)
         """ format the graph area, make the canvas and show it """
         self.graph_area.figure_bed.set_facecolor('white')
         self.graph_area.canvas = FigureCanvasTkAgg(self.graph_area.figure_bed, master=self)
@@ -86,7 +83,7 @@ class PyplotEmbed(tk.Frame):
 
     def update_data(self, x_data, y_data, _raw_y_data=None):
 
-        if self.params['user_sets_labels_after_run']:
+        if self.user_sets_labels_after_run:
             self.data.add_data(x_data, y_data, _raw_y_data)
             self.display_data()
             toplevel.UserSetDataLabel(self)
@@ -103,7 +100,6 @@ class PyplotEmbed(tk.Frame):
         self.update_legend()
 
     def add_notes(self, _notes):
-        print 'adding notes: ', _notes
         self.data.notes[-1] = _notes
 
     def display_data_user_input(self, x_data, y_data):
@@ -119,8 +115,12 @@ class PyplotEmbed(tk.Frame):
         :return:
         """
         index = self.data.index - 1  # it was incremented at the end of the add_data method
-        x_data = self.data.x_data[index]
-        y_data = self.data.y_data[index]
+        x_data = self.data.voltage_data[index]
+        y_data = self.data.current_data[index]
+        print 'x_data: '
+        print x_data
+        print 'y data: '
+        print y_data
         _label = self.data.label[index]
         """ if this is the first data series to be added the legend has to be displayed also """
         if not self.legend_displayed:
@@ -128,10 +128,11 @@ class PyplotEmbed(tk.Frame):
             self.graph_area.axis.set_position([_box.x0, _box.y0, _box.width * legend_space_ratio, _box.height])
             self.legend_displayed = True
         """ add the data to the plot area and update the legend """
+        print 'len1: ', len(x_data), len(y_data), y_data[0]
+        x_data = x_data[-len(y_data):]  # TODO: FIX THIS
+        y_data = y_data[-len(x_data):]
         l = self.graph_area.axis.plot(x_data, y_data, label=_label)
-        print l
         self.data.colors.append(l[0].get_color())
-        print self.data.colors
         self.plotted_lines.append(l)
         self.update_legend()
 
@@ -213,7 +214,7 @@ class PyplotEmbed(tk.Frame):
         :param _current_limit: most current (positive or negative)
         :return:
         """
-        self.graph_area.axis.set_ylim(-_current_limit, _current_limit)
+        self.graph_area.axis.set_ylim(-_current_limit * 1.2, _current_limit * 1.2)
         self.graph_area.canvas.show()
 
 

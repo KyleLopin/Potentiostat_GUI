@@ -15,6 +15,7 @@ packet_size = 32
 
 user_sets_label_after_run = False
 
+
 def initialize(device):
     """
     generic function that should be called after initialing connecting to a device in usb_comm file
@@ -29,45 +30,45 @@ def initialize(device):
 def send_cv_parameters(device):
     """
     Send the parameters that the amperometric device should use to perform a cyclic voltammetry sweep
-    the data needed calculate the values to send should be in a dictionary of the form
-    device.params['low_cv_voltage'] which is the lowest voltage (in mV) of the triangle waveform
-    device.params['high_cv_voltage'] which is the highest voltage (in mV) of the triangle waveform
-    device.params['sweep_rate'] which is the speed (in V/s) that the voltage should be changed
+    the data needed calculate the values to send should be in parameters of the form
+    device.params.low_cv_voltage which is the lowest voltage (in mV) of the triangle waveform
+    device.params.high_cv_voltage which is the highest voltage (in mV) of the triangle waveform
+    device.params.sweep_rate which is the speed (in V/s) that the voltage should be changed
 
     Note: the values sending to the device have to be padded with 0's so they are the
     proper size for the device to interpret
 
     :param device: device from usb_comm class that is being used to communicate with
-    :return: will add to the device.params dict the following values
-    ['usb_count'] which is how many data values to expect back into to device when receiving data
-    ['actual_low_volt'] the lowest voltage the device will give to the electrode
-    ['actual_high_volt'] the highest voltage the device will give to the electrode
-    ['volt_increment'] the amount a 1 bit increase in the PIDAC will increase the voltage at the electrode
+    :return: will update to device.params the following values
+    usb_count which is how many data values to expect back into to device when receiving data
+    actual_low_volt the lowest voltage the device will give to the electrode
+    actual_high_volt the highest voltage the device will give to the electrode
+    volt_increment the amount a 1 bit increase in the PIDAC will increase the voltage at the electrode
     """
     """ convert the values for the params dictionary into the values the device needs;
     this part is done on the computer side to save MCU code length """
-    formatted_low_volt, low_dac_value = device.format_voltage(device.params['low_cv_voltage'])
-    formatted_high_volt, high_dac_value = device.format_voltage(device.params['high_cv_voltage'])
-    formatted_freq_divider, pwm_period = device.format_divider(device.params['sweep_rate'])
+    formatted_low_volt, low_dac_value = device.format_voltage(device.device_params.low_cv_voltage)
+    formatted_high_volt, high_dac_value = device.format_voltage(device.device_params.high_cv_voltage)
+    formatted_freq_divider, pwm_period = device.format_divider(device.device_params.sweep_rate)
 
-    device.master.operation_params['PWM_period'] = pwm_period
+    device.device_params.PWM_period = pwm_period
 
     """ send those values to the device in the proper format for the PSoC amperometry device """
     to_amp_device = '|'.join(["S", formatted_low_volt, formatted_high_volt, formatted_freq_divider])
 
     """save how many data points should be recieved back from the usb """
-    device.params['usb_count'] = 2*(high_dac_value - low_dac_value+1)
+    device.params.usb_count = 2 * (high_dac_value - low_dac_value + 1)
 
     """ calculate what the actual voltage the device will make.  This will be slightly different from the
     user input because pidac has 11 bits of resolution """
-    pidac_resistor = device.params['PIDAC_resistor']  # kilohms - resistor used to convert the current
-    low_pidac_i_output = low_dac_value * device.params['smallest_increment_pidac']
-    device.params['actual_low_volt'] = low_pidac_i_output * pidac_resistor
+    pidac_resistor = device.params.PIDAC_resistor  # kilohms - resistor used to convert the current
+    low_pidac_i_output = low_dac_value * device.params.smallest_increment_pidac
+    device.params.actual_low_volt = low_pidac_i_output * pidac_resistor
 
-    high_pidac_i_output = high_dac_value * device.params['smallest_increment_pidac']
-    device.params['actual_high_volt'] = high_pidac_i_output * pidac_resistor
+    high_pidac_i_output = high_dac_value * device.params.smallest_increment_pidac
+    device.params.actual_high_volt = high_pidac_i_output * pidac_resistor
 
-    device.params['volt_increment'] = device.params['smallest_increment_pidac'] * pidac_resistor
+    device.params.volt_increment = device.params.smallest_increment_pidac * pidac_resistor
 
     device.usb_write(to_amp_device)
 
@@ -78,7 +79,7 @@ def send_cv_parameters(device):
 
 def write_timer_compare(device, value):
     logging.debug("compare value is %s", value)
-    device.master.operation_params['PWM_compare'] = int(value)
+    device.master.device_params.PWM_compare = int(value)
     _formatted_value = '{0:05d}'.format(int(value))
     device.usb_write('C|'+_formatted_value)
 
@@ -129,7 +130,7 @@ def run_scan_continue(device, canvas, fail_count=0):
 
 def get_and_display_data_from_export_channel(device, canvas, _channel=None):
     if not _channel:
-        _channel = device.params['adc_channel']  # if no channel sent, use the one saved in parameters dict
+        _channel = device.params.adc_channel  # if no channel sent, use the one saved in parameters dict
 
     """ the correct complete message was received so attempt to collect the data """
     device.usb_write('E'+str(_channel))  # step 4
@@ -143,9 +144,9 @@ def get_and_display_data_from_export_channel(device, canvas, _channel=None):
 
     logging.info('TODO: still binding data to main and not custom class, fix this')
     device.master.current_data = data
-    x_line = make_x_line(device.params['actual_low_volt'],
-                         device.params['actual_high_volt'],
-                         device.params['volt_increment'])
+    x_line = make_x_line(device.params.actual_low_volt,
+                         device.params.actual_high_volt,
+                         device.params.volt_increment)
     device.master.voltage_data = x_line
 
     """ Send data to the canvas where it will be saved and displayed """
@@ -202,9 +203,9 @@ def process_data(device, _raw_data):
         if the adc number is larger than the two rollover value, subtract two_substract from the number
         to get the proper negative integer """
         current = [-((voltage_range * (float(x) / max_bit_value))
-                     / device.params['TIA_resistor']) if x < twos_rollover
+                     / device.params.TIA_resistor) if x < twos_rollover
                    else -((voltage_range * (float(x - twos_subtract) / max_bit_value))
-                          / device.params['TIA_resistor']) for x in _raw_data]  # microAmp (mV / kohms)
+                          / device.params.TIA_resistor) for x in _raw_data]  # microAmp (mV / kohms)
         return current
     elif device.master.data_save_type == "Raw Counts":
         logging.debug("sending raw data back")

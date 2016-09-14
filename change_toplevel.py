@@ -10,6 +10,7 @@ TIA_resistor_values = [20, 30, 40, 80, 120, 250, 500, 1000]
 current_limit_values = [50, 33, 25, 12.5, 8.4, 4, 2, 1, 0.5, 0.25, 0.125]
 color_choices = ['black', 'gray', 'red', 'green', 'blue', 'orange', 'magenta']
 
+
 class SettingChanges(tk.Toplevel):
     """
     A modified tkinter toplevel that allows the user to input new voltage ranges to measure and to set
@@ -34,21 +35,21 @@ class SettingChanges(tk.Toplevel):
         """make labels and an entry widget for a user to change the starting voltage of the triangle wave"""
         tk.Label(self, text="Starting Voltage: ", padx=10, pady=10).grid(row=0, column=0)
         low_volt = tk.Entry(self)  # entry widget for the user to change the voltage
-        low_volt.insert(0, str(_master.operation_params['low_cv_voltage']))  # put the current value in the entry widget
+        low_volt.insert(0, str(_master.device_params.low_cv_voltage))  # put the current value in the entry widget
         low_volt.grid(row=0, column=1)
         tk.Label(self, text="mV", padx=10, pady=10).grid(row=0, column=3)
 
         """make labels and an entry widget for a user to change the ending voltage of the triangle wave"""
         tk.Label(self, text="Ending Voltage: ", padx=10, pady=10).grid(row=1, column=0)
         high_volt = tk.Entry(self)  # entry widget for the user to change the voltage
-        high_volt.insert(0, _master.operation_params['high_cv_voltage'])  # put the current value in the entry widget
+        high_volt.insert(0, _master.device_params.high_cv_voltage)  # put the current value in the entry widget
         high_volt.grid(row=1, column=1)
         tk.Label(self, text="mV", padx=10, pady=10).grid(row=1, column=3)
 
         """ make labels and an entry widget for a user to change the sweep rate of the triangle wave"""
         tk.Label(self, text="Sweep Rate: ", padx=10, pady=10).grid(row=2, column=0)
         freq = tk.Entry(self)  # entry widget for the user to change the voltage
-        freq.insert(0, _master.operation_params['sweep_rate'])  # put the current value in the entry widget
+        freq.insert(0, _master.device_params.sweep_rate)  # put the current value in the entry widget
         freq.grid(row=2, column=1)
         tk.Label(self, text="V/s", padx=10, pady=10).grid(row=2, column=3)
 
@@ -68,7 +69,7 @@ class SettingChanges(tk.Toplevel):
                                     u'\u00B10.25 \u00B5A',
                                     u'\u00B10.125 \u00B5A']
 
-        current_option_list_index = TIA_resistor_values.index(_master.operation_params['TIA_resistor'])
+        current_option_list_index = TIA_resistor_values.index(_master.device_params.TIA_resistor)
         self.current_options.set(self.current_option_list[current_option_list_index])
 
         current = tk.OptionMenu(self, self.current_options, *self.current_option_list)
@@ -112,31 +113,31 @@ class SettingChanges(tk.Toplevel):
         changing_flag = True
 
         """ try to convert the voltages to integers and sweep rate to a float """
+
         try:
-            self._low_volt = int(self._low_volt)
-            self._high_volt = int(self._high_volt)
+            self._low_volt = int(float(self._low_volt))
+            self._high_volt = int(float(self._high_volt))
             self._freq = float(self._freq)
             # don't have to check current range cause it was chosen from an option menu
-        except ValueError:  # user input values failed
-            logging.info("Error in data input format")
+        except ValueError as e:  # user input values failed
+            logging.info("Error in data input format: %s", e)
             changing_flag = False  # if the inputted data is not correct, change the flag so that the program will
             # not try to send bad data to the MCU
 
         """ check for changes to any of the values, do not bother the amplifier if there is no update """
-        if self.sweep_param_is_changed(_master.operation_params):
+        if self.sweep_param_is_changed(_master.device_params):
             """ make sure the lower amplitude is lower than the high amplitude
             and that there were no errors from the user """
             if (self._low_volt < self._high_volt) and changing_flag:
-                """ update the operation_params dict for the master and send all the parameters to the MCU """
+                """ update the device_params dict for the master and send all the parameters to the MCU """
                 self.save_changed_settings(_master)
                 _master.device.send_cv_parameters()
-                """ change the axis of the graph to fit the voltage values """
-                x_lim_low = _master.operation_params['low_cv_voltage']
-                x_lim_high = _master.operation_params['high_cv_voltage']
-                cv_graph.resize_x(x_lim_low, x_lim_high)
             else:
                 logging.debug("no change of settings low > high")
 
+        x_lim_low = _master.device_params.low_cv_voltage
+        x_lim_high = _master.device_params.high_cv_voltage
+        cv_graph.resize_x(x_lim_low, x_lim_high)
         """ figure out if the current range has changed and update the device if it has
         NOTE: not the best solution but there are some encoding errors on the other ways tried"""
         position = self.current_option_list.index(_range)  # get user's choice from the option menu
@@ -149,10 +150,11 @@ class SettingChanges(tk.Toplevel):
             adc_gain_setting = 0  # the gain setting is 0 for no gain on the adc
 
         """ Check if the gain setting has changed and the TIA resistor value should be updated """
-        if _master.operation_params['TIA_resistor'] is not TIA_resistor_values[tia_position]:
-            _master.device.usb_write('A' + str(tia_position) + '|' + str(adc_gain_setting))  # update device
-            _master.operation_params['TIA_resistor'] = TIA_resistor_values[tia_position]  # update program
-            logging.debug("TIA resistor changed to: %s", _master.operation_params['TIA_resistor'])
+        if _master.device_params.TIA_resistor is not TIA_resistor_values[tia_position]:
+            _master.device.usb_write('A' + str(tia_position) + '|' + str(adc_gain_setting) +
+                                     '|F|0')  # update device
+            _master.device_params.TIA_resistor = TIA_resistor_values[tia_position]  # update program
+            logging.debug("TIA resistor changed to: %s", _master.device_params.TIA_resistor)
 
             """ Change the value for the current limits displayed to the user and update the graph's scale """
             _master.current_varstr.set(self.current_option_list[position])
@@ -167,9 +169,9 @@ class SettingChanges(tk.Toplevel):
         :param _old_params:
         :return:
         """
-        if (self._low_volt != _old_params['low_cv_voltage']
-           or self._high_volt != _old_params['high_cv_voltage']
-           or self._freq != _old_params['sweep_rate']):
+        if (self._low_volt != _old_params.low_cv_voltage
+            or self._high_volt != _old_params.high_cv_voltage
+            or self._freq != _old_params.sweep_rate):
 
             logging.debug("sweep_param is_changed")
             return True
@@ -184,13 +186,12 @@ class SettingChanges(tk.Toplevel):
         :return:
         """
         logging.debug("change saved settings called")
-        _master.operation_params['low_cv_voltage'] = self._low_volt
-        _master.operation_params['high_cv_voltage'] = self._high_volt
-        _master.operation_params['sweep_rate'] = self._freq
-        Amp_GUI.update_param_dict()
+        _master.device_params.low_cv_voltage = self._low_volt
+        _master.device_params.high_cv_voltage = self._high_volt
+        _master.device_params.sweep_rate = self._freq
+        _master.update_param_dict()
         _master.cv_label_update()
         logging.debug("updating new operational params to:")
-        logging.debug(_master.operation_params)
 
 
 class ChangeCompareValue(tk.Toplevel):
@@ -201,11 +202,11 @@ class ChangeCompareValue(tk.Toplevel):
 
         tk.Label(self, text="Enter value to place in timing PWM compare register").pack(side='top')
         tk.Label(self, text="Value must be between 500 and "
-                            +str(_master.operation_params['PWM_period'])).pack(side='top')
+                            + str(_master.device_params.PWM_period)).pack(side='top')
         tk.Label(self, text="Current value is "
-                            + str(_master.operation_params['PWM_compare'])).pack(side='top')
+                            + str(_master.device_params.PWM_compare)).pack(side='top')
         value_varstring = tk.StringVar()
-        value_varstring.set(_master.operation_params['PWM_compare'])
+        value_varstring.set(_master.device_params.PWM_compare)
         value_box = tk.Entry(self, textvariable=value_varstring)
         value_box.pack(side='top')
 
@@ -285,11 +286,6 @@ class UserSetDataLabel(tk.Toplevel):
         master_pyplot.change_label(label)
         master_pyplot.add_notes(notes)
         self.destroy()
-
-
-class UserSetDataLabelPostRun(tk.Toplevel):
-    def __init__(self):
-        pass
 
 
 class UserSelectDataDelete(tk.Toplevel):
@@ -407,7 +403,7 @@ class EnterLoggingInfo(tk.Toplevel):
     def __init__(self, master):
         tk.Toplevel.__init__(self, master)
         self.title("Logging info")
-        tk.Label(text="Enter information to log").pack(side='top')
+        tk.Label(self, text="Enter information to log").pack(side='top')
         entry = tk.Text(self, width=30, height=6, wrap=tk.WORD)
         entry.pack(side='top')
 
@@ -428,3 +424,48 @@ class EnterLoggingInfo(tk.Toplevel):
         logging.info("User entered the following message")
         logging.info(message)
         self.destroy()
+
+
+class EnterCustomTIAResistor(tk.Toplevel):
+    def __init__(self, master):
+        tk.Toplevel.__init__(self, master)
+        self.title("Use a custom TIA resistor")
+        tk.Label(self,
+                 text="Enter the custom resistor value used and the channel it is connected to"
+                 ).pack(side='top')
+
+        top_frame = tk.Frame(self)
+        top_frame.pack(side='top')
+        tk.Label(top_frame, text="enter custom resistor value used (in kohms):").pack(side='left')
+        _tia_resistor_value = tk.StringVar()
+        resistor_value_enter = tk.Entry(top_frame, textvariable=_tia_resistor_value)
+        resistor_value_enter.pack(side='left')
+
+        middle_frame = tk.Frame(self)
+        middle_frame.pack(side='top')
+        tk.Label(middle_frame, text="enter channel used (0 or 1):").pack(side='left')
+        _channel_value = tk.StringVar()
+        channel_value_entry = tk.Entry(middle_frame, textvariable=_channel_value)
+        channel_value_entry.pack(side='left')
+
+        tk.Label(self, text="channel 0 is between P0[4] and p6[0]").pack(side='top')
+        tk.Label(self, text="channel 1 is between P0[5] and p6[0]").pack(side='top')
+
+        button_frame = tk.Frame(self)
+        button_frame.pack(side='top')
+        tk.Button(button_frame,
+                  text='Save',
+                  width=10,
+                  command=lambda: self.save(master,
+                                            resistor_value_enter.get("1.0", 'end-1c'),
+                                            channel_value_entry.get("1.0", 'end-1c'))
+                  ).pack(side='left', padx=10, fill=tk.X, expand=1)
+        tk.Button(button_frame,
+                  text='Exit',
+                  width=10,
+                  command=lambda: self.destroy()
+                  ).pack(side='left', padx=10, fill=tk.X, expand=1)
+
+    def save(self, master, resistor_value, channel_value):
+        master.device.set_custom_resistor_channel(channel_value)
+        master.device_params.TIA_resistor = resistor_value
