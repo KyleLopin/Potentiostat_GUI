@@ -45,8 +45,8 @@ def send_cv_parameters(device):
     actual_high_volt the highest voltage the device will give to the electrode
     volt_increment the amount a 1 bit increase in the PIDAC will increase the voltage at the electrode
     """
-    """ convert the values for the params dictionary into the values the device needs;
-    this part is done on the computer side to save MCU code length """
+    # convert the values for the params dictionary into the values the device needs;
+    # this part is done on the computer side to save MCU code length
     formatted_low_volt, low_dac_value = device.format_voltage(device.device_params.low_cv_voltage)
     formatted_high_volt, high_dac_value = device.format_voltage(device.device_params.high_cv_voltage)
     formatted_freq_divider, pwm_period = device.format_divider(device.device_params.sweep_rate)
@@ -78,6 +78,11 @@ def send_cv_parameters(device):
 
 
 def write_timer_compare(device, value):
+    """
+    Write to the device to update the PWM period so it runs at the correct scan rate
+    :param device: device to send the commands to
+    :param value: the value to write in the timer compare
+    """
     logging.debug("compare value is %s", value)
     device.master.device_params.PWM_compare = int(value)
     _formatted_value = '{0:05d}'.format(int(value))
@@ -111,9 +116,9 @@ def run_scan(device, canvas, master):
 
 def run_scan_continue(device, canvas, fail_count=0):
     """
-    The callback for run_scan.  This is called after the device should be done with the scan and is ready
-    to export the data.   The parts of the run cyclic voltammetry scan this functions run is part 3-5 listed in
-    run_scan.
+    The callback for run_scan.  This is called after the device should be done with the scan and
+    is ready to export the data.   This functions run is part 3-5 listed in run_scan.
+    :param device: the usb device
     :param canvas: the widget that is called to display the data
     :return:
     """
@@ -122,34 +127,43 @@ def run_scan_continue(device, canvas, fail_count=0):
     if check_message == complete_message:
         get_and_display_data_from_export_channel(device, canvas)
     else:
-        """ wait a little longer and retry, after a certain amount of time, timeout """
-        if fail_count < fail_count_threshold:
-            device.master.after(failure_delay, lambda: run_scan_continue(device, canvas, fail_count+1))  # retry step 2
+        # wait a little longer and retry, after a certain amount of time, timeout
+        if fail_count < fail_count_threshold:  # retry step 2
+            device.master.after(failure_delay,
+                                lambda: run_scan_continue(device, canvas, fail_count + 1))
         logging.error("Failed to run the scan")
 
 
 def get_and_display_data_from_export_channel(device, canvas, _channel=None):
-    if not _channel:
-        _channel = device.params.adc_channel  # if no channel sent, use the one saved in parameters dict
+    """
+    Write to the device to let it know to export the data to the computer then call the method
+    get_data to get the data, then convert the data to current
+    :param device: device
+    :param canvas: tkinter frame with pyplot canvas to plot to
+    :param _channel: int of the adc channel to get from the device
+    :return:
+    """
+    if not _channel:  # if no channel sent, use the one saved in parameters dict
+        _channel = device.params.adc_channel
 
-    """ the correct complete message was received so attempt to collect the data """
+    # the correct complete message was received so attempt to collect the data
     device.usb_write('E'+str(_channel))  # step 4
 
-    """ Get the raw data from the ADC.  this has to be modified to get the actual current values """
+    # Get the raw data from the ADC
     raw_data = get_data(device)
     if not raw_data:  # if something is wrong just return
         return
-    """ call function to convert the raw ADC values into the current that passed through the working electrode """
+    # call function to convert the raw ADC values into the current that passed
+    #  through the working electrode
     data = process_data(device, raw_data)
 
-    logging.info('TODO: still binding data to main and not custom class, fix this')
     device.master.current_data = data
     x_line = make_x_line(device.params.actual_low_volt,
                          device.params.actual_high_volt,
                          device.params.volt_increment)
     device.master.voltage_data = x_line
 
-    """ Send data to the canvas where it will be saved and displayed """
+    # Send data to the canvas where it will be saved and displayed
     canvas.update_data(x_line, data, raw_data)
 
 
@@ -161,9 +175,9 @@ def get_data(self):
     """
     end_pt = self.device[0][(0, 0)][0]
     full_array = []
-    """ calculate how many packets of data to get from the amp device the usb_count param is
-    how many data points there are packet_size / 2 is because the data is converted to uint8
-    from the uint16 it is acquired in """
+    # calculate how many packets of data to get from the amp device the usb_count param is
+    # how many data points there are packet_size / 2 is because the data is converted to uint8
+    # from the uint16 it is acquired in
     number_packets = self.params['usb_count'] / (packet_size / 2)
     count = 0
     running = True
