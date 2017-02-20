@@ -15,15 +15,13 @@ CURRENT_LIMIT_VALUES = [50, 33, 25, 12.5, 8.4, 4, 2, 1, 0.5, 0.25, 0.125]
 COLOR_CHOICES = ['black', 'gray', 'red', 'green', 'blue', 'orange', 'magenta']
 
 
-class SettingChanges(tk.Toplevel):
-    """
-    A modified tkinter toplevel that allows the user to input new voltage ranges to measure
+class CVSettingChanges(tk.Toplevel):
+    """ A modified tkinter toplevel that allows the user to input new voltage ranges to measure
     and to set the frequency
     """
 
-    def __init__(self, _master, cv_graph):
-        """
-        Initialize the window
+    def __init__(self, cv_display, _master, cv_graph, device):
+        """ Initialize the window
         :param _master: tk.Frame, the main window also has the device bound to it
         :return:
         """
@@ -33,6 +31,7 @@ class SettingChanges(tk.Toplevel):
         self._high_volt = 0
         self._freq = 0.0
         self._current_range = ""
+        self.device = device
 
         self.title("Change Cyclic Voltammetry Settings")
         # make labels and an entry widget for a user to change the starting
@@ -40,7 +39,7 @@ class SettingChanges(tk.Toplevel):
         tk.Label(self, text="Starting Voltage: ", padx=10, pady=10).grid(row=0, column=0)
         low_volt = tk.Entry(self)  # entry widget for the user to change the voltage
         # put the current value in the entry widget
-        low_volt.insert(0, str(_master.device_params.low_cv_voltage))
+        low_volt.insert(0, str(_master.device_params.cv_settings.low_voltage))
         low_volt.grid(row=0, column=1)
         tk.Label(self, text="mV", padx=10, pady=10).grid(row=0, column=3)
 
@@ -49,7 +48,7 @@ class SettingChanges(tk.Toplevel):
         tk.Label(self, text="Ending Voltage: ", padx=10, pady=10).grid(row=1, column=0)
         high_volt = tk.Entry(self)  # entry widget for the user to change the voltage
         # put the current value in the entry widget
-        high_volt.insert(0, _master.device_params.high_cv_voltage)
+        high_volt.insert(0, _master.device_params.cv_settings.high_voltage)
         high_volt.grid(row=1, column=1)
         tk.Label(self, text="mV", padx=10, pady=10).grid(row=1, column=3)
 
@@ -57,7 +56,7 @@ class SettingChanges(tk.Toplevel):
         tk.Label(self, text="Sweep Rate: ", padx=10, pady=10).grid(row=2, column=0)
         freq = tk.Entry(self)  # entry widget for the user to change the voltage
         # put the current value in the entry widget
-        freq.insert(0, _master.device_params.sweep_rate)
+        freq.insert(0, _master.device_params.cv_settings.sweep_rate)
         freq.grid(row=2, column=1)
         tk.Label(self, text="V/s", padx=10, pady=10).grid(row=2, column=3)
 
@@ -92,14 +91,16 @@ class SettingChanges(tk.Toplevel):
                                                        high_volt.get(),
                                                        freq.get(),
                                                        self.current_options.get(),
-                                                       _master, cv_graph)).grid(row=4, column=0)
+                                                       _master, cv_graph,
+                                                       cv_display)
+                  ).grid(row=4, column=0)
 
         # make a button to exit the toplevel by destroying it
         tk.Button(self,
                   text='Exit',
                   command=self.destroy).grid(row=4, column=1)
 
-    def save_cv_changes(self, _low_volt, _high_volt, _freq, _range, _master, cv_graph):
+    def save_cv_changes(self, _low_volt, _high_volt, _freq, _range, _master, cv_graph, cv_display):
         """
         Commit all changes the user entered
         :param _low_volt: user inputted value, should be an integer that will be the lower level
@@ -110,8 +111,9 @@ class SettingChanges(tk.Toplevel):
         of the triangle wave
         :param _range: string from self.current_option_list that the user picked
         :param _master: main window of the program, used so that the operational parameters
-        of the main window
-         can be changed
+        of the main window can be changed
+        :param cv_graph:  graph area the data is displayed on
+        :param cv_display: display frame of the cyclic voltammetry parameters
         :return: the parameters are updated in the main windows operational_params dictionary
         """
         # Save the voltage and frequency parameters to the current instance so they don't
@@ -143,13 +145,13 @@ class SettingChanges(tk.Toplevel):
             if (self._low_volt < self._high_volt) and changing_flag:
                 # update the device_params dict for the master and send all
                 # the parameters to the MCU
-                self.save_changed_settings(_master)
-                _master.device.send_cv_parameters()
+                self.save_changed_settings(_master, cv_display)
+                self.device.send_cv_parameters()
             else:
                 logging.debug("no change of settings low > high")
 
-        x_lim_low = _master.device_params.low_cv_voltage
-        x_lim_high = _master.device_params.high_cv_voltage
+        x_lim_low = _master.device_params.cv_settings.low_voltage
+        x_lim_high = _master.device_params.cv_settings.high_voltage
         cv_graph.resize_x(x_lim_low, x_lim_high)
         # figure out if the current range has changed and update the device if it has
         # NOTE: not the best solution but there are some encoding errors on the other ways tried
@@ -177,21 +179,23 @@ class SettingChanges(tk.Toplevel):
 
             # Change the value for the current limits displayed to the user and
             # update the graph's scale
-            _master.cv_settings_frame.current_var_str.set(self.current_option_list[position])
+            cv_display.current_var_str.set(self.current_option_list[position])
             cv_graph.resize_y(CURRENT_LIMIT_VALUES[position])
         logging.debug('position: %s', position)
         # destroy the top level now that every is saved and updated
+        logging.debug("running calibration")
+        _master.device.calibrate()
         self.destroy()
 
     def sweep_param_is_changed(self, _old_params):
+        """ Check to see if any of the parameters of the cyclic voltammetry experiments
+         have been changed
+        :param _old_params:  old parameters
+        :return: True or False if the parameters have been changed
         """
-        Check to see if any of the parameters of the cyclic voltammetry have been changed
-        :param _old_params:
-        :return:
-        """
-        if (self._low_volt != _old_params.low_cv_voltage
-            or self._high_volt != _old_params.high_cv_voltage
-            or self._freq != _old_params.sweep_rate):
+        if (self._low_volt != _old_params.cv_settings.low_voltage
+            or self._high_volt != _old_params.cv_settings.high_voltage
+            or self._freq != _old_params.cv_settings.sweep_rate):
 
             logging.debug("sweep_param is_changed")
             return True
@@ -199,25 +203,128 @@ class SettingChanges(tk.Toplevel):
             logging.debug("sweep_param are not changed")
             return False
 
-    def save_changed_settings(self, _master):
+    def save_changed_settings(self, _master, cv_display):
         """
         Update all of the main programs operations_params settings so the User's choices will
         be remembered
         :param _master: The main program to save the data to
+        :param cv_display: frame displaying the cyclic voltammetry parameters
         :return:
         """
         logging.debug("change saved settings called")
-        _master.device_params.low_cv_voltage = self._low_volt
-        _master.device_params.high_cv_voltage = self._high_volt
-        _master.device_params.sweep_rate = self._freq
-        _master.update_param_dict()
-        _master.cv_label_update()
+        _master.device_params.cv_settings.update_settings(self._low_volt,
+                                                          self._high_volt, self._freq)
+        cv_display.cv_label_update(_master.device_params)
         logging.debug("updating new operational params to:")
 
 
+class AmpSettingsChanges(tk.Toplevel):
+    def __init__(self, display, master, graph, device):
+        """
+        :param display: the AmpSettingsDisplay (tk.Frame) where the
+        amperometry settings are displayed
+        :param master: root application master
+        :param graph: tkinter_pyplot graph area
+        :param device; amp_frame device handler
+        """
+
+        tk.Toplevel.__init__(self, master=master)
+        """ Not DRY, very similar to CVSettingsChange, can be refactored
+        """
+        # Initialize values needed later
+        self.sample_rate = 0
+        self.current_range = ""
+
+        self.title("Change Amperometry Settings")
+        # make labels and an entry widget for a user to change the voltage
+        tk.Label(self, text="Voltage: ", padx=10, pady=10).grid(row=0, column=0)
+        voltage = tk.Entry(self)  # entry widget for the user to change the voltage
+        # put the current value in the entry widget
+        voltage.insert(0, str(master.device_params.amp_settings.voltage))
+        voltage.grid(row=0, column=1)
+        tk.Label(self, text="mV", padx=10, pady=10).grid(row=0, column=3)
+
+        # make labels and an entry widget for a user to change the sampling rate
+        # tk.Label(self, text="Sampling rate: ", padx=10, pady=10).grid(row=1, column=0)
+        # rate = tk.Entry(self)  # entry widget for the user to change the voltage
+        # put the current value in the entry widget
+        # rate.insert(0, str(master.device_params.amp_settings.sampling_rate/1000))
+        # rate.grid(row=1, column=1)
+        # tk.Label(self, text="kHz", padx=10, pady=10).grid(row=1, column=3)
+
+        # make labels and option menu for the user to change current range the device detects
+        tk.Label(self, text="Current Range: ", padx=10, pady=10).grid(row=2, column=0)
+        self.current_options = tk.StringVar(self)
+        # there are sometimes problems with encoding with this
+        self.current_option_list = [u'\u00B150 \u00B5A',
+                                    u'\u00B133 \u00B5A',
+                                    u'\u00B125 \u00B5A',
+                                    u'\u00B112.5 \u00B5A',
+                                    u'\u00B18.3 \u00B5A',
+                                    u'\u00B14 \u00B5A',
+                                    u'\u00B12 \u00B5A',
+                                    u'\u00B11 \u00B5A',
+                                    u'\u00B10.5 \u00B5A',
+                                    u'\u00B10.25 \u00B5A',
+                                    u'\u00B10.125 \u00B5A']
+        current_option_list_index = TIA_RESISTOR_VALUES.index(
+            master.device_params.adc_tia.tia_resistor)
+        self.current_options.set(self.current_option_list[current_option_list_index])
+        current = tk.OptionMenu(self, self.current_options, *self.current_option_list)
+        current.grid(row=2, column=1)
+        tk.Button(self,
+                  text='Save Changes',
+                  command=lambda: self.save_amp_changes(voltage.get(), rate.get(), device,
+                                                        master, graph,
+                                                        display)
+                  ).grid(row=3, column=0)
+
+        # make a button to exit the toplevel by destroying it
+        tk.Button(self,
+                  text='Exit',
+                  command=self.destroy).grid(row=3, column=1)
+
+    def save_amp_changes(self, _voltage, _sampling_rate, device, master, graph, display):
+
+        current_range = self.current_options.get()
+
+        # set a flag that tells the program to send a parameter change to the MCU turn this
+        # flag off if there is a problem later on and the MCU should not be sent new parameters
+        change_flag = True
+        try:  # make sure the user entered the correct data format
+            voltage = int(float(_voltage))
+            sampling_rate = float(_sampling_rate)
+            # don't have to check current range cause it was chosen from an option menu
+        except ValueError as error:  # user input values failed
+            logging.info("Error in data input format: %s", error)
+            changing_flag = False  # if the inputted data is not correct, change the flag so
+            # that the program will not try to send bad data to the MCU
+
+        # check for changes to the voltage and sampling rate,
+        # do not bother the amplifier if there is no update
+        if self.params_are_changed(master.device_params, voltage, sampling_rate):
+            # send the new parameters to the device
+            device.set_sample_rate(sampling_rate)
+            device.set_voltage(voltage)
+        self.destroy()
+
+    def params_are_changed(self, old_params, new_voltage, new_rate):
+        """ Check to see if any of the parameters of the amperometry experiments have been changed
+        :param _old_params:  old parameters
+        :return: True or False if the parameters have been changed
+        """
+        if (new_voltage != old_params.amp_settings.voltage
+            or new_rate != old_params.amp_settings.sampling_rate):
+
+            logging.debug("amperometry parameters changed")
+            return True
+        else:
+            logging.debug("amperometry parameters not changed")
+            return False
+
+
 class ChangeCompareValue(tk.Toplevel):
-    """
-    Allow the user to change the compare value of the PWM, for testing, sets when the
+    """ Allow the user to change the compare value of the PWM, for testing, sets when the
     ADC goes after the DAC is changes
     """
     def __init__(self, _master):
@@ -246,18 +353,16 @@ class ChangeCompareValue(tk.Toplevel):
         logging.error("put in here something to check if the number for compare is correct")
 
     def compare_reg_change(self, master, _value):
-        """
-        Write the value the user entered to the device
+        """ Write the value the user entered to the device
         :param master: where to find the device, the device is bound to master
         :param _value: value to set PWM to
         """
-        master.device._write_timer_compare(_value)
+        master.device.write_timer_compare(_value)
         self.destroy()
 
 
 class UserDeleteDataWarning(tk.Toplevel):
-    """
-    Warning to the user that they are selecting to delete all the data
+    """ Warning to the user that they are selecting to delete all the data
     """
     def __init__(self, master):
         tk.Toplevel.__init__(self, master)
@@ -272,13 +377,12 @@ class UserDeleteDataWarning(tk.Toplevel):
                   command=lambda: self.call_delete_data(master)).pack(side='left', padx=10)
 
         tk.Button(buttons_frame, text="Don't Delete",
-                  command=lambda: self.destroy()).pack(side='left', padx=10)
+                  command=self.destroy).pack(side='left', padx=10)
         warning_frame.pack(side='top')
         buttons_frame.pack(side='top', pady=10)
 
     def call_delete_data(self, master):
-        """
-        The user confirmed they want to delete all the data, so delete all the data and close
+        """ The user confirmed they want to delete all the data, so delete all the data and close
         the top level
         :param master: root tk, has a routine to delete all the data
         """
@@ -326,8 +430,7 @@ class UserSetDataLabel(tk.Toplevel):
                   command=self.destroy).pack(side='left', fill=tk.X, expand=1, padx=10)
 
     def save_user_input(self, master_pyplot, label, notes):
-        """
-        Save the label to the data that the user entered
+        """ Save the label to the data that the user entered
         :param master_pyplot: the pyplot the data is displayed on
         :param label: the string the user whats to use as a label
         :param notes: notes to save with the data
@@ -376,7 +479,7 @@ class UserSelectDataDelete(tk.Toplevel):
         tk.Button(button_frame,
                   text="No",
                   width=10,
-                  command=lambda: self.destroy()
+                  command=self.destroy
                   ).pack(side='left', padx=10, fill=tk.X, expand=1)
 
         button_frame.pack(side='top', fill=tk.X, expand=1)
@@ -398,24 +501,21 @@ class UserSelectDataDelete(tk.Toplevel):
 
 
 class ChangeDataLegend(tk.Toplevel):
-    """
-    Make a toplevel that will allow the user to change the color of the data in the legend
-    NOTE: doesnt work
+    """ Make a toplevel that will allow the user to change the color of the data in the legend
     """
 
-    def __init__(self, _master):
+    def __init__(self, _master, graph):
 
         tk.Toplevel.__init__(self, master=_master)
         self.legend_entries = []
         self.color_picks = []
         tk.Label(self, text="Configure Data Legend").pack(side="top")
-        logging.debug("master index: %i", _master.data.index)
+        # make a section to modify each line plotted so far
         for i in range(_master.data.index):
             horizontal_frame = tk.Frame(self)
             horizontal_frame.pack(side="top")
             tk.Label(horizontal_frame, text="Chose color:").pack(side='left')
             self.color_picks.append(tk.StringVar())
-            _master.data.colors[i]
             self.color_picks[i].set(_master.data.colors[i])
             drop_menu = tk.OptionMenu(horizontal_frame,
                                       self.color_picks[i],
@@ -432,27 +532,32 @@ class ChangeDataLegend(tk.Toplevel):
         tk.Button(bottom_frame,
                   text='Save',
                   width=10,
-                  command=lambda: self.save(_master)).pack(side='left', padx=10,
-                                                           fill=tk.X, expand=1)
+                  command=lambda: self.save(_master, graph)).pack(side='left', padx=10,
+                                                                  fill=tk.X, expand=1)
         tk.Button(bottom_frame,
                   text='Exit',
                   width=10,
-                  command=lambda: self.destroy()).pack(side='left', padx=10, fill=tk.X, expand=1)
+                  command=self.destroy).pack(side='left', padx=10, fill=tk.X, expand=1)
 
-    def save(self, _master):
+    def save(self, _master, graph):
+        """  The user wants to save changes to the data style and legend, impliment it here
+        :param _master: master where the data is stored
+        :param graph: graph area
+        """
         i = 0
         for pick in self.color_picks:
             _master.data.colors[i] = pick.get()
-            _master.graph.change_line_color(pick.get(), i)
+            graph.change_line_color(pick.get(), i)
             _master.data.label[i] = self.legend_entries[i].get()
             i += 1
-        _master.graph.update_legend()
+        graph.update_legend()
 
-        print "implement this"
         self.destroy()
 
 
 class EnterLoggingInfo(tk.Toplevel):
+    """ Allow the user to enter a line into the logging file at the INFO level
+    """
     def __init__(self, master):
         tk.Toplevel.__init__(self, master)
         self.title("Logging info")
@@ -469,16 +574,22 @@ class EnterLoggingInfo(tk.Toplevel):
         tk.Button(button_frame,
                   text='Exit',
                   width=10,
-                  command=lambda: self.destroy()).pack(side='left', padx=10, fill=tk.X, expand=1)
+                  command=self.destroy).pack(side='left', padx=10, fill=tk.X, expand=1)
         button_frame.pack(side='top')
 
     def save(self, message):
+        """ There user wants to save data into the logging file
+        :param message: message to enter into the logging file
+        """
         logging.info("User entered the following message")
         logging.info(message)
         self.destroy()
 
 
 class EnterCustomTIAResistor(tk.Toplevel):
+    """ Allow the user to use a custom resistor for the transimpedance amplifier
+    NOTE: Note confirmed this works, will cause voltage error in the working electrode
+    """
     def __init__(self, master):
         tk.Toplevel.__init__(self, master)
         self.title("Use a custom TIA resistor")
@@ -518,5 +629,10 @@ class EnterCustomTIAResistor(tk.Toplevel):
                   command=self.destroy).pack(side='left', padx=10, fill=tk.X, expand=1)
 
     def save(self, master, resistor_value, channel_value):
+        """ Save user entered information
+        :param master: overall master
+        :param resistor_value: resistor values used
+        :param channel_value: ???
+        """
         master.device.set_custom_resistor_channel(channel_value)
         master.device_params.TIA_resistor = resistor_value

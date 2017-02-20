@@ -10,7 +10,6 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.backends.backend_tkagg import NavigationToolbar2TkAgg as NavToolbar
 import Tkinter as tk
 # local files
-import data_legend_toplevel as legend_top
 import change_toplevel as toplevel
 
 __author__ = 'Kyle Vitautas Lopin'
@@ -35,6 +34,7 @@ class PyplotEmbed(tk.Frame):
         """
         tk.Frame.__init__(self, master=_master_frame)  # initialize with the parent class
         self.master = _master_frame
+        self.l = None
         self.user_sets_labels_after_run = True
         self.label_instance = ""
         # Make an area to graph the data
@@ -74,7 +74,7 @@ class PyplotEmbed(tk.Frame):
         self.graph_area.canvas._tkcanvas.config(highlightthickness=0)
         # Make a binding for the user to change the data legend
         # uncomment below to start making a data legend editor
-        # self.graph_area.canvas.mpl_connect('button_press_event', self.legend_handler)
+        self.graph_area.canvas.mpl_connect('button_press_event', self.legend_handler)
         # Make the toolbar and then unpack it.  allow the user to display or remove it later
         self.toolbar = NavToolbar(self.graph_area.canvas, toolbox_frame)
         self.toolbar.pack_forget()
@@ -93,7 +93,11 @@ class PyplotEmbed(tk.Frame):
             self.display_data()
 
     def change_label(self, label, index=None):
-
+        """
+        :param label:
+        :param index:
+        :return:
+        """
         if not index:
             index = self.data.index - 1
 
@@ -101,25 +105,21 @@ class PyplotEmbed(tk.Frame):
         self.update_legend()
 
     def add_notes(self, _notes):
-        """
-        Save a note to the data to save with it
+        """ Save a note to the data to save with it
         :param _notes: string
         """
         self.data.notes[-1] = _notes
 
     def display_data_user_input(self, x_data, y_data):
-        """
-        Update the label to what the user inputted, and display the data
+        """ Update the label to what the user inputted, and display the data
         :param x_data: list - x-axis data
         :param y_data: list - y-axis data
         """
         label = self.label_instance
-
         self.display_data(x_data, y_data, self.data.index-1)
 
     def display_data(self):
-        """
-        Take in a x and y data set and plot them in the self instance of the pyplot
+        """ Take in a x and y data set and plot them in the self instance of the pyplot
         :param x_data: x axis data
         :param y_data: y axis data
         :return:
@@ -127,10 +127,6 @@ class PyplotEmbed(tk.Frame):
         index = self.data.index - 1  # it was incremented at the end of the add_data method
         x_data = self.data.voltage_data[index]
         y_data = self.data.current_data[index]
-        print 'x_data: '
-        print x_data
-        print 'y data: '
-        print y_data
         _label = self.data.label[index]
         # if this is the first data series to be added the legend has to be displayed also
         if not self.legend_displayed:
@@ -139,18 +135,26 @@ class PyplotEmbed(tk.Frame):
                                                _box.height])
             self.legend_displayed = True
         # add the data to the plot area and update the legend
-        print 'len1: ', len(x_data), len(y_data), y_data[0]
-        x_data = x_data[-len(y_data):]  # TODO: FIX THIS
-        y_data = y_data[-len(x_data):]
         l = self.graph_area.axis.plot(x_data, y_data, label=_label)
         self.data.colors.append(l[0].get_color())
         self.plotted_lines.append(l)
         self.update_legend()
 
+    def update_amp_data(self, t, y, time_displayed):
+
+        # self.graph_area.axis.clear()
+        if not self.l and t:
+            self.l, = self.graph_area.axis.plot(t, y)
+            self.graph_area.axis.set_xlim(t[-1] - time_displayed, t[-1])
+        elif y:
+            self.l.set_ydata(y)
+            self.l.set_xdata(t)
+            self.graph_area.axis.set_xlim(t[-1] - time_displayed, t[-1])
+            # self.graph_area.axis.set_ylim(0, 60000)
+        self.graph_area.canvas.draw()
+
     def update_legend(self):
-        """
-        Update the legend and redraw the graph
-        :return:
+        """ Update the legend and redraw the graph
         """
         handle, labels = self.graph_area.axis.get_legend_handles_labels()
 
@@ -159,14 +163,12 @@ class PyplotEmbed(tk.Frame):
                                     bbox_to_anchor=(1, 0.5),
                                     title='Data series',
                                     prop={'size': 10},
-                                    fancybox=True)  # not adding all this screws it
+                                    fancybox=True)  # not adding all this screws it up
         # up for some reason
         self.graph_area.canvas.show()  # update the canvas where the data is being shown
 
     def delete_all_lines(self):
-        """
-        Remove all the lines from the graph
-        :return:
+        """ Remove all the lines from the graph
         """
         logging.debug("deleting all lines")
         while self.plotted_lines:  # remove lines release all the memory
@@ -179,8 +181,7 @@ class PyplotEmbed(tk.Frame):
         self.update_legend()
 
     def delete_a_line(self, index):
-        """
-        Delete a single line from the graph
+        """ Delete a single line from the graph
         :param index:  int, index of which line to delete. the lines are saved in a list called
         self.plotted_lines
         """
@@ -192,22 +193,20 @@ class PyplotEmbed(tk.Frame):
         self.update_legend()
 
     def change_line_color(self, _color, index):
-        """
-        Change the color of a line
+        """ Change the color of a line
         :param _color: tkinter color option to change to
         :param index: index of which line in the self.plotted_lines list to change
         """
-        logging.debug("change line color: ", _color, index)
         self.plotted_lines[index][0].set_color(_color)
         self.data.colors[index] = _color
 
     def update_graph(self):
+        """ Redraw the graoh
+        """
         self.graph_area.canvas.show()
 
     def toolbar_toggle(self):
-        """
-        Display or remove the toolbar from the GUI
-        :return:
+        """ Display or remove the toolbar from the GUI
         """
         if self.toolbar_status:  # there is a toolbar, so remove it
             self.toolbar.pack_forget()
@@ -217,38 +216,24 @@ class PyplotEmbed(tk.Frame):
             self.toolbar_status = True
 
     def legend_handler(self, event):
+        """ Bind event of clicking on the data legend to call up a top level to change the data
+        style and label
+        :param event: click event that occured
         """
-        :param event:
-        :return:
-        """
-        if event.x > (0.8 * self.winfo_width()):  # if mouse is clicked on the right side
-            print "on right side"
-            legend_top.DataLegendTop(self)
+        if event.x > (0.82 * self.winfo_width()):  # if mouse is clicked on the right side
+            self.master.change_data_labels()
 
     def resize_x(self, x_low, x_high):
-        """
-        Change the scale of the x axis
+        """ Change the scale of the x axis
         :param x_low: lower limit on x axis
         :param x_high: upper limit on x axis
-        :return:
         """
         self.graph_area.axis.set_xlim([x_low, x_high])
         self.graph_area.canvas.show()
 
     def resize_y(self, _current_limit):
-        """
-        Change the scale of the y axis
+        """ Change the scale of the y axis
         :param _current_limit: most current (positive or negative)
-        :return:
         """
         self.graph_area.axis.set_ylim(-_current_limit * 1.2, _current_limit * 1.2)
         self.graph_area.canvas.show()
-
-
-def debug_show(x_data, y_data):
-    print "debug showing"
-    print len(x_data)
-    print len(y_data)
-    print y_data[:10]
-    print y_data[-10:]
-    print y_data[2000:2100]
