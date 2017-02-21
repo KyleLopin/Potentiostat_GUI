@@ -25,30 +25,31 @@ FAILURE_DELAY = 500
 class CVFrame(ttk.Frame):
     """ Frame to hold all the widgets and information to perform cyclic voltammetry experiments
     """
-
     def __init__(self, master, parent_notebook, graph_properties):
         """ Make a ttk frame to hold all the info for cyclic voltammetry, frame is split in 2,
-        for graph area and buttons
+        one for graph area and other for buttons
         :param master: tk.Tk overall master program
-        :param parent_notebook: ttk.Notebook that this frame is embedded
+        :param parent_notebook: ttk.Notebook that this frame is embedded in
         :param graph_properties: properties for the graph
         """
         ttk.Frame.__init__(self, parent_notebook)
         self.master = master
-        self.graph = self.make_graph_area(master, graph_properties)
+        self.graph = self.make_graph_area(master, graph_properties)  # make graph
         self.graph.pack(side='left', expand=True, fill=tk.BOTH)
         options_frame = tk.Frame(self, bg=OPTIONS_BACKGROUND, bd=3)
         options_frame.pack(side='left', fill=tk.BOTH)
         buttons_frame = tk.Frame(options_frame)
         buttons_frame.pack(side='bottom', fill=tk.X)
-
+        # assign device to special handler for CV protocols
         self.device = self.USBHandler(self.graph, master.device, master)
+        # make area to show the CV settings with a custom class
         self.cv_settings_frame = self.CVSettingDisplay(master, options_frame,
                                                        self.graph, master.device_params,
                                                        self.device)
         self.cv_settings_frame.pack(side="top", fill=tk.X)
+        # initialize the device so the user can hit the run button
         self.device.send_cv_parameters()
-        # self.make_cv_buttons(buttons_frame, self.graph, master.device)
+        # make the buttons the user can use in the CV experiments
         self.make_cv_buttons(buttons_frame, self.graph, self.device)
 
     def make_graph_area(self, master, graph_props):
@@ -58,7 +59,6 @@ class CVFrame(ttk.Frame):
         :param master: tk.Tk overall master of the program
         :param graph_props: dictionary fo properties on how the graph looks
         :return: the graph object, currently a PyplotEmbed class from tkinter_pyplot
-        :::::::::::::::: UPdate when canvas is implemented
         """
         if check_display_type() == 'matplotlib':
             current_lim = 1.2 * 1000. / master.device_params.adc_tia.tia_resistor
@@ -72,16 +72,17 @@ class CVFrame(ttk.Frame):
                                                current_lim, low_voltage, high_voltage)
         else:
             graph = None  # TODO: implement for canvas
+            raise NotImplementedError
         return graph
 
     def make_cv_buttons(self, _frame, cv_graph, device):
         """ Make and pack all the buttons needed to perform cyclic voltammetry.  These are
-        all the options but what the waveform looks like (which is made in the
-        make_cv_settings_display)
+        all the options the user can use, except for what the waveform looks like
+        (which is made in the make_cv_settings_display)
         :param _frame: tk frame to make all the buttons in
         :param cv_graph: graph where the cyclic voltammetry data will be displayed in
         (needed to put in the button function calls)
-        :param device: usb_comm AmpUsb device to send commands too
+        :param device: USBHandler class in this file
         """
         # make a button to run a cyclic voltammetry scan
         self.run_button = tk.Button(_frame, text="Run CV Scan",
@@ -118,12 +119,16 @@ class CVFrame(ttk.Frame):
         #           text="Read Message",
         #           command=lambda: self.print_usb_message(device)).pack(side='bottom',
         #                                                                fill=tk.BOTH)
+        # experimental button to try chronoamperometry experiments
         tk.Button(_frame,
                   text="Chronoamp",
                   command=lambda: self.chrono_hack(device)).pack(side='bottom',
                                                                  fill=tk.BOTH)
 
     def chrono_hack(self, device):
+        """ Hack to get a chronoamperometry experiment to run, inactive the button when released
+        :param device: USBHandler to handle device communications
+        """
         self.master.device.usb_write("Q|1024|1524|02399")
         device.params.cv_settings.delay_time = 5000
         device.run_chrono = True
@@ -163,35 +168,38 @@ class CVFrame(ttk.Frame):
     class USBHandler(object):
         """ NOTE: self.device is the AMpUSB class and device.device is the pyUSB class
         """
-
         def __init__(self, graph, device, master):
+            """ Class to handle all the usb calls to perform cyclic voltammetry experiments
+            :param graph: graph the data is displayed in
+            :param device: usb_comm device to send calls with
+            :param master: root tk.TK
+            """
             self.graph = graph
             self.device = device  # bind master device to self
             self.master = master
             self.params = master.device_params
             self.settings = master.device_params.cv_settings
-            self.usb_packet_count = 0
-            self.run_chrono = False
+            self.usb_packet_count = 0  # how many usb reading to make
+            self.run_chrono = False  # Hack for testing chrono amperometry experiments
             self.run_button = None  # placeholder, the first run will assign it
 
         def send_cv_parameters(self):
-            """
-            Send the parameters that the amperometric device should use to perform a cyclic voltammetry
-            sweep the data needed calculate the values to send should be in a dictionary of the form
-            device.params.low_cv_voltage which is the lowest voltage (in mV) of the triangle waveform
-            device.params.high_cv_voltage which is the highest voltage (in mV) of the triangle waveform
-            device.params.sweep_rate which is the speed (in V/s) that the voltage should be changed
+            """ Send the parameters that the amperometric device should use to perform a
+            cyclic voltammetry sweep
+            the data needed to calculate the values are
+            device.params.low_cv_voltage which is the lowest voltage (in mV)
+            device.params.high_cv_voltage which is the highest voltage (in mV)
+            device.params.sweep_rate - the speed (in V/s) that the voltage should be changed
 
             Note: the values sending to the device have to be padded with 0's so they are the
             proper size for the device to interpret
 
-            :param device: device from usb_comm class that is being used to communicate with
+            :param device: USBHandler class that is being used to communicate with the device
             :return: will update to the device.params the following values
-            usb_count which is how many data values to expect back into to device when receiving data
-            actual_low_volt the lowest voltage the device will give to the electrode
+            usb_packet_count which is how many data packets to expect when receiving data
+            actual_low_volt the lowest voltage the device will give to the electrode, depending on
+            the DAC used can be different than the user value
             actual_high_volt the highest voltage the device will give to the electrode
-            volt_increment the amount a 1 bit increase in the PIDAC will increase the voltage
-            at the electrode
             """
             logging.debug("sending cv params here")
             # convert the values into the values the device needs
@@ -211,13 +219,13 @@ class CVFrame(ttk.Frame):
             # send those values to the device in the proper format for the PSoC amperometry device
             to_amp_device = '|'.join(["S", formatted_low_volt,
                                       formatted_high_volt, formatted_freq_divider])
-            # save how many data points should be recieved back from the usb
+            # save how many data packets should be received back from the usb
             packet_count = (2 * (- high_dac_value + low_dac_value + 1)
                             / (float(USB_IN_BYTE_SIZE) / 2.0))  # data is 2 bytes long
-            # round up
+            # round up the packet count
             self.usb_packet_count = int(packet_count) + (packet_count % USB_IN_BYTE_SIZE > 0)
-            # calculate what the actual voltage the device will make.  This will be slightly different
-            # from the user input because of the VDAC's resolution
+            # calculate what the actual voltage the device will make.  This might be slightly
+            # different from the user input because of the VDAC's resolution
             self.params.actual_low_volt = (- low_dac_value + low_dac_value
                                            % self.params.dac.voltage_step_size)
             time.sleep(0.5)
@@ -238,30 +246,29 @@ class CVFrame(ttk.Frame):
             5) read the IN_ENDPOINT until all the data is send to the this program
 
             :param canvas: canvas to display data on
-            :param master: master (root) GUI
+            :param run_button: run button that was pressed to start the scan
             :return: binds the data to the master instead of returning anything
             """
-            self.run_button = run_button
+            self.run_button = run_button  # bind button to self so it can be put active again
+            # inactive the button so the user cant hit it twice
             self.run_button.config(state='disabled')
             self.device.usb_write('R')  # step 1
             if self.device.working:
                 logging.debug("device reading")
                 # amount of time to wait for the data to be collected before getting it
                 # give a 200 ms buffer to the calculated delay time
-                _delay = int(2000 + self.params.cv_settings.delay_time)
-                # print 'delay: ', _delay
+                _delay = int(200 + self.params.cv_settings.delay_time)
                 self.master.after(_delay, lambda: self.run_scan_continue(canvas))  # step 2
             else:
                 logging.debug("Couldn't find out endpoint to send message to run")
                 # master.attempt_reconnection()
 
         def run_scan_continue(self, canvas, fail_count=0):
-            """ The callback for run_scan.  This is called after the device should be done with the scan
-            and is readyto export the data.   The parts of the run cyclic voltammetry scan this
-            functions run is part 3-5 listed in run_scan.
+            """ The callback for run_scan.  This is called after the device should be done with the
+            scan and is ready to export the data.   The parts of the run cyclic voltammetry scan
+            this functions run is part 3-5 listed in run_scan.
             :param canvas: the widget that is called to display the data
             :param fail_count: int, running count of how many attempts have been tried
-            :return:
             """
             check_message = self.device.usb_read_message()  # step 3
 
@@ -295,19 +302,16 @@ class CVFrame(ttk.Frame):
                 return
             # call function to convert the raw ADC values into the current that passed
             # through the working electrode
-            data = self.device._process_data(raw_data)
-            self.master.current_data = data
-
+            data = self.device.process_data(raw_data)
+            self.master.current_data = data  # bind data to the master
+            # make the voltages for the x-axis that correspond to the currents read
             x_line = make_x_line(self.params.cv_settings.low_voltage,
                                  self.params.cv_settings.high_voltage,
                                  self.params.dac.voltage_step_size)
-            # Send data to the canvas where it will be saved and displayed
-
-            if self.run_chrono:
+            if self.run_chrono:  # HACK to test chronoamp experiments
                 x_line = range(4001)
-
-            # canvas.update_data(x_line, data, raw_data)
-            canvas.update_data(x_line, data, raw_data)
+            # Send data to the canvas where it will be saved and displayed
+            canvas.update_data(x_line, data, raw_data)  # send raw data for testing purposes
             self.run_button.config(state='active')
 
         def format_divider(self, _sweep_rate):
@@ -315,12 +319,12 @@ class CVFrame(ttk.Frame):
             into the PWM used to set the time between the interrupts that change the dac values
             (_sweep_rate * 1000) is used to convert the sweep rate from V/s to mV/s
             :param _sweep_rate: the users desired sweep rate
-            :return: integer that is to be put into the interrupt PWM timer that's padded with zeros to
-            be 5 integers long to properly send it to the device
+            :return: integer that is to be put into the interrupt PWM timer that's padded with
+            zeros to be 5 integers long to properly send it to the device
             """
             clk_freq = self.params.clk_freq_isr_pwm
-            # take the clock frequency that is driving the PWM and divide it by the number of voltage
-            # steps per second: this is how many clk ticks between each interrupt
+            # take the clock frequency that is driving the PWM and divide it by the number of
+            # voltage steps per second: this is how many clk ticks between each interrupt
             raw_divider = int(
                 round(
                     clk_freq / (_sweep_rate * 1000 / self.params.dac.voltage_step_size)) - 1)
@@ -328,14 +332,13 @@ class CVFrame(ttk.Frame):
 
         def format_voltage(self, _in_volts):
             """ Takes in the voltage (in millivolts) the user wants to apply to the electrode and
-            convert it to the integer that represent the value to be put into the pidac
+            convert it to the integer that represent the value to be put into the dac
             :param _in_volts: user desired electrode voltage value in millivolts
-            :return: integer that is the value to be put into the pidac, padded with zeros to be 4
+            :return: integer that is the value to be put into the dac, padded with zeros to be 4
             values long to be transmitted to the device
             """
             # shift the user's voltage by the amount of the virtual ground
             input_voltage = self.params.virtual_ground_shift + _in_volts  # mV
-
             # get the value needed (number of increments needed to get desired voltage, ex. desire
             # 500mV with 1 mV increments then put in 500) to put into the dac and pad it with zeros
             dac_value = self.params.dac.get_dac_count(input_voltage)
@@ -344,7 +347,6 @@ class CVFrame(ttk.Frame):
     class CVSettingDisplay(tk.Frame):
         """ Class that makes a frame displaying the settings for a cyclic voltammetry experiment
         """
-
         def __init__(self, _master, _frame, graph, device_params, device):
             """
             :param _master: the root application
@@ -405,6 +407,12 @@ class CVFrame(ttk.Frame):
 
 
 def make_x_line(start, end, inc):
+    """ Make the voltages to associate with the current data from a cyclic voltammetry experiments
+    :param start: first voltage the device goes to in the CV protocol
+    :param end: second voltage the device goes to
+    :param inc: the voltage step size the device makes
+    :return: list of the voltages to associate with the currents
+    """
     start = int(start)
     end = int(end)
     inc = int(inc)
@@ -417,6 +425,12 @@ def make_x_line(start, end, inc):
 
 
 def make_side(start, end, inc):
+    """ Helper function to make the voltages for the x-data in a CV experiments
+    :param start: value to start at
+    :param end: value to end
+    :param inc: step size
+    :return: list
+    """
     if end < start:
         inc *= -1
     return range(start, end, inc)

@@ -171,7 +171,7 @@ class AmpFrame(ttk.Frame):
                 try:
                     usb_input = self.device.get_data_packets(self.endpoint, self.number_packets)
                     # print 'got: ', usb_input
-                    data = self.device._process_data(usb_input)
+                    data = self.device.process_data(usb_input)
                 except Exception as error:
                     logging.error("missed data read: %s", error)
                 if not self.first_read_dumbed:

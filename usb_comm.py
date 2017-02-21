@@ -292,9 +292,9 @@ class AmpUsb(object):
             except:
                 fails += 1
         return full_array
-        # return self._process_data(full_array)
+        # return self.process_data(full_array)
 
-    def _process_data(self, _raw_data):
+    def process_data(self, _raw_data):
         """ Take in the raw adc counts and output the corresponding current values
         TODO: should put this somewhere, if the amp_frame, cv_frame get a parent class that
         is a good place to put this
