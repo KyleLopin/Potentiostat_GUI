@@ -293,8 +293,6 @@ class CVFrame(ttk.Frame):
                 return
             # call function to convert the raw ADC values into the current that passed
             # through the working electrode
-            print 'raw data'
-            print raw_data
             data = self.device._process_data(raw_data)
             self.master.current_data = data
 

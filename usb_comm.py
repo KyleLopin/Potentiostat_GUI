@@ -248,22 +248,27 @@ class AmpUsb(object):
         end_pt = self.device[0][(0, 0)][0]
         full_array = []
         # calculate how many packets of data to get from the amp device the usb_count param is
-        # how many data points there are (+2 us for the 0xC000 sent at the end)
-        # packet_size / 2 is because the data is converted to uint8
+        # how many data points there are (+1 us for the 0xC000 sent at the end)
+        # packet_size / 2 is because the data is converted to uint8 and minus 1 for 0 indexing
         # from the uint16 it is acquired in """
         if not number_packets:
-            number_packets = (self.device_params.usb_count + 2) / (USB_IN_BYTE_SIZE / 2)
+            number_packets = ((self.device_params.usb_count + 1) / (USB_IN_BYTE_SIZE / 2) - 1)
+
         logging.debug("get %d number of packets", number_packets)
         count = 0
         running = True
         while number_packets + 1 > count and running:
+            # print 'packet number: ', count, len(full_array)
             try:
                 usb_input = self.device.read(end_pt.bEndpointAddress, USB_IN_BYTE_SIZE, 1000)
 
                 _hold = convert_uint8_to_signed_int16(usb_input.tolist())
+                # print 'hold: ', _hold
                 full_array.extend(_hold)
-                if _hold[-1] == TERMINATION_CODE:
-                    full_array.pop()  # remove ther termination code from the data
+                if TERMINATION_CODE in _hold:
+                    # print 'got termination: ', full_array[-1], full_array.index(TERMINATION_CODE)
+                    # full_array.pop()  # remove ther termination code from the data
+                    full_array = full_array[:full_array.index(TERMINATION_CODE)]
                     break
                 count += 1
             except Exception as error:

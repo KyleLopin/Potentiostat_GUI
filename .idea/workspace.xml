@@ -1,18 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="251b6b94-30bd-4672-9fcb-503d3e5ae2ad" name="Default" comment="CV works, changes made to work with PSoC changes, need to work on getting data lengths correct with how the PSoC sends the data">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/cv_frame.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/main_events.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/toplevels.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/Amp_GUI.py" afterPath="$PROJECT_DIR$/amp_gui.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/vcs.xml" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
+    <list default="true" id="251b6b94-30bd-4672-9fcb-503d3e5ae2ad" name="Default" comment="Refactor, added a new amperometry frame and moved all usb communication specific to a certain experiment into that experimental frame&#10;&#10;Also added a hack to run chronoamperometry experiments in the CV window to test">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/uart_comm.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/amp_usb_helper.py" afterPath="$PROJECT_DIR$/amp_usb_helper.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/change_toplevel.py" afterPath="$PROJECT_DIR$/change_toplevel.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/option_menu.py" afterPath="$PROJECT_DIR$/option_menu.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/properties.py" afterPath="$PROJECT_DIR$/properties.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tkinter_pyplot.py" afterPath="$PROJECT_DIR$/tkinter_pyplot.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cv_frame.py" afterPath="$PROJECT_DIR$/cv_frame.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/usb_comm.py" afterPath="$PROJECT_DIR$/usb_comm.py" />
     </list>
     <ignored path="Amp_simple.iws" />
@@ -32,24 +24,31 @@
     <favorites_list name="Amp_simple" />
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.3865932">
+    <splitter split-orientation="horizontal" split-proportion="0.5142084">
       <split-first>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file leaf-file-name="usb_comm.py" pinned="false" current-in-tab="false">
+          <file leaf-file-name="amp_gui.py" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/amp_gui.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="17">
+                  <caret line="193" column="13" selection-start-line="193" selection-start-column="8" selection-end-line="193" selection-end-column="13" />
+                  <folding>
+                    <element signature="e#272#282#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="usb_comm.py" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/usb_comm.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="119">
-                  <caret line="55" column="11" selection-start-line="55" selection-start-column="11" selection-end-line="55" selection-end-column="11" />
+                <state relative-caret-position="170">
+                  <caret line="260" column="14" selection-start-line="260" selection-start-column="14" selection-end-line="260" selection-end-column="14" />
                   <folding>
                     <element signature="e#262#276#0" expanded="true" />
-                    <element signature="e#10994#11479#0" expanded="false" />
-                    <element signature="e#11529#12747#0" expanded="false" />
-                    <element signature="e#12851#13723#0" expanded="false" />
-                    <element signature="e#17689#17982#0" expanded="false" />
-                    <element signature="e#18044#18348#0" expanded="false" />
-                    <element signature="e#18410#18569#0" expanded="false" />
-                    <element signature="e#23788#23949#0" expanded="false" />
-                    <element signature="e#24002#24355#0" expanded="false" />
+                    <element signature="e#6770#6949#0" expanded="false" />
+                    <element signature="e#7980#9176#0" expanded="false" />
+                    <element signature="e#14598#14894#0" expanded="false" />
                   </folding>
                 </state>
               </provider>
@@ -58,8 +57,8 @@
           <file leaf-file-name="tkinter_pyplot.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/tkinter_pyplot.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="332">
-                  <caret line="89" column="31" selection-start-line="89" selection-start-column="31" selection-end-line="89" selection-end-column="31" />
+                <state relative-caret-position="2227">
+                  <caret line="137" column="8" selection-start-line="137" selection-start-column="8" selection-end-line="137" selection-end-column="8" />
                   <folding>
                     <element signature="e#272#286#0" expanded="true" />
                   </folding>
@@ -67,13 +66,23 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="amp_gui.py" pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/amp_gui.py">
+          <file leaf-file-name="TODO" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/TODO">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="94">
-                  <caret line="116" column="0" selection-start-line="116" selection-start-column="0" selection-end-line="134" selection-end-column="71" />
+                <state relative-caret-position="17">
+                  <caret line="1" column="55" selection-start-line="1" selection-start-column="55" selection-end-line="1" selection-end-column="55" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="pyplot_data_class.py" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/pyplot_data_class.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="1292">
+                  <caret line="78" column="12" selection-start-line="78" selection-start-column="12" selection-end-line="78" selection-end-column="58" />
                   <folding>
-                    <element signature="e#272#282#0" expanded="true" />
+                    <element signature="e#241#251#0" expanded="true" />
                   </folding>
                 </state>
               </provider>
@@ -82,10 +91,15 @@
           <file leaf-file-name="change_toplevel.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/change_toplevel.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="248">
-                  <caret line="167" column="19" selection-start-line="167" selection-start-column="19" selection-end-line="167" selection-end-column="19" />
+                <state relative-caret-position="408">
+                  <caret line="611" column="42" selection-start-line="611" selection-start-column="42" selection-end-line="611" selection-end-column="42" />
                   <folding>
                     <element signature="e#263#277#0" expanded="true" />
+                    <element signature="e#10105#10710#0" expanded="false" />
+                    <element signature="e#11834#11910#1" expanded="false" />
+                    <element signature="e#16738#18374#0" expanded="false" />
+                    <element signature="e#16738#16869#1" expanded="false" />
+                    <element signature="e#16911#18057#0" expanded="false" />
                   </folding>
                 </state>
               </provider>
@@ -94,11 +108,9 @@
           <file leaf-file-name="option_menu.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/option_menu.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="146">
-                  <caret line="112" column="24" selection-start-line="112" selection-start-column="24" selection-end-line="112" selection-end-column="24" />
-                  <folding>
-                    <element signature="e#217#237#0" expanded="true" />
-                  </folding>
+                <state relative-caret-position="2431">
+                  <caret line="145" column="66" selection-start-line="145" selection-start-column="66" selection-end-line="145" selection-end-column="66" />
+                  <folding />
                 </state>
               </provider>
             </entry>
@@ -107,34 +119,37 @@
       </split-first>
       <split-second>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file leaf-file-name="properties.py" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/properties.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="1054">
-                  <caret line="62" column="20" selection-start-line="62" selection-start-column="20" selection-end-line="62" selection-end-column="20" />
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="main_events.py" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/main_events.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="136">
-                  <caret line="8" column="8" selection-start-line="8" selection-start-column="8" selection-end-line="8" selection-end-column="8" />
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
           <file leaf-file-name="cv_frame.py" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/cv_frame.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="2261">
-                  <caret line="178" column="47" selection-start-line="178" selection-start-column="47" selection-end-line="178" selection-end-column="47" />
+                <state relative-caret-position="408">
+                  <caret line="293" column="49" selection-start-line="293" selection-start-column="49" selection-end-line="293" selection-end-column="49" />
                   <folding>
-                    <element signature="e#285#295#0" expanded="true" />
+                    <element signature="e#285#299#0" expanded="true" />
                   </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="amp_frame.py" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/amp_frame.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="152">
+                  <caret line="54" column="48" selection-start-line="54" selection-start-column="48" selection-end-line="54" selection-end-column="48" />
+                  <folding>
+                    <element signature="e#321#331#0" expanded="true" />
+                    <element signature="e#11014#11102#0" expanded="false" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="properties.py" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/properties.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="221">
+                  <caret line="13" column="22" selection-start-line="13" selection-start-column="22" selection-end-line="13" selection-end-column="22" />
+                  <folding />
                 </state>
               </provider>
             </entry>
@@ -142,8 +157,8 @@
           <file leaf-file-name="graph_properties.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/graph_properties.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="119">
-                  <caret line="10" column="43" selection-start-line="10" selection-start-column="43" selection-end-line="10" selection-end-column="43" />
+                <state relative-caret-position="357">
+                  <caret line="21" column="36" selection-start-line="21" selection-start-column="36" selection-end-line="21" selection-end-column="36" />
                   <folding />
                 </state>
               </provider>
@@ -168,28 +183,31 @@
       <list>
         <option value="$PROJECT_DIR$/.idea/parameters.py" />
         <option value="$PROJECT_DIR$/data_legend_toplevel.py" />
-        <option value="$PROJECT_DIR$/pyplot_data_class.py" />
         <option value="$PROJECT_DIR$/amp_usb_helper.py" />
         <option value="$PROJECT_DIR$/.idea/test.py" />
         <option value="$PROJECT_DIR$/Amp_GUI.py" />
         <option value="$PROJECT_DIR$/Toplevels.py" />
         <option value="$PROJECT_DIR$/toplevels.py" />
         <option value="$PROJECT_DIR$/main_events.py" />
-        <option value="$PROJECT_DIR$/change_toplevel.py" />
+        <option value="$PROJECT_DIR$/pyplot_data_class.py" />
         <option value="$PROJECT_DIR$/option_menu.py" />
-        <option value="$PROJECT_DIR$/properties.py" />
-        <option value="$PROJECT_DIR$/usb_comm.py" />
-        <option value="$PROJECT_DIR$/tkinter_pyplot.py" />
-        <option value="$PROJECT_DIR$/cv_frame.py" />
+        <option value="$PROJECT_DIR$/uart_comm.py" />
+        <option value="$PROJECT_DIR$/TODO" />
         <option value="$PROJECT_DIR$/amp_gui.py" />
+        <option value="$PROJECT_DIR$/change_toplevel.py" />
+        <option value="$PROJECT_DIR$/tkinter_pyplot.py" />
+        <option value="$PROJECT_DIR$/properties.py" />
+        <option value="$PROJECT_DIR$/amp_frame.py" />
+        <option value="$PROJECT_DIR$/cv_frame.py" />
+        <option value="$PROJECT_DIR$/usb_comm.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-1085" />
-    <option name="y" value="54" />
-    <option name="width" value="2480" />
-    <option name="height" value="933" />
+    <option name="x" value="-1651" />
+    <option name="y" value="15" />
+    <option name="width" value="1598" />
+    <option name="height" value="1004" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -237,12 +255,12 @@
     <panes />
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../data_streaming" />
     <property name="options.lastSelected" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="options.splitter.details.proportions" value="0.2" />
     <property name="recentsLimit" value="5" />
-    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
   </component>
   <component name="RunManager" selected="Python.Amp_GUI">
@@ -472,7 +490,28 @@
       <option name="project" value="LOCAL" />
       <updated>1473822082754</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="A lot of refactoring to separate the cyclic voltammetry into a separate file from main, fixed pylint issues and add descriptions.">
+      <created>1480299831780</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1480299831780</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Refactor, added a new amperometry frame and moved all usb communication specific to a certain experiment into that experimental frame&#10;&#10;Also added a hack to run chronoamperometry experiments in the CV window to test">
+      <created>1487580213310</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1487580213310</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Refactor, added a new amperometry frame and moved all usb communication specific to a certain experiment into that experimental frame&#10;&#10;Also added a hack to run chronoamperometry experiments in the CV window to test">
+      <created>1487580288325</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1487580288325</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TodoView" selected-index="4">
@@ -485,17 +524,17 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-1085" y="54" width="2480" height="933" extended-state="0" />
-    <editor active="false" />
+    <frame x="-1651" y="15" width="1598" height="1004" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24985337" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32747805" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.325419" sideWeight="0.5431384" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28029376" sideWeight="0.4957627" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3272101" sideWeight="0.47692308" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3272101" sideWeight="0.52307695" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.27733028" sideWeight="0.4957627" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32873276" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32747805" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.35" sideWeight="0.45686162" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.10810811" sideWeight="0.49130434" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.31802526" sideWeight="0.45686162" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="FLOATING" visible="true" show_stripe_button="true" weight="0.117927335" sideWeight="0.49130434" order="1" side_tool="false" content_ui="tabs" x="-1896" y="32" width="210" height="993" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32900432" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.15483871" sideWeight="0.50869566" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -507,29 +546,31 @@
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Inspection Results" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32945284" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
-      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32747805" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32747805" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.325419" sideWeight="0.5431384" order="9" side_tool="true" content_ui="tabs" />
-      <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32873276" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32747805" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.19077307" sideWeight="0.45686162" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32900432" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.325419" sideWeight="0.5431384" order="10" side_tool="true" content_ui="tabs" />
+      <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32873276" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32747805" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.330617" sideWeight="0.45686162" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32900432" sideWeight="0.5" order="14" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24985337" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33291772" sideWeight="0.4957627" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1563055" sideWeight="0.49130434" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection Results" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32945284" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2774427" sideWeight="0.4957627" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.13352941" sideWeight="0.49130434" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.15483871" sideWeight="0.50869566" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
     </layout-to-restore>
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -567,12 +608,14 @@
     <MESSAGE value="Cyclic voltammetry is complete except for documentation and some lite refactoring" />
     <MESSAGE value="CV scans working, updated changes to work with PSoC changes" />
     <MESSAGE value="CV works, changes made to work with PSoC changes, need to work on getting data lengths correct with how the PSoC sends the data" />
-    <option name="LAST_COMMIT_MESSAGE" value="CV works, changes made to work with PSoC changes, need to work on getting data lengths correct with how the PSoC sends the data" />
+    <MESSAGE value="A lot of refactoring to separate the cyclic voltammetry into a separate file from main, fixed pylint issues and add descriptions." />
+    <MESSAGE value="Refactor, added a new amperometry frame and moved all usb communication specific to a certain experiment into that experimental frame&#10;&#10;Also added a hack to run chronoamperometry experiments in the CV window to test" />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactor, added a new amperometry frame and moved all usb communication specific to a certain experiment into that experimental frame&#10;&#10;Also added a hack to run chronoamperometry experiments in the CV window to test" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="34" />
+      <option name="time" value="39" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -590,62 +633,6 @@
     <entry file="file://$PROJECT_DIR$/amp_gui.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
-          <caret line="31" column="15" selection-start-line="31" selection-start-column="15" selection-end-line="31" selection-end-column="15" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/usb_comm.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="132" column="0" selection-start-line="132" selection-start-column="0" selection-end-line="132" selection-end-column="0" />
-          <folding>
-            <element signature="e#262#276#0" expanded="true" />
-            <element signature="e#10994#11479#0" expanded="false" />
-            <element signature="e#11529#12747#0" expanded="false" />
-            <element signature="e#12851#13723#0" expanded="false" />
-            <element signature="e#17689#17982#0" expanded="false" />
-            <element signature="e#18044#18348#0" expanded="false" />
-            <element signature="e#18410#18569#0" expanded="false" />
-            <element signature="e#23788#23949#0" expanded="false" />
-            <element signature="e#24002#24355#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/pyplot_data_class.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="6" column="37" selection-start-line="6" selection-start-column="37" selection-end-line="6" selection-end-column="37" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data_legend_toplevel.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="25" column="46" selection-start-line="25" selection-start-column="46" selection-end-line="25" selection-end-column="46" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/option_menu.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="38" column="58" selection-start-line="38" selection-start-column="58" selection-end-line="38" selection-end-column="58" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tkinter_pyplot.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#272#286#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/amp_gui.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
@@ -656,14 +643,9 @@
           <caret line="132" column="0" selection-start-line="132" selection-start-column="0" selection-end-line="132" selection-end-column="0" />
           <folding>
             <element signature="e#262#276#0" expanded="true" />
-            <element signature="e#10994#11479#0" expanded="false" />
-            <element signature="e#11529#12747#0" expanded="false" />
-            <element signature="e#12851#13723#0" expanded="false" />
-            <element signature="e#17689#17982#0" expanded="false" />
-            <element signature="e#18044#18348#0" expanded="false" />
-            <element signature="e#18410#18569#0" expanded="false" />
-            <element signature="e#23788#23949#0" expanded="false" />
-            <element signature="e#24002#24355#0" expanded="false" />
+            <element signature="e#6770#6949#0" expanded="false" />
+            <element signature="e#7980#9176#0" expanded="false" />
+            <element signature="e#14598#14894#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -712,14 +694,9 @@
           <caret line="132" column="0" selection-start-line="132" selection-start-column="0" selection-end-line="132" selection-end-column="0" />
           <folding>
             <element signature="e#262#276#0" expanded="true" />
-            <element signature="e#10994#11479#0" expanded="false" />
-            <element signature="e#11529#12747#0" expanded="false" />
-            <element signature="e#12851#13723#0" expanded="false" />
-            <element signature="e#17689#17982#0" expanded="false" />
-            <element signature="e#18044#18348#0" expanded="false" />
-            <element signature="e#18410#18569#0" expanded="false" />
-            <element signature="e#23788#23949#0" expanded="false" />
-            <element signature="e#24002#24355#0" expanded="false" />
+            <element signature="e#6770#6949#0" expanded="false" />
+            <element signature="e#7980#9176#0" expanded="false" />
+            <element signature="e#14598#14894#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -768,14 +745,9 @@
           <caret line="132" column="0" selection-start-line="132" selection-start-column="0" selection-end-line="132" selection-end-column="0" />
           <folding>
             <element signature="e#262#276#0" expanded="true" />
-            <element signature="e#10994#11479#0" expanded="false" />
-            <element signature="e#11529#12747#0" expanded="false" />
-            <element signature="e#12851#13723#0" expanded="false" />
-            <element signature="e#17689#17982#0" expanded="false" />
-            <element signature="e#18044#18348#0" expanded="false" />
-            <element signature="e#18410#18569#0" expanded="false" />
-            <element signature="e#23788#23949#0" expanded="false" />
-            <element signature="e#24002#24355#0" expanded="false" />
+            <element signature="e#6770#6949#0" expanded="false" />
+            <element signature="e#7980#9176#0" expanded="false" />
+            <element signature="e#14598#14894#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -817,14 +789,9 @@
           <caret line="132" column="0" selection-start-line="132" selection-start-column="0" selection-end-line="132" selection-end-column="0" />
           <folding>
             <element signature="e#262#276#0" expanded="true" />
-            <element signature="e#10994#11479#0" expanded="false" />
-            <element signature="e#11529#12747#0" expanded="false" />
-            <element signature="e#12851#13723#0" expanded="false" />
-            <element signature="e#17689#17982#0" expanded="false" />
-            <element signature="e#18044#18348#0" expanded="false" />
-            <element signature="e#18410#18569#0" expanded="false" />
-            <element signature="e#23788#23949#0" expanded="false" />
-            <element signature="e#24002#24355#0" expanded="false" />
+            <element signature="e#6770#6949#0" expanded="false" />
+            <element signature="e#7980#9176#0" expanded="false" />
+            <element signature="e#14598#14894#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -889,21 +856,6 @@
       </provider>
     </entry>
     <entry file="file://$USER_HOME$/baseGUI/Lib/site-packages/matplotlib/axes/_base.py" />
-    <entry file="file://$PROJECT_DIR$/pyplot_data_class.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="740">
-          <caret line="54" column="25" selection-start-line="54" selection-start-column="25" selection-end-line="54" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://C:/Python27/Lib/lib-tk/Tkinter.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="143">
-          <caret line="2059" column="0" selection-start-line="2059" selection-start-column="0" selection-end-line="2059" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/CVScanProps.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -918,18 +870,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data_legend_toplevel.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-412">
-          <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/toplevels.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="323">
           <caret line="19" column="8" selection-start-line="19" selection-start-column="8" selection-end-line="19" selection-end-column="8" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -937,98 +881,166 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="102">
           <caret line="6" column="11" selection-start-line="6" selection-start-column="11" selection-end-line="6" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/Python27/Lib/logging/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="188">
+          <caret line="328" column="0" selection-start-line="328" selection-start-column="0" selection-end-line="328" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data_legend_toplevel.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-26">
+          <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/Python27/Lib/lib-tk/Tkinter.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="535">
+          <caret line="1875" column="28" selection-start-line="1875" selection-start-column="28" selection-end-line="1875" selection-end-column="28" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/option_menu.py">
+    <entry file="file://C:/Python27/Lib/site-packages/usb/backend/libusb0.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="146">
-          <caret line="112" column="24" selection-start-line="112" selection-start-column="24" selection-end-line="112" selection-end-column="24" />
+        <state relative-caret-position="199">
+          <caret line="468" column="0" selection-start-line="468" selection-start-column="0" selection-end-line="468" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TODO">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="1" column="55" selection-start-line="1" selection-start-column="55" selection-end-line="1" selection-end-column="55" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/uart_comm.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="534">
+          <caret line="54" column="0" selection-start-line="54" selection-start-column="0" selection-end-line="54" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pyplot_data_class.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1292">
+          <caret line="78" column="12" selection-start-line="78" selection-start-column="12" selection-end-line="78" selection-end-column="58" />
           <folding>
-            <element signature="e#217#237#0" expanded="true" />
+            <element signature="e#241#251#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/main_events.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="8" column="8" selection-start-line="8" selection-start-column="8" selection-end-line="8" selection-end-column="8" />
-          <folding />
+        <state relative-caret-position="119">
+          <caret line="7" column="39" selection-start-line="7" selection-start-column="39" selection-end-line="7" selection-end-column="39" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/change_toplevel.py">
+    <entry file="file://C:/Python27/Lib/site-packages/matplotlib/axes/_base.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="248">
-          <caret line="167" column="19" selection-start-line="167" selection-start-column="19" selection-end-line="167" selection-end-column="19" />
-          <folding>
-            <element signature="e#263#277#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="1362">
+          <caret line="218" column="0" selection-start-line="218" selection-start-column="0" selection-end-line="218" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/tkinter_pyplot.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="332">
-          <caret line="89" column="31" selection-start-line="89" selection-start-column="31" selection-end-line="89" selection-end-column="31" />
+        <state relative-caret-position="2227">
+          <caret line="137" column="8" selection-start-line="137" selection-start-column="8" selection-end-line="137" selection-end-column="8" />
           <folding>
             <element signature="e#272#286#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/properties.py">
+    <entry file="file://$PROJECT_DIR$/option_menu.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1054">
-          <caret line="62" column="20" selection-start-line="62" selection-start-column="20" selection-end-line="62" selection-end-column="20" />
+        <state relative-caret-position="2431">
+          <caret line="145" column="66" selection-start-line="145" selection-start-column="66" selection-end-line="145" selection-end-column="66" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/graph_properties.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="10" column="43" selection-start-line="10" selection-start-column="43" selection-end-line="10" selection-end-column="43" />
+        <state relative-caret-position="357">
+          <caret line="21" column="36" selection-start-line="21" selection-start-column="36" selection-end-line="21" selection-end-column="36" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/usb_comm.py">
+    <entry file="file://$PROJECT_DIR$/properties.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="55" column="11" selection-start-line="55" selection-start-column="11" selection-end-line="55" selection-end-column="11" />
-          <folding>
-            <element signature="e#262#276#0" expanded="true" />
-            <element signature="e#10994#11479#0" expanded="false" />
-            <element signature="e#11529#12747#0" expanded="false" />
-            <element signature="e#12851#13723#0" expanded="false" />
-            <element signature="e#17689#17982#0" expanded="false" />
-            <element signature="e#18044#18348#0" expanded="false" />
-            <element signature="e#18410#18569#0" expanded="false" />
-            <element signature="e#23788#23949#0" expanded="false" />
-            <element signature="e#24002#24355#0" expanded="false" />
-          </folding>
+        <state relative-caret-position="221">
+          <caret line="13" column="22" selection-start-line="13" selection-start-column="22" selection-end-line="13" selection-end-column="22" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/cv_frame.py">
+    <entry file="file://$PROJECT_DIR$/change_toplevel.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2261">
-          <caret line="178" column="47" selection-start-line="178" selection-start-column="47" selection-end-line="178" selection-end-column="47" />
+        <state relative-caret-position="408">
+          <caret line="611" column="42" selection-start-line="611" selection-start-column="42" selection-end-line="611" selection-end-column="42" />
           <folding>
-            <element signature="e#285#295#0" expanded="true" />
+            <element signature="e#263#277#0" expanded="true" />
+            <element signature="e#10105#10710#0" expanded="false" />
+            <element signature="e#11834#11910#1" expanded="false" />
+            <element signature="e#16738#18374#0" expanded="false" />
+            <element signature="e#16738#16869#1" expanded="false" />
+            <element signature="e#16911#18057#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/amp_gui.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="94">
-          <caret line="116" column="0" selection-start-line="116" selection-start-column="0" selection-end-line="134" selection-end-column="71" />
+        <state relative-caret-position="17">
+          <caret line="193" column="13" selection-start-line="193" selection-start-column="8" selection-end-line="193" selection-end-column="13" />
           <folding>
             <element signature="e#272#282#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/amp_frame.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="152">
+          <caret line="54" column="48" selection-start-line="54" selection-start-column="48" selection-end-line="54" selection-end-column="48" />
+          <folding>
+            <element signature="e#321#331#0" expanded="true" />
+            <element signature="e#11014#11102#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cv_frame.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="408">
+          <caret line="293" column="49" selection-start-line="293" selection-start-column="49" selection-end-line="293" selection-end-column="49" />
+          <folding>
+            <element signature="e#285#299#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/usb_comm.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="260" column="14" selection-start-line="260" selection-start-column="14" selection-end-line="260" selection-end-column="14" />
+          <folding>
+            <element signature="e#262#276#0" expanded="true" />
+            <element signature="e#6770#6949#0" expanded="false" />
+            <element signature="e#7980#9176#0" expanded="false" />
+            <element signature="e#14598#14894#0" expanded="false" />
           </folding>
         </state>
       </provider>
