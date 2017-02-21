@@ -194,12 +194,15 @@ class CVFrame(ttk.Frame):
             at the electrode
             """
             logging.debug("sending cv params here")
-            # convert the values for the params dictionary into the values the device needs;
+            # convert the values into the values the device needs
             # this part is done on the computer side to save MCU code length
+            # minus sign is needed because the device sets the common electrode to the voltage and
+            # assumes the working electrode is ground, but voltammetry has the voltage on the
+            # working electrode compared to the common electrode
             formatted_low_volt, low_dac_value = \
-                self.format_voltage(self.settings.low_voltage)
+                self.format_voltage(-self.settings.low_voltage)
             formatted_high_volt, high_dac_value = \
-                self.format_voltage(self.settings.high_voltage)
+                self.format_voltage(-self.settings.high_voltage)
             formatted_freq_divider, pwm_period = \
                 self.format_divider(self.settings.sweep_rate)
 
@@ -209,14 +212,13 @@ class CVFrame(ttk.Frame):
             to_amp_device = '|'.join(["S", formatted_low_volt,
                                       formatted_high_volt, formatted_freq_divider])
             # save how many data points should be recieved back from the usb
-            packet_count = (2 * (high_dac_value - low_dac_value + 1)
+            packet_count = (2 * (- high_dac_value + low_dac_value + 1)
                             / (float(USB_IN_BYTE_SIZE) / 2.0))  # data is 2 bytes long
             # round up
             self.usb_packet_count = int(packet_count) + (packet_count % USB_IN_BYTE_SIZE > 0)
-
             # calculate what the actual voltage the device will make.  This will be slightly different
             # from the user input because of the VDAC's resolution
-            self.params.actual_low_volt = (low_dac_value - low_dac_value
+            self.params.actual_low_volt = (- low_dac_value + low_dac_value
                                            % self.params.dac.voltage_step_size)
             time.sleep(0.5)
             self.device.usb_write(to_amp_device)

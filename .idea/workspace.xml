@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="251b6b94-30bd-4672-9fcb-503d3e5ae2ad" name="Default" comment="Refactor, added a new amperometry frame and moved all usb communication specific to a certain experiment into that experimental frame&#10;&#10;Also added a hack to run chronoamperometry experiments in the CV window to test">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/uart_comm.py" />
+    <list default="true" id="251b6b94-30bd-4672-9fcb-503d3e5ae2ad" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cv_frame.py" afterPath="$PROJECT_DIR$/cv_frame.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/usb_comm.py" afterPath="$PROJECT_DIR$/usb_comm.py" />
@@ -24,7 +23,7 @@
     <favorites_list name="Amp_simple" />
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.5142084">
+    <splitter split-orientation="horizontal" split-proportion="0.5615672">
       <split-first>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
           <file leaf-file-name="amp_gui.py" pinned="false" current-in-tab="false">
@@ -42,13 +41,13 @@
           <file leaf-file-name="usb_comm.py" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/usb_comm.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="170">
-                  <caret line="260" column="14" selection-start-line="260" selection-start-column="14" selection-end-line="260" selection-end-column="14" />
+                <state relative-caret-position="560">
+                  <caret line="263" column="0" selection-start-line="263" selection-start-column="0" selection-end-line="263" selection-end-column="0" />
                   <folding>
                     <element signature="e#262#276#0" expanded="true" />
                     <element signature="e#6770#6949#0" expanded="false" />
                     <element signature="e#7980#9176#0" expanded="false" />
-                    <element signature="e#14598#14894#0" expanded="false" />
+                    <element signature="e#14356#14652#0" expanded="false" />
                   </folding>
                 </state>
               </provider>
@@ -57,8 +56,8 @@
           <file leaf-file-name="tkinter_pyplot.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/tkinter_pyplot.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="2227">
-                  <caret line="137" column="8" selection-start-line="137" selection-start-column="8" selection-end-line="137" selection-end-column="8" />
+                <state relative-caret-position="345">
+                  <caret line="135" column="33" selection-start-line="135" selection-start-column="33" selection-end-line="135" selection-end-column="33" />
                   <folding>
                     <element signature="e#272#286#0" expanded="true" />
                   </folding>
@@ -122,8 +121,8 @@
           <file leaf-file-name="cv_frame.py" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/cv_frame.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="408">
-                  <caret line="293" column="49" selection-start-line="293" selection-start-column="49" selection-end-line="293" selection-end-column="49" />
+                <state relative-caret-position="152">
+                  <caret line="217" column="93" selection-start-line="217" selection-start-column="93" selection-end-line="217" selection-end-column="93" />
                   <folding>
                     <element signature="e#285#299#0" expanded="true" />
                   </folding>
@@ -134,7 +133,7 @@
           <file leaf-file-name="amp_frame.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/amp_frame.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="152">
+                <state relative-caret-position="305">
                   <caret line="54" column="48" selection-start-line="54" selection-start-column="48" selection-end-line="54" selection-end-column="48" />
                   <folding>
                     <element signature="e#321#331#0" expanded="true" />
@@ -147,8 +146,8 @@
           <file leaf-file-name="properties.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/properties.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="221">
-                  <caret line="13" column="22" selection-start-line="13" selection-start-column="22" selection-end-line="13" selection-end-column="22" />
+                <state relative-caret-position="169">
+                  <caret line="42" column="67" selection-start-line="42" selection-start-column="65" selection-end-line="42" selection-end-column="67" />
                   <folding />
                 </state>
               </provider>
@@ -195,18 +194,18 @@
         <option value="$PROJECT_DIR$/TODO" />
         <option value="$PROJECT_DIR$/amp_gui.py" />
         <option value="$PROJECT_DIR$/change_toplevel.py" />
-        <option value="$PROJECT_DIR$/tkinter_pyplot.py" />
         <option value="$PROJECT_DIR$/properties.py" />
         <option value="$PROJECT_DIR$/amp_frame.py" />
-        <option value="$PROJECT_DIR$/cv_frame.py" />
+        <option value="$PROJECT_DIR$/tkinter_pyplot.py" />
         <option value="$PROJECT_DIR$/usb_comm.py" />
+        <option value="$PROJECT_DIR$/cv_frame.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-1651" />
-    <option name="y" value="15" />
-    <option name="width" value="1598" />
+    <option name="x" value="-1376" />
+    <option name="y" value="24" />
+    <option name="width" value="1293" />
     <option name="height" value="1004" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
@@ -511,7 +510,14 @@
       <option name="project" value="LOCAL" />
       <updated>1487580288325</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Fixed the packet errors on the CY and changed how the termination code in the USB is handled, the program will now handle extra data at the end of the USB stream and terminate any data after the termination code.  Fix firmware too.">
+      <created>1487649029209</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1487649029209</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TodoView" selected-index="4">
@@ -524,8 +530,8 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-1651" y="15" width="1598" height="1004" extended-state="0" />
-    <editor active="true" />
+    <frame x="-1376" y="24" width="1293" height="1004" extended-state="0" />
+    <editor active="false" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24985337" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3272101" sideWeight="0.47692308" order="6" side_tool="false" content_ui="tabs" />
@@ -533,8 +539,8 @@
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.27733028" sideWeight="0.4957627" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32873276" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32747805" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.31802526" sideWeight="0.45686162" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="FLOATING" visible="true" show_stripe_button="true" weight="0.117927335" sideWeight="0.49130434" order="1" side_tool="false" content_ui="tabs" x="-1896" y="32" width="210" height="993" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.31802526" sideWeight="0.45686162" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.14581673" sideWeight="0.49130434" order="1" side_tool="false" content_ui="tabs" x="-1634" y="33" width="210" height="993" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32900432" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.15483871" sideWeight="0.50869566" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -610,7 +616,8 @@
     <MESSAGE value="CV works, changes made to work with PSoC changes, need to work on getting data lengths correct with how the PSoC sends the data" />
     <MESSAGE value="A lot of refactoring to separate the cyclic voltammetry into a separate file from main, fixed pylint issues and add descriptions." />
     <MESSAGE value="Refactor, added a new amperometry frame and moved all usb communication specific to a certain experiment into that experimental frame&#10;&#10;Also added a hack to run chronoamperometry experiments in the CV window to test" />
-    <option name="LAST_COMMIT_MESSAGE" value="Refactor, added a new amperometry frame and moved all usb communication specific to a certain experiment into that experimental frame&#10;&#10;Also added a hack to run chronoamperometry experiments in the CV window to test" />
+    <MESSAGE value="Fixed the packet errors on the CY and changed how the termination code in the USB is handled, the program will now handle extra data at the end of the USB stream and terminate any data after the termination code.  Fix firmware too." />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed the packet errors on the CY and changed how the termination code in the USB is handled, the program will now handle extra data at the end of the USB stream and terminate any data after the termination code.  Fix firmware too." />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">
@@ -645,7 +652,7 @@
             <element signature="e#262#276#0" expanded="true" />
             <element signature="e#6770#6949#0" expanded="false" />
             <element signature="e#7980#9176#0" expanded="false" />
-            <element signature="e#14598#14894#0" expanded="false" />
+            <element signature="e#14356#14652#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -696,7 +703,7 @@
             <element signature="e#262#276#0" expanded="true" />
             <element signature="e#6770#6949#0" expanded="false" />
             <element signature="e#7980#9176#0" expanded="false" />
-            <element signature="e#14598#14894#0" expanded="false" />
+            <element signature="e#14356#14652#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -747,7 +754,7 @@
             <element signature="e#262#276#0" expanded="true" />
             <element signature="e#6770#6949#0" expanded="false" />
             <element signature="e#7980#9176#0" expanded="false" />
-            <element signature="e#14598#14894#0" expanded="false" />
+            <element signature="e#14356#14652#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -791,7 +798,7 @@
             <element signature="e#262#276#0" expanded="true" />
             <element signature="e#6770#6949#0" expanded="false" />
             <element signature="e#7980#9176#0" expanded="false" />
-            <element signature="e#14598#14894#0" expanded="false" />
+            <element signature="e#14356#14652#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -952,36 +959,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tkinter_pyplot.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2227">
-          <caret line="137" column="8" selection-start-line="137" selection-start-column="8" selection-end-line="137" selection-end-column="8" />
-          <folding>
-            <element signature="e#272#286#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/option_menu.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2431">
           <caret line="145" column="66" selection-start-line="145" selection-start-column="66" selection-end-line="145" selection-end-column="66" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/graph_properties.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="357">
-          <caret line="21" column="36" selection-start-line="21" selection-start-column="36" selection-end-line="21" selection-end-column="36" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/properties.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="13" column="22" selection-start-line="13" selection-start-column="22" selection-end-line="13" selection-end-column="22" />
           <folding />
         </state>
       </provider>
@@ -1011,9 +992,40 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/graph_properties.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="357">
+          <caret line="21" column="36" selection-start-line="21" selection-start-column="36" selection-end-line="21" selection-end-column="36" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tkinter_pyplot.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="345">
+          <caret line="135" column="33" selection-start-line="135" selection-start-column="33" selection-end-line="135" selection-end-column="33" />
+          <folding>
+            <element signature="e#272#286#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/usb_comm.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="560">
+          <caret line="263" column="0" selection-start-line="263" selection-start-column="0" selection-end-line="263" selection-end-column="0" />
+          <folding>
+            <element signature="e#262#276#0" expanded="true" />
+            <element signature="e#6770#6949#0" expanded="false" />
+            <element signature="e#7980#9176#0" expanded="false" />
+            <element signature="e#14356#14652#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/amp_frame.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="152">
+        <state relative-caret-position="305">
           <caret line="54" column="48" selection-start-line="54" selection-start-column="48" selection-end-line="54" selection-end-column="48" />
           <folding>
             <element signature="e#321#331#0" expanded="true" />
@@ -1022,25 +1034,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/cv_frame.py">
+    <entry file="file://$PROJECT_DIR$/properties.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="408">
-          <caret line="293" column="49" selection-start-line="293" selection-start-column="49" selection-end-line="293" selection-end-column="49" />
-          <folding>
-            <element signature="e#285#299#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="169">
+          <caret line="42" column="67" selection-start-line="42" selection-start-column="65" selection-end-line="42" selection-end-column="67" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/usb_comm.py">
+    <entry file="file://$PROJECT_DIR$/cv_frame.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="260" column="14" selection-start-line="260" selection-start-column="14" selection-end-line="260" selection-end-column="14" />
+        <state relative-caret-position="152">
+          <caret line="217" column="93" selection-start-line="217" selection-start-column="93" selection-end-line="217" selection-end-column="93" />
           <folding>
-            <element signature="e#262#276#0" expanded="true" />
-            <element signature="e#6770#6949#0" expanded="false" />
-            <element signature="e#7980#9176#0" expanded="false" />
-            <element signature="e#14598#14894#0" expanded="false" />
+            <element signature="e#285#299#0" expanded="true" />
           </folding>
         </state>
       </provider>

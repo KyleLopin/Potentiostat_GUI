@@ -258,16 +258,11 @@ class AmpUsb(object):
         count = 0
         running = True
         while number_packets + 1 > count and running:
-            # print 'packet number: ', count, len(full_array)
             try:
                 usb_input = self.device.read(end_pt.bEndpointAddress, USB_IN_BYTE_SIZE, 1000)
-
                 _hold = convert_uint8_to_signed_int16(usb_input.tolist())
-                # print 'hold: ', _hold
                 full_array.extend(_hold)
                 if TERMINATION_CODE in _hold:
-                    # print 'got termination: ', full_array[-1], full_array.index(TERMINATION_CODE)
-                    # full_array.pop()  # remove ther termination code from the data
                     full_array = full_array[:full_array.index(TERMINATION_CODE)]
                     break
                 count += 1
@@ -279,6 +274,7 @@ class AmpUsb(object):
         return full_array
 
     def get_data_packets(self, endpoint, number_packets=1, allowed_fails=0, timeout=2000):
+        print 'num packets: ', number_packets
         full_array = []
         count = 0
         fails = -1
