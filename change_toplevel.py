@@ -456,6 +456,8 @@ class UserSelectDataDelete(tk.Toplevel):
         frames = []
         choices = []
         index = 0
+        print dir(master)
+        print type(master)
         for _label in master.data.label:
             frames.append(tk.Frame(self))
             choices.append(tk.IntVar())

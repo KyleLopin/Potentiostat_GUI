@@ -17,9 +17,6 @@ import graph_properties
 import option_menu
 import properties
 import pyplot_data_class as data_class
-import tkinter_canvas_graph  # not implemented yet
-import tkinter_pyplot
-# import uart_comm as usb_comm
 import usb_comm
 
 __author__ = 'Kyle Vitautas Lopin'
@@ -28,13 +25,7 @@ OPTIONS_BACKGROUND = 'LightCyan4'
 
 
 class AmpGUI(tk.Tk):
-    """
-    Graphical User Interface to interact with the PSoC electrochemical device
-    Notes:
-    self.data is a pyplot_data_class object and handles all the data to be saved, loaded,
-    displayed, etc.  Look in pyplot_data_class for documentation about self.data
-    TODO: if the device is power cycled it gets re configured so re __init__ the usb_comm if
-    a read or write fails
+    """ Graphical User Interface to interact with the PSoC electrochemical device
     """
     def __init__(self, parent=None):
 
@@ -42,7 +33,7 @@ class AmpGUI(tk.Tk):
                             format="%(levelname)s %(module)s %(lineno)d: %(message)s")
         self.data_save_type = "Converted"
         self.device = None  # no device connected yet
-        self.data = data_class.PyplotData()
+        # self.data = data_class.PyplotData()
 
         # self.operation_params = operation_params
         self.device_params = properties.DeviceParameters()

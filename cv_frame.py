@@ -11,6 +11,7 @@ import Tkinter as tk
 import ttk
 # local files
 import change_toplevel as change_top
+import pyplot_data_class as data_class
 import tkinter_pyplot
 
 __author__ = 'Kyle Vitautas Lopin'
@@ -34,6 +35,7 @@ class CVFrame(ttk.Frame):
         """
         ttk.Frame.__init__(self, parent_notebook)
         self.master = master
+        self.data = data_class.PyplotData()
         self.graph = self.make_graph_area(master, graph_properties)  # make graph
         self.graph.pack(side='left', expand=True, fill=tk.BOTH)
         options_frame = tk.Frame(self, bg=OPTIONS_BACKGROUND, bd=3)
@@ -41,7 +43,7 @@ class CVFrame(ttk.Frame):
         buttons_frame = tk.Frame(options_frame)
         buttons_frame.pack(side='bottom', fill=tk.X)
         # assign device to special handler for CV protocols
-        self.device = self.USBHandler(self.graph, master.device, master)
+        self.device = self.USBHandler(self.graph, master.device, master, self.data)
         # make area to show the CV settings with a custom class
         self.cv_settings_frame = self.CVSettingDisplay(master, options_frame,
                                                        self.graph, master.device_params,
@@ -149,7 +151,7 @@ class CVFrame(ttk.Frame):
         """ Save all the data displayed, allow the user to choose the filename
         """
         logging.debug("saving all data")
-        if len(self.master.data.current_data) == 0:  # no data to save
+        if len(self.data) == 0:  # no data to save
             logging.info("No data to save")
             return
 
@@ -158,7 +160,7 @@ class CVFrame(ttk.Frame):
 
         # Confirm that the user supplied a file
         if _file:
-            self.master.data.save_all_data(_file, self.master.data_save_type)
+            self.data.save_all_data(_file, self.master.data_save_type)
 
     def user_select_delete_some_data(self):
         """ The user wants to delete some of the data, call a top level to handle this
@@ -168,15 +170,18 @@ class CVFrame(ttk.Frame):
     class USBHandler(object):
         """ NOTE: self.device is the AMpUSB class and device.device is the pyUSB class
         """
-        def __init__(self, graph, device, master):
+
+        def __init__(self, graph, device, master, data):
             """ Class to handle all the usb calls to perform cyclic voltammetry experiments
             :param graph: graph the data is displayed in
             :param device: usb_comm device to send calls with
             :param master: root tk.TK
+            :param data: pyplot_data_class
             """
             self.graph = graph
             self.device = device  # bind master device to self
             self.master = master
+            self.data = data
             self.params = master.device_params
             self.settings = master.device_params.cv_settings
             self.usb_packet_count = 0  # how many usb reading to make
@@ -302,8 +307,7 @@ class CVFrame(ttk.Frame):
                 return
             # call function to convert the raw ADC values into the current that passed
             # through the working electrode
-            data = self.device.process_data(raw_data)
-            self.master.current_data = data  # bind data to the master
+            self.data = self.device.process_data(raw_data)  # bind data to cv_frame master
             # make the voltages for the x-axis that correspond to the currents read
             x_line = make_x_line(self.params.cv_settings.low_voltage,
                                  self.params.cv_settings.high_voltage,
@@ -311,7 +315,7 @@ class CVFrame(ttk.Frame):
             if self.run_chrono:  # HACK to test chronoamp experiments
                 x_line = range(4001)
             # Send data to the canvas where it will be saved and displayed
-            canvas.update_data(x_line, data, raw_data)  # send raw data for testing purposes
+            canvas.update_data(x_line, self.data, raw_data)  # send raw data for testing purposes
             self.run_button.config(state='active')
 
         def format_divider(self, _sweep_rate):

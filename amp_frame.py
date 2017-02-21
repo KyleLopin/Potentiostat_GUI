@@ -31,6 +31,7 @@ class AmpFrame(ttk.Frame):
 
     def __init__(self, master, parent_notebook, graph_properties):
         ttk.Frame.__init__(self, parent_notebook)
+        self.data = []
         self.graph = self.make_graph_area(master, graph_properties)
         self.graph.pack(side='left', expand=True, fill=tk.BOTH)
         self.running = False

@@ -40,7 +40,7 @@ class PyplotEmbed(tk.Frame):
         # Make an area to graph the data
         self.graph_area = tk.Frame(self)
         self.plotted_lines = [] # make a list to hold the Line2D to display in the graph
-        self.data = master.data  # alias the data for this class to the main data
+        self.data = _master_frame.data  # alias the data for this class to the main data
 
         self.legend_displayed = False
 
