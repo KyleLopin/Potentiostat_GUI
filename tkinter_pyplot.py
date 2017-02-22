@@ -82,12 +82,15 @@ class PyplotEmbed(tk.Frame):
         self.graph_area.canvas.draw()
         self.graph_area.canvas.get_tk_widget().pack(side='left', fill=tk.BOTH, expand=1)
 
-    def update_data(self, x_data, y_data, _raw_y_data=None):
+    def update_data(self, x_data, y_data, _raw_y_data=None, label=None):
 
         if self.user_sets_labels_after_run:
             self.data.add_data(x_data, y_data, _raw_y_data)
             self.display_data()
-            toplevel.UserSetDataLabel(self)
+            if not label:
+                toplevel.UserSetDataLabel(self)
+            else:
+                self.change_label(label)
         else:
             self.data.add_data(x_data, y_data, _raw_y_data)
             self.display_data()

@@ -96,39 +96,27 @@ class AmpGUI(tk.Tk):
 
     def open_data(self):
         """ Open a csv file that has the data saved in it, in the same format as this program
-        saves the data.
+        saves the data.  Check what type of
         NOTE:
         _data_hold - holds the data as its being pulled from the file with the structure
         _data_hold = [ [x-data-array], [y1-data-array], [y2-data-array], .., [yn-data] ]
         """
-        print "TODO: open data"
-        logging.error("open data here")
-        _file_name = self.open_file('open')  # get a filename
+        logging.debug("opening data")
+        _file_name = cv_frame.open_file('open')  # get a filename
         # Confirm that the user supplied a file
         if _file_name:
-            print "insert function here"
-            logging.info("a file named %s opened", _file_name)
+
+            logging.debug("a file named %s opened", _file_name)
             with open(_file_name, 'rb') as _file:
                 _reader = csv.reader(_file)  # create reader from file
 
                 first_array = _reader.next()  # get the first line that has the data labels
-                _data_hold = []  # create a list to hold the data
-                # Make lists to hold the voltage and data arrays
-                for i in range(len(first_array)):  # make as many lists as there columns in the file
-                    _data_hold.append([])
 
-                for row in _reader:
-                    for i, data in enumerate(row):
-                        _data_hold[i].append(float(data))
+                # figure out what type of data was opened
+                if first_array[0] == 'voltage':
+                    # this is a cyclic voltammetry data
+                    self.cv.open_data(_reader, first_array)
             _file.close()
-
-            self.graph.update_data(_data_hold[0], _data_hold[1])
-            try:
-                # Make the data structure and display the data
-                self.graph.update_data(_data_hold[0], _data_hold[1])
-
-            except Exception as error:
-                logging.error("%s - exception called", error)
 
     def save_selected_data(self):
         print "TODO: save selected data"

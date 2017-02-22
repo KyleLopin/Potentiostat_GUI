@@ -178,6 +178,31 @@ class CVFrame(ttk.Frame):
         """
         change_top.UserSelectDataDelete(self)
 
+    def open_data(self, csv_reader_file, first_line):
+        """ Open a csv file that has the data saved in it, in the same format as this program
+        saves the data.
+        NOTE:
+        _data_hold - holds the data as its being pulled from the file with the structure
+        _data_hold = [ [x-data-array], [y1-data-array], [y2-data-array], .., [yn-data] ]
+        :param csv_reader_file: csv reader object with the data in it
+        :param first_line: first line read from the csv reader
+        """
+        logging.debug("opening data in cv frame")
+        _data_hold = []  # buffer to hold the data we read from the file
+
+        for i in range(len(first_line)):
+            _data_hold.append([])  # add a list to store the column data
+
+        _ = csv_reader_file.next()  # dump the line with notes
+
+        for row in csv_reader_file:
+            for i, data in enumerate(row):
+                _data_hold[i].append(float(data))
+
+        for i in range(1, len(first_line)):  # go through each data line and add it to self.data
+            self.graph.update_data(_data_hold[0], _data_hold[i], label=first_line[i])
+
+
     class USBHandler(object):
         """ NOTE: self.device is the AMpUSB class and device.device is the pyUSB class
         """
