@@ -141,7 +141,7 @@ class CVFrame(ttk.Frame):
     def change_data_labels(self):
         """ Call a toplevel to allow the user to change data labels in the legend
         """
-        change_top.ChangeDataLegend(self.master, self.graph)
+        change_top.ChangeDataLegend(self, self.graph)
 
     def delete_some_data(self, list_of_index_to_delete):
         """ The user wants to delete some of the data traces
