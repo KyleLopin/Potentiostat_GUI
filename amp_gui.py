@@ -7,7 +7,6 @@
 import csv
 import logging
 import Tkinter as tk
-import traceback
 import ttk
 # local files
 import amp_frame
@@ -39,42 +38,29 @@ class AmpGUI(tk.Tk):
         self.voltage_source_label = tk.StringVar()
         self.device = usb_comm.AmpUsb(self, self.device_params)
         graph_props = graph_properties.GraphProps()
+        # frame to put the connection button, graph toolbar and label for VDAC source
+        self.frames = self.make_bottom_frames()
 
         # Make Notebooks to separate the CV and amperometry methods
         self.notebook = ttk.Notebook(self)
-        self.frames = self.make_bottom_frames()
-
         self.cv = cv_frame.CVFrame(self, self.notebook, graph_props)
         self.amp = amp_frame.AmpFrame(self, self.notebook, graph_props)
 
         self.notebook.add(self.cv, text="Cyclic Voltammetry")
         self.notebook.add(self.amp, text="Amperometry")
         self.notebook.pack(side='top', expand=True, fill=tk.BOTH)
-        self.init()
-
-    def init(self):
-        """
-        make all the widget elements in this method
-        :return:
-        """
-
-        bottom_frame = self.frames
-        tk.Label(bottom_frame[2], textvariable=self.voltage_source_label).pack(
-            side='right')
+        tk.Label(self.frames[2], textvariable=self.voltage_source_label).pack(side='right')
         # make a button to display connection settings and allow user to try to reconnect
-        self.make_connect_button(bottom_frame[1])
-
-        # self.notebook.pack(side='top', expand=True, fill=tk.BOTH)
-        # make the option menu
+        self.make_connect_button(self.frames[1])
         option_menu.OptionMenu(self)
 
-    def set_data_type(self, _type):
+    def set_data_type2222(self, _type):
+        # DEPRECATED???
         logging.debug('++++++++++++++++FIGURE OUT WHAT THIS DOES')
         self.data_save_type = _type
 
     def make_connect_button(self, _frame):
-        """
-        Make a button that will allow the user to connect to the amperometry device if it is
+        """ Make a button that will allow the user to connect to the amperometry device if it is
         available. This checks if a device is already connected (in which case it does nothing) and
          attempts to connect if a device is not already attached [see method connect for more
         details].
@@ -98,18 +84,18 @@ class AmpGUI(tk.Tk):
         self.connect_button.pack(side='bottom')
 
     def change_data_labels(self):
-        """
-        Call a toplevel to allow the user to change data labels in the legend
-        :return:
+        """ Call a toplevel to allow the user to change data labels in the legend
         """
         change_top.ChangeDataLegend(self)
 
     def set_voltage_source_label(self, message):
+        """ Give a message to the user about what voltage source is being used
+        :param message: message to give the user
+        """
         self.voltage_source_label.set(message)
 
     def open_data(self):
-        """
-        Open a csv file that has the data saved in it, in the same format as this program
+        """ Open a csv file that has the data saved in it, in the same format as this program
         saves the data.
         NOTE:
         _data_hold - holds the data as its being pulled from the file with the structure
@@ -165,17 +151,19 @@ class AmpGUI(tk.Tk):
         self.data = data_class.PyplotData()
 
     def quit(self):
+        """  Destroy the master """
         self.destroy()
 
     def set_adc_channel(self, _channel):
+        """ Used to debug the device by storing info in the other adc channels that can be gathered
+        :param _channel:   what adc channel in the device to get
+        """
         self.device_params.adc_tia.adc_channel = _channel
 
     def connect(self, button=None):
-        """
-        Function the connect button is attached to, to try to connect a amperometry PSoC device
+        """ Function the connect button is attached to, to try to connect a amperometry PSoC device
         and display if the device is connected or not
         :param button: button the user clicks to try to connect the device
-        :return:
         """
         logging.debug("trying connecting")
 
@@ -204,12 +192,9 @@ class AmpGUI(tk.Tk):
             self.connect_button.config(text="Not Connected", bg='red')
 
     def make_bottom_frames(self):
-        """
-        To pack the matplotlib toolbar and connect button in a nice layout make a frame along the
-        bottom ofthe GUI and fill it with 3 'evenly' spaced frames on the bottom of the GUI to put
-        toolbar and connect button
-        NOTE: if you fill the frames you can see they are not evenly space, but it looks ok so meh
-        :return:
+        """ To pack the matplotlib toolbar and connect button in a nice layout make a frame along
+        the bottom of the GUI and fill it with 3 'evenly' spaced frames
+         :return: list of 3 frames to put toolbar, button, and VDAC label
         """
         # make frame to line the bottom of the GUI
         main_bottom = tk.Frame(self)
@@ -220,95 +205,6 @@ class AmpGUI(tk.Tk):
             bottom_frame.append(tk.Frame(main_bottom, width=220, height=35))
             bottom_frame[i].pack(side='left', fill=tk.X, expand=1)
         return bottom_frame
-
-    def update_param_dict222(self):
-        """
-        TODO: deprecate this
-        update how many data points (dac voltage changes and adc voltage reads) are on each 'side'
-        of the cyclic voltammetry scan ["length_side"] and how many data points total there are
-        (dac voltage changes and adc voltage reads)
-
-        :return: none, just update the global device_params
-        """
-        self.device_params.length_side = (self.device_params.cv_settings.high_voltage -
-                                          self.device_params.cv_settings.low_voltage)
-        self.device_params.data_pts = 2 * (self.device_params.length_side + 1)
-
-        # class CVSettingDisplay22222(tk.Frame):
-        #     """
-        #     Class that makes a frame displaying the settings for a cyclic voltammetry experiment
-        #     """
-        #
-        #     def __init__(self, _master, _frame, graph, device_params):
-        #         tk.Frame.__init__(self, master=_frame)
-        #         # Make String variables to hold the strings that state the parameters; bind them to self
-        #         # so they are easy to pass between functions
-        #         self.low_voltage_var_str = tk.StringVar()
-        #         self.high_voltage_var_str = tk.StringVar()
-        #         self.freq_var_str = tk.StringVar()
-        #         self.current_var_str = tk.StringVar()
-        #
-        #         # Make Labels to display the String variables
-        #         tk.Label(textvariable=self.low_voltage_var_str, master=self).pack()
-        #         tk.Label(textvariable=self.high_voltage_var_str, master=self).pack()
-        #         tk.Label(textvariable=self.freq_var_str, master=self).pack()
-        #         tk.Label(textvariable=self.current_var_str, master=self).pack()
-        #         # make a button to change the cyclic voltammetry settings
-        #         tk.Button(self,
-        #                   text="Change Settings",
-        #                   command=lambda: self.change_cv_settings(_master, graph)).pack(side='bottom',
-        #                                                                                 fill=tk.BOTH)
-        #
-        #         self.cv_label_update(device_params)
-        #
-        #     def cv_label_update(self, device_params):
-        #         """
-        #         Update the user's display of what the parameters of the cyclic voltammetry  scan are set to
-        #         """
-        #         self.low_voltage_var_str.set('Start voltage: ' +
-        #                                      str(device_params.cv_settings.low_voltage) +
-        #                                      ' mV')
-        #         self.high_voltage_var_str.set('End voltage: ' +
-        #                                       str(device_params.cv_settings.high_voltage) +
-        #                                       ' mV')
-        #         self.freq_var_str.set('Sweep rate: ' +
-        #                               str(device_params.cv_settings.sweep_rate) +
-        #                               ' V/s')
-        #         self.current_var_str.set(u'Current range: \u00B1' +
-        #                                  str(1000 / device_params.adc_tia.tia_resistor) +
-        #                                  u' \u00B5A')
-        #
-        #     def change_cv_settings(self, master, graph):
-        #         """
-        #         Make a dialog window to allow the user to change the cyclic voltammetry sweep parameters
-        #         For now, this just calls the SettingChanges class in change_toplevel
-        #         note that self here is the main window
-        #
-        #         :param cv_graph: graph where the data is displayed (needed so that the routine can
-        #         change the axis scales)
-        #         :return:
-        #         """
-        #         change_top.SettingChanges(master, graph)  # bind toplevel to the root tk.tk
-
-
-#
-# def open_file(_type):
-#     """
-#     Make a method to return an open file or a file name depending on the type asked for
-#     :param _type:
-#     :return:
-#     """
-#     # Make the options for the save file dialog box for the user
-#     file_opt = options = {}
-#     options['defaultextension'] = ".csv"
-#     options['filetypes'] = [('All files', '*.*'), ("Comma separate values", "*.csv")]
-#     if _type == 'saveas':
-#         # Ask the user what name to save the file as
-#         _file = tkFileDialog.asksaveasfile(mode='wb', **file_opt)
-#     elif _type == 'open':
-#         _filename = tkFileDialog.askopenfilename(**file_opt)
-#         return _filename
-#     return _file
 
 
 def get_data_from_csv_file(_filename):
@@ -329,8 +225,7 @@ def get_data_from_csv_file(_filename):
 
 
 def check_display_type():
-    """
-    Check if matplotlib graph can be used,
+    """ Check if matplotlib graph can be used,
     :return: type that can be used to make display graph, matplotlib or canvas as a string
     """
     try:
@@ -342,7 +237,6 @@ def check_display_type():
         return "canvas"
 
 if __name__ == '__main__':
-
     app = AmpGUI()
     app.title("Amperometry Device")
     app.geometry("850x400")
