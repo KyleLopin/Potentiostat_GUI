@@ -145,10 +145,9 @@ class AmpGUI(tk.Tk):
         :return:
         """
         # Clear data
-        logging.debug("len self.data.values: %i", self.data.index)
+        logging.debug("deletinga all data")
         # Delete all displayed lines
-        self.graph.delete_all_lines()
-        self.data = data_class.PyplotData()
+        self.cv.delete_all_data()
 
     def quit(self):
         """  Destroy the master """

@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="251b6b94-30bd-4672-9fcb-503d3e5ae2ad" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/amp_gui.py" afterPath="$PROJECT_DIR$/amp_gui.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cv_frame.py" afterPath="$PROJECT_DIR$/cv_frame.py" />
     </list>
     <ignored path="Amp_simple.iws" />
@@ -25,18 +26,6 @@
     <splitter split-orientation="horizontal" split-proportion="0.50537634">
       <split-first>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file leaf-file-name="amp_gui.py" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/amp_gui.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="323">
-                  <caret line="151" column="0" selection-start-line="151" selection-start-column="0" selection-end-line="151" selection-end-column="0" />
-                  <folding>
-                    <element signature="e#272#282#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
           <file leaf-file-name="usb_comm.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/usb_comm.py">
               <provider selected="true" editor-type-id="text-editor">
@@ -52,11 +41,23 @@
               </provider>
             </entry>
           </file>
+          <file leaf-file-name="amp_gui.py" pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/amp_gui.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="425">
+                  <caret line="160" column="0" selection-start-line="160" selection-start-column="0" selection-end-line="160" selection-end-column="0" />
+                  <folding>
+                    <element signature="e#272#282#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
           <file leaf-file-name="tkinter_pyplot.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/tkinter_pyplot.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="526">
-                  <caret line="43" column="0" selection-start-line="43" selection-start-column="0" selection-end-line="43" selection-end-column="0" />
+                <state relative-caret-position="181">
+                  <caret line="169" column="8" selection-start-line="169" selection-start-column="8" selection-end-line="169" selection-end-column="8" />
                   <folding>
                     <element signature="e#272#286#0" expanded="true" />
                   </folding>
@@ -74,11 +75,11 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="pyplot_data_class.py" pinned="false" current-in-tab="true">
+          <file leaf-file-name="pyplot_data_class.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/pyplot_data_class.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="969">
-                  <caret line="78" column="12" selection-start-line="78" selection-start-column="12" selection-end-line="78" selection-end-column="58" />
+                <state relative-caret-position="188">
+                  <caret line="59" column="8" selection-start-line="59" selection-start-column="8" selection-end-line="59" selection-end-column="8" />
                   <folding>
                     <element signature="e#241#251#0" expanded="true" />
                   </folding>
@@ -89,8 +90,8 @@
           <file leaf-file-name="change_toplevel.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/change_toplevel.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="114">
-                  <caret line="452" column="22" selection-start-line="452" selection-start-column="22" selection-end-line="452" selection-end-column="22" />
+                <state relative-caret-position="152">
+                  <caret line="387" column="11" selection-start-line="387" selection-start-column="11" selection-end-line="387" selection-end-column="11" />
                   <folding>
                     <element signature="e#263#277#0" expanded="true" />
                     <element signature="e#10105#10710#0" expanded="false" />
@@ -110,8 +111,8 @@
           <file leaf-file-name="cv_frame.py" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/cv_frame.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="985">
-                  <caret line="157" column="42" selection-start-line="157" selection-start-column="42" selection-end-line="157" selection-end-column="42" />
+                <state relative-caret-position="170">
+                  <caret line="169" column="63" selection-start-line="169" selection-start-column="63" selection-end-line="169" selection-end-column="63" />
                   <folding>
                     <element signature="e#285#299#0" expanded="true" />
                   </folding>
@@ -155,8 +156,8 @@
           <file leaf-file-name="option_menu.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/option_menu.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="169">
-                  <caret line="83" column="92" selection-start-line="83" selection-start-column="77" selection-end-line="83" selection-end-column="92" />
+                <state relative-caret-position="289">
+                  <caret line="46" column="30" selection-start-line="46" selection-start-column="30" selection-end-line="46" selection-end-column="30" />
                   <folding />
                 </state>
               </provider>
@@ -196,8 +197,8 @@
         <option value="$PROJECT_DIR$/tkinter_pyplot.py" />
         <option value="$PROJECT_DIR$/amp_frame.py" />
         <option value="$PROJECT_DIR$/usb_comm.py" />
-        <option value="$PROJECT_DIR$/amp_gui.py" />
         <option value="$PROJECT_DIR$/cv_frame.py" />
+        <option value="$PROJECT_DIR$/amp_gui.py" />
       </list>
     </option>
   </component>
@@ -558,7 +559,21 @@
       <option name="project" value="LOCAL" />
       <updated>1487735371832</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="Fix Save Data button on CV frame">
+      <created>1487735818244</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1487735818244</updated>
+    </task>
+    <task id="LOCAL-00016" summary="Fix Change Data labels toplevel">
+      <created>1487735999025</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1487735999025</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TodoView" selected-index="4">
@@ -664,7 +679,9 @@
     <MESSAGE value="Fix the delete some data button by moving some more amp_gui functions to cv_frame.  Cleaned top of amp_gui up a little bit" />
     <MESSAGE value="Fix toggle toolbar button and its placement, and the other issues with the frames at the bottom" />
     <MESSAGE value="Refactored amp_gui" />
-    <option name="LAST_COMMIT_MESSAGE" value="Refactored amp_gui" />
+    <MESSAGE value="Fix Save Data button on CV frame" />
+    <MESSAGE value="Fix Change Data labels toplevel" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix Change Data labels toplevel" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">
@@ -1023,49 +1040,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tkinter_pyplot.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="526">
-          <caret line="43" column="0" selection-start-line="43" selection-start-column="0" selection-end-line="43" selection-end-column="0" />
-          <folding>
-            <element signature="e#272#286#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/change_toplevel.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="114">
-          <caret line="452" column="22" selection-start-line="452" selection-start-column="22" selection-end-line="452" selection-end-column="22" />
-          <folding>
-            <element signature="e#263#277#0" expanded="true" />
-            <element signature="e#10105#10710#0" expanded="false" />
-            <element signature="e#11834#11910#1" expanded="false" />
-            <element signature="e#16738#18374#0" expanded="false" />
-            <element signature="e#16738#16869#1" expanded="false" />
-            <element signature="e#16911#18057#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/option_menu.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="169">
-          <caret line="83" column="92" selection-start-line="83" selection-start-column="77" selection-end-line="83" selection-end-column="92" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/amp_gui.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="151" column="0" selection-start-line="151" selection-start-column="0" selection-end-line="151" selection-end-column="0" />
-          <folding>
-            <element signature="e#272#282#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/usb_comm.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-239">
@@ -1079,22 +1053,65 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/change_toplevel.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="152">
+          <caret line="387" column="11" selection-start-line="387" selection-start-column="11" selection-end-line="387" selection-end-column="11" />
+          <folding>
+            <element signature="e#263#277#0" expanded="true" />
+            <element signature="e#10105#10710#0" expanded="false" />
+            <element signature="e#11834#11910#1" expanded="false" />
+            <element signature="e#16738#18374#0" expanded="false" />
+            <element signature="e#16738#16869#1" expanded="false" />
+            <element signature="e#16911#18057#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/option_menu.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="289">
+          <caret line="46" column="30" selection-start-line="46" selection-start-column="30" selection-end-line="46" selection-end-column="30" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/pyplot_data_class.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="969">
-          <caret line="78" column="12" selection-start-line="78" selection-start-column="12" selection-end-line="78" selection-end-column="58" />
+        <state relative-caret-position="188">
+          <caret line="59" column="8" selection-start-line="59" selection-start-column="8" selection-end-line="59" selection-end-column="8" />
           <folding>
             <element signature="e#241#251#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/tkinter_pyplot.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="181">
+          <caret line="169" column="8" selection-start-line="169" selection-start-column="8" selection-end-line="169" selection-end-column="8" />
+          <folding>
+            <element signature="e#272#286#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/cv_frame.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="985">
-          <caret line="157" column="42" selection-start-line="157" selection-start-column="42" selection-end-line="157" selection-end-column="42" />
+        <state relative-caret-position="170">
+          <caret line="169" column="63" selection-start-line="169" selection-start-column="63" selection-end-line="169" selection-end-column="63" />
           <folding>
             <element signature="e#285#299#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/amp_gui.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="425">
+          <caret line="160" column="0" selection-start-line="160" selection-start-column="0" selection-end-line="160" selection-end-column="0" />
+          <folding>
+            <element signature="e#272#282#0" expanded="true" />
           </folding>
         </state>
       </provider>

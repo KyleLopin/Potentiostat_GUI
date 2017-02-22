@@ -118,10 +118,10 @@ class CVFrame(ttk.Frame):
         #           command=lambda: self.print_usb_message(device)).pack(side='bottom',
         #                                                                fill=tk.BOTH)
         # experimental button to try chronoamperometry experiments
-        tk.Button(_frame,
-                  text="Chronoamp",
-                  command=lambda: self.chrono_hack(device)).pack(side='bottom',
-                                                                 fill=tk.BOTH)
+        # tk.Button(_frame,
+        #           text="Chronoamp",
+        #           command=lambda: self.chrono_hack(device)).pack(side='bottom',
+        #                                                          fill=tk.BOTH)
 
     def chrono_hack(self, device):
         """ Hack to get a chronoamperometry experiment to run, inactive the button when released
@@ -165,6 +165,13 @@ class CVFrame(ttk.Frame):
         # Confirm that the user supplied a file
         if _file:
             self.data.save_all_data(_file, self.master.data_save_type)
+
+    def delete_all_data(self):
+        """ Clear all the lines in the graph and reset the data
+        :return:
+        """
+        self.graph.delete_all_lines()
+        self.data = data_class.PyplotData()
 
     def user_select_delete_some_data(self):
         """ The user wants to delete some of the data, call a top level to handle this
