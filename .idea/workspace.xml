@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="251b6b94-30bd-4672-9fcb-503d3e5ae2ad" name="Default" comment="Fix toggle toolbar button and its placement, and the other issues with the frames at the bottom">
+    <list default="true" id="251b6b94-30bd-4672-9fcb-503d3e5ae2ad" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/amp_gui.py" afterPath="$PROJECT_DIR$/amp_gui.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cv_frame.py" afterPath="$PROJECT_DIR$/cv_frame.py" />
     </list>
     <ignored path="Amp_simple.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -25,11 +25,11 @@
     <splitter split-orientation="horizontal" split-proportion="0.50537634">
       <split-first>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file leaf-file-name="amp_gui.py" pinned="false" current-in-tab="true">
+          <file leaf-file-name="amp_gui.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/amp_gui.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="408">
-                  <caret line="156" column="30" selection-start-line="156" selection-start-column="30" selection-end-line="156" selection-end-column="30" />
+                <state relative-caret-position="323">
+                  <caret line="151" column="0" selection-start-line="151" selection-start-column="0" selection-end-line="151" selection-end-column="0" />
                   <folding>
                     <element signature="e#272#282#0" expanded="true" />
                   </folding>
@@ -40,8 +40,8 @@
           <file leaf-file-name="usb_comm.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/usb_comm.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="169">
-                  <caret line="41" column="8" selection-start-line="41" selection-start-column="8" selection-end-line="41" selection-end-column="8" />
+                <state relative-caret-position="-239">
+                  <caret line="240" column="8" selection-start-line="240" selection-start-column="8" selection-end-line="240" selection-end-column="8" />
                   <folding>
                     <element signature="e#262#276#0" expanded="true" />
                     <element signature="e#6770#6949#0" expanded="false" />
@@ -74,10 +74,10 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="pyplot_data_class.py" pinned="false" current-in-tab="false">
+          <file leaf-file-name="pyplot_data_class.py" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/pyplot_data_class.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="1224">
+                <state relative-caret-position="969">
                   <caret line="78" column="12" selection-start-line="78" selection-start-column="12" selection-end-line="78" selection-end-column="58" />
                   <folding>
                     <element signature="e#241#251#0" expanded="true" />
@@ -107,11 +107,11 @@
       </split-first>
       <split-second>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file leaf-file-name="cv_frame.py" pinned="false" current-in-tab="false">
+          <file leaf-file-name="cv_frame.py" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/cv_frame.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="254">
-                  <caret line="165" column="35" selection-start-line="165" selection-start-column="35" selection-end-line="165" selection-end-column="35" />
+                <state relative-caret-position="985">
+                  <caret line="157" column="42" selection-start-line="157" selection-start-column="42" selection-end-line="157" selection-end-column="42" />
                   <folding>
                     <element signature="e#285#299#0" expanded="true" />
                   </folding>
@@ -152,7 +152,7 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="option_menu.py" pinned="false" current-in-tab="true">
+          <file leaf-file-name="option_menu.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/option_menu.py">
               <provider selected="true" editor-type-id="text-editor">
                 <state relative-caret-position="169">
@@ -196,8 +196,8 @@
         <option value="$PROJECT_DIR$/tkinter_pyplot.py" />
         <option value="$PROJECT_DIR$/amp_frame.py" />
         <option value="$PROJECT_DIR$/usb_comm.py" />
-        <option value="$PROJECT_DIR$/cv_frame.py" />
         <option value="$PROJECT_DIR$/amp_gui.py" />
+        <option value="$PROJECT_DIR$/cv_frame.py" />
       </list>
     </option>
   </component>
@@ -551,7 +551,14 @@
       <option name="project" value="LOCAL" />
       <updated>1487734462334</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="Refactored amp_gui">
+      <created>1487735371832</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1487735371832</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TodoView" selected-index="4">
@@ -656,7 +663,8 @@
     <MESSAGE value="Moved the CV data from the main amp_gui to the cv_frame class.  Changed amp_frame data to be a list, have to check this." />
     <MESSAGE value="Fix the delete some data button by moving some more amp_gui functions to cv_frame.  Cleaned top of amp_gui up a little bit" />
     <MESSAGE value="Fix toggle toolbar button and its placement, and the other issues with the frames at the bottom" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix toggle toolbar button and its placement, and the other issues with the frames at the bottom" />
+    <MESSAGE value="Refactored amp_gui" />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactored amp_gui" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">
@@ -1004,16 +1012,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pyplot_data_class.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1224">
-          <caret line="78" column="12" selection-start-line="78" selection-start-column="12" selection-end-line="78" selection-end-column="58" />
-          <folding>
-            <element signature="e#241#251#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/amp_frame.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="220">
@@ -1035,19 +1033,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/usb_comm.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="169">
-          <caret line="41" column="8" selection-start-line="41" selection-start-column="8" selection-end-line="41" selection-end-column="8" />
-          <folding>
-            <element signature="e#262#276#0" expanded="true" />
-            <element signature="e#6770#6949#0" expanded="false" />
-            <element signature="e#7980#9176#0" expanded="false" />
-            <element signature="e#14356#14652#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/change_toplevel.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="114">
@@ -1063,16 +1048,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/cv_frame.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="254">
-          <caret line="165" column="35" selection-start-line="165" selection-start-column="35" selection-end-line="165" selection-end-column="35" />
-          <folding>
-            <element signature="e#285#299#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/option_menu.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="169">
@@ -1083,10 +1058,43 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/amp_gui.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="408">
-          <caret line="156" column="30" selection-start-line="156" selection-start-column="30" selection-end-line="156" selection-end-column="30" />
+        <state relative-caret-position="323">
+          <caret line="151" column="0" selection-start-line="151" selection-start-column="0" selection-end-line="151" selection-end-column="0" />
           <folding>
             <element signature="e#272#282#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/usb_comm.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-239">
+          <caret line="240" column="8" selection-start-line="240" selection-start-column="8" selection-end-line="240" selection-end-column="8" />
+          <folding>
+            <element signature="e#262#276#0" expanded="true" />
+            <element signature="e#6770#6949#0" expanded="false" />
+            <element signature="e#7980#9176#0" expanded="false" />
+            <element signature="e#14356#14652#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pyplot_data_class.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="969">
+          <caret line="78" column="12" selection-start-line="78" selection-start-column="12" selection-end-line="78" selection-end-column="58" />
+          <folding>
+            <element signature="e#241#251#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cv_frame.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="985">
+          <caret line="157" column="42" selection-start-line="157" selection-start-column="42" selection-end-line="157" selection-end-column="42" />
+          <folding>
+            <element signature="e#285#299#0" expanded="true" />
           </folding>
         </state>
       </provider>

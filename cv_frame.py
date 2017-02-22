@@ -114,10 +114,6 @@ class CVFrame(ttk.Frame):
                                    command=cv_graph.toolbar_toggle)
         toolbar_button.pack(side='bottom', fill=tk.BOTH)
         # tk.Button(_frame,
-        #           text="Calibrate",
-        #           command=device.calibrate).pack(side='bottom',
-        #                                          fill=tk.BOTH)
-        # tk.Button(_frame,
         #           text="Read Message",
         #           command=lambda: self.print_usb_message(device)).pack(side='bottom',
         #                                                                fill=tk.BOTH)
@@ -158,7 +154,8 @@ class CVFrame(ttk.Frame):
         """ Save all the data displayed, allow the user to choose the filename
         """
         logging.debug("saving all data")
-        if len(self.data) == 0:  # no data to save
+        print self.data
+        if self.data.index == 0:  # no data to save
             logging.info("No data to save")
             return
 
