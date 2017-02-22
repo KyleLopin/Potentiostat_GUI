@@ -32,23 +32,20 @@ class AmpGUI(tk.Tk):
         logging.basicConfig(level=logging.DEBUG,
                             format="%(levelname)s %(module)s %(lineno)d: %(message)s")
         self.data_save_type = "Converted"
-        self.device = None  # no device connected yet
-        # self.data = data_class.PyplotData()
-
-        # self.operation_params = operation_params
+        # self.device = None  # no device connected yet, placeholder
         self.device_params = properties.DeviceParameters()
         self.display_type = check_display_type()
         tk.Tk.__init__(self, parent)
         self.parent = parent
         self.voltage_source_label = tk.StringVar()
         self.device = usb_comm.AmpUsb(self, self.device_params)
+        graph_props = graph_properties.GraphProps()
 
         # Make Notebooks to separate the CV and amperometry methods
         self.notebook = ttk.Notebook(self)
         ttk_amp_frame = ttk.Frame(self.notebook)
         ttk_cv_frame = ttk.Frame(self.notebook)
 
-        graph_props = graph_properties.GraphProps()
         self.frames = self.make_bottom_frames()
 
         self.cv = cv_frame.CVFrame(self, self.notebook, graph_props)
@@ -63,45 +60,14 @@ class AmpGUI(tk.Tk):
         make all the widget elements in this method
         :return:
         """
-        graph_props = graph_properties.GraphProps()
         # self.update_param_dict()
         bottom_frame = self.make_bottom_frames()
         tk.Label(bottom_frame[1], textvariable=self.voltage_source_label).pack(
             side='right')
+        # make a button to display connection settings and allow user to try to reconnect
         self.make_connect_button(bottom_frame[1])
 
-        # Add the cyclic voltammetry graph, first decide how to make the graph and then display it
-        # NOTE: THE canvas_graph_embed DOES NOT WORK RIGHT NOW
-        if self.display_type == 'matplotlib':
-            # calculate the max current measurable
-            current_lim = 1.2 * 1000. / self.device_params.adc_tia.tia_resistor
-            low_voltage = self.device_params.cv_settings.low_voltage
-            high_voltage = self.device_params.cv_settings.high_voltage
-            # amp_graph = tkinter_pyplot.PyplotEmbed(self,
-            #                                        bottom_frame[0],
-            #                                        graph_props.amp_plot,
-            #                                        amp_frame,
-            #                                        current_lim, low_voltage, high_voltage)
-            # cv_graph = tkinter_pyplot.PyplotEmbed(self,
-            #                                       bottom_frame[0],
-            #                                       graph_props.cv_plot,
-            #                                       cv_frame,
-            #                                       current_lim, low_voltage, high_voltage)
-            # else:  # NOT WORKING
-            #     amp_graph = tkinter_canvas_graph.canvas_graph_embed(master=amp_frame,
-            #                                                         properties=graph_props.amp_canvas)
-            # cv_graph = tkinter_canvas_graph.canvas_graph_embed(master=cv_frame,
-            #                                                    properties=graph_props.cv_canvas)
-        # self.cv.graph.pack(side='left', expand=True, fill=tk.BOTH)
-        # self.graph = self.cv.graph
-        # call a routine to make all the components to put in the notebook for cyclic voltammetry
-        # self.build_cv_notebook(self.cv.graph, cv_frame)
-        # amp_graph.pack(expand=True, fill=tk.BOTH)
-
-        # make a button to display connection settings and allow user to try to reconnect
-
         self.notebook.pack(side='top', expand=True, fill=tk.BOTH)
-
         # make the option menu
         option_menu.OptionMenu(self)
 
@@ -188,16 +154,11 @@ class AmpGUI(tk.Tk):
     def user_select_delete_some_data(self):
         change_top.UserSelectDataDelete(self)
 
-    def delete_some_data(self, list_of_index_to_delete):
-        for index in reversed(list_of_index_to_delete):
-            self.graph.delete_a_line(index)
-
     def delete_all_data_user_prompt(self):
         change_top.UserDeleteDataWarning(self)
 
     def delete_all_data(self):
-        """
-        Delete all the data collected so far and clear the lines from the plot area
+        """ Delete all the data collected so far and clear the lines from the plot area
         :return:
         """
         # Clear data

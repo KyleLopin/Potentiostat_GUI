@@ -147,6 +147,13 @@ class CVFrame(ttk.Frame):
         """
         change_top.ChangeDataLegend(self.master, self.graph)
 
+    def delete_some_data(self, list_of_index_to_delete):
+        """ The user wants to delete some of the data traces
+        :param list_of_index_to_delete: index of the data to delete
+        """
+        for index in reversed(list_of_index_to_delete):
+            self.graph.delete_a_line(index)
+
     def save_all_data(self):
         """ Save all the data displayed, allow the user to choose the filename
         """
