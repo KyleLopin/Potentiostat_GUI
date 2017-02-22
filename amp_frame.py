@@ -161,7 +161,7 @@ class AmpFrame(ttk.Frame):
             if self.running:
                 get = self.device.usb_read_message()
                 if get:
-                    logging.info("getting channel: %s", get[4])
+                    logging.debug("getting channel: %s", get[4])
                     self.device.usb_write("F" + get[4])
                     got_data = self.data_try()  # have to read in data packets
                     if got_data:
@@ -171,14 +171,13 @@ class AmpFrame(ttk.Frame):
             while True:
                 try:
                     usb_input = self.device.get_data_packets(self.endpoint, self.number_packets)
-                    # print 'got: ', usb_input
                     data = self.device.process_data(usb_input)
                 except Exception as error:
                     logging.error("missed data read: %s", error)
+                # dump the first read of the USB incase it is garbate
+                # TODO: Check this is still needed
                 if not self.first_read_dumbed:
                     self.first_read_dumbed = True
-                    print 'dumping: ', self.data
-                    print usb_input
                     return False
 
                 if usb_input:
@@ -203,7 +202,6 @@ class AmpFrame(ttk.Frame):
             :param rate: the sampling rate desired (in kHz)
             """
             formatted_period, self.pwm_timer_period_amp = self.format_period(rate)
-            # print 'checker: ', formatted_period, self.pwm_timer_period_amp
             self.device.usb_write('T|' + formatted_period)
             self.device.device_params.PWM_period = self.pwm_timer_period_amp
 

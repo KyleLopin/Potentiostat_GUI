@@ -67,7 +67,7 @@ class CVFrame(ttk.Frame):
             low_voltage = master.device_params.cv_settings.low_voltage
             high_voltage = master.device_params.cv_settings.high_voltage
             graph = tkinter_pyplot.PyplotEmbed(master,
-                                               master.frames[1],
+                                               master.frames[0],
                                                # frame to put the toolbar in NOTE: hack, fix this
                                                graph_props.cv_plot,
                                                self,

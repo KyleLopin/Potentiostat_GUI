@@ -32,7 +32,6 @@ class AmpGUI(tk.Tk):
         logging.basicConfig(level=logging.DEBUG,
                             format="%(levelname)s %(module)s %(lineno)d: %(message)s")
         self.data_save_type = "Converted"
-        # self.device = None  # no device connected yet, placeholder
         self.device_params = properties.DeviceParameters()
         self.display_type = check_display_type()
         tk.Tk.__init__(self, parent)
@@ -43,9 +42,6 @@ class AmpGUI(tk.Tk):
 
         # Make Notebooks to separate the CV and amperometry methods
         self.notebook = ttk.Notebook(self)
-        ttk_amp_frame = ttk.Frame(self.notebook)
-        ttk_cv_frame = ttk.Frame(self.notebook)
-
         self.frames = self.make_bottom_frames()
 
         self.cv = cv_frame.CVFrame(self, self.notebook, graph_props)
@@ -53,21 +49,22 @@ class AmpGUI(tk.Tk):
 
         self.notebook.add(self.cv, text="Cyclic Voltammetry")
         self.notebook.add(self.amp, text="Amperometry")
-        self.init(ttk_amp_frame, ttk_cv_frame)
+        self.notebook.pack(side='top', expand=True, fill=tk.BOTH)
+        self.init()
 
-    def init(self, amp_frame, cv_frame):
+    def init(self):
         """
         make all the widget elements in this method
         :return:
         """
-        # self.update_param_dict()
-        bottom_frame = self.make_bottom_frames()
-        tk.Label(bottom_frame[1], textvariable=self.voltage_source_label).pack(
+
+        bottom_frame = self.frames
+        tk.Label(bottom_frame[2], textvariable=self.voltage_source_label).pack(
             side='right')
         # make a button to display connection settings and allow user to try to reconnect
         self.make_connect_button(bottom_frame[1])
 
-        self.notebook.pack(side='top', expand=True, fill=tk.BOTH)
+        # self.notebook.pack(side='top', expand=True, fill=tk.BOTH)
         # make the option menu
         option_menu.OptionMenu(self)
 

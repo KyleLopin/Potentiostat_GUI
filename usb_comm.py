@@ -274,7 +274,7 @@ class AmpUsb(object):
         return full_array
 
     def get_data_packets(self, endpoint, number_packets=1, allowed_fails=0, timeout=2000):
-        print 'num packets: ', number_packets
+        # TODO: combine with the above function
         full_array = []
         count = 0
         fails = -1
