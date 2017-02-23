@@ -317,13 +317,13 @@ class AmpUsb(object):
 
     def calibrate(self):
         """ Start calibrating the ADC - TIA module by first sending the proper command to the
-        device for it to measure the data, then call calibrate_data to get the data and send
+        device for it to measure the data, then call _calibrate_data to get the data and send
         it to the adc_tia to be processed
         """
         self.usb_write('B')
-        self.master.after(400, func=self.calibrate_data)
+        self.master.after(400, func=self._calibrate_data)
 
-    def calibrate_data(self):
+    def _calibrate_data(self):
         """ To be used after the command for the device to measure the calibration data has been
         sent.  Gets the data from the device and sends it to the adc_tia module to be processed
         """

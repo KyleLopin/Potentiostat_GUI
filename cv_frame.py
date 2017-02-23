@@ -50,6 +50,7 @@ class CVFrame(ttk.Frame):
                                                        self.device)
         self.cv_settings_frame.pack(side="top", fill=tk.X)
         # initialize the device so the user can hit the run button
+        time.sleep(0.4)  # give time for the calibration data to be processed
         self.device.send_cv_parameters()
         # make the buttons the user can use in the CV experiments
         self.make_cv_buttons(buttons_frame, self.graph, self.device)
