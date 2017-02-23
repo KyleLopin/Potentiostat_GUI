@@ -83,7 +83,7 @@ class PyplotEmbed(tk.Frame):
         self.graph_area.canvas.get_tk_widget().pack(side='left', fill=tk.BOTH, expand=1)
 
     def update_data(self, x_data, y_data, _raw_y_data=None, label=None):
-
+        print _raw_y_data
         if self.user_sets_labels_after_run:
             self.data.add_data(x_data, y_data, _raw_y_data)
             self.display_data()
@@ -138,6 +138,8 @@ class PyplotEmbed(tk.Frame):
                                                _box.height])
             self.legend_displayed = True
         # add the data to the plot area and update the legend
+        print len(x_data), len(y_data)
+        print y_data
         l = self.graph_area.axis.plot(x_data, y_data, label=_label)
         self.data.colors.append(l[0].get_color())
         self.plotted_lines.append(l)

@@ -15,7 +15,6 @@ import cv_frame
 import graph_properties
 import option_menu
 import properties
-import pyplot_data_class as data_class
 import usb_comm
 
 __author__ = 'Kyle Vitautas Lopin'
@@ -23,7 +22,7 @@ __author__ = 'Kyle Vitautas Lopin'
 OPTIONS_BACKGROUND = 'LightCyan4'
 
 
-class AmpGUI(tk.Tk):
+class ElectroChemGUI(tk.Tk):
     """ Graphical User Interface to interact with the PSoC electrochemical device
     """
     def __init__(self, parent=None):
@@ -54,9 +53,12 @@ class AmpGUI(tk.Tk):
         self.make_connect_button(self.frames[1])
         option_menu.OptionMenu(self)
 
-    def set_data_type2222(self, _type):
-        # DEPRECATED???
-        logging.debug('++++++++++++++++FIGURE OUT WHAT THIS DOES')
+    def set_data_type(self, _type):
+        """ Developer option to have the device not convert the incoming data and just report and
+        save the raw numbers
+        :param _type: string of either "Raw Counts", or "Converted"
+        """
+        logging.info("Developer option to save raw adc counts selected")
         self.data_save_type = _type
 
     def make_connect_button(self, _frame):
@@ -118,10 +120,6 @@ class AmpGUI(tk.Tk):
                     self.cv.open_data(_reader, first_array)
             _file.close()
 
-    def save_selected_data(self):
-        print "TODO: save selected data"
-        logging.error("save selected data here")
-
     def user_select_delete_some_data(self):
         change_top.UserSelectDataDelete(self)
 
@@ -132,7 +130,6 @@ class AmpGUI(tk.Tk):
         """ Delete all the data collected so far and clear the lines from the plot area
         :return:
         """
-        # Clear data
         logging.debug("deletinga all data")
         # Delete all displayed lines
         self.cv.delete_all_data()
@@ -224,7 +221,7 @@ def check_display_type():
         return "canvas"
 
 if __name__ == '__main__':
-    app = AmpGUI()
+    app = ElectroChemGUI()
     app.title("Amperometry Device")
     app.geometry("850x400")
     app.mainloop()

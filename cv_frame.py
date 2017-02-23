@@ -154,7 +154,8 @@ class CVFrame(ttk.Frame):
         """ Save all the data displayed, allow the user to choose the filename
         """
         logging.debug("saving all data")
-        print self.data
+        print self.data.index
+        print self.data.voltage_data
         if self.data.index == 0:  # no data to save
             logging.info("No data to save")
             return
@@ -339,6 +340,7 @@ class CVFrame(ttk.Frame):
             if self.run_chrono:
                 self.usb_packet_count = 125
             raw_data = self.device.get_data(self.usb_packet_count)
+            self.run_button.config(state='active')
             if not raw_data:  # if something is wrong just return
                 return
             # call function to convert the raw ADC values into the current that passed
@@ -352,7 +354,6 @@ class CVFrame(ttk.Frame):
                 x_line = range(4001)
             # Send data to the canvas where it will be saved and displayed
             canvas.update_data(x_line, self.data, raw_data)  # send raw data for testing purposes
-            self.run_button.config(state='active')
 
         def format_divider(self, _sweep_rate):
             """ Take in the users desired sweet rate and convert it to the number needed to input
