@@ -70,6 +70,7 @@ class AmpUsb(object):
             self.working = self.connection_test()
         else:
             logging.info("not found")
+            self.working = False
             return None
 
         # If it was found to be working properly initialize the device
@@ -320,8 +321,9 @@ class AmpUsb(object):
         device for it to measure the data, then call _calibrate_data to get the data and send
         it to the adc_tia to be processed
         """
-        self.usb_write('B')
-        self.master.after(400, func=self._calibrate_data)
+        if self.working:
+            self.usb_write('B')
+            self.master.after(400, func=self._calibrate_data)
 
     def _calibrate_data(self):
         """ To be used after the command for the device to measure the calibration data has been

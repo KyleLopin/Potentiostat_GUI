@@ -197,15 +197,17 @@ class ADC_TIA(object):
         volts_to_current = 1.0 / self.tia_resistor
         return counts_to_volts * volts_to_current
 
-    def set_value(self, new_tia_value, new_adc_gain_value):
+    def set_value(self, new_tia_value, new_adc_gain_value=None):
         """ The TIA or ADC have changed so update the values
         :param new_tia_value: new tia resistor value
         :param new_adc_gain_value: new buffer gain for the adc
         :return:
         """
         self.tia_resistor = new_tia_value
-        self.adc_gain = new_adc_gain_value
+        if new_adc_gain_value:
+            self.adc_gain = new_adc_gain_value
         self.counts_to_current = self.calc_counts_to_current_ua()
+        print 'counts to current: ', self.counts_to_current
 
     def calibrate(self, data):
         """ Calibrate the TIA ADC with the onboard IDAC and calculate the adc shift gain functions

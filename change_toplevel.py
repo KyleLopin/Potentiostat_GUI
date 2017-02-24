@@ -76,9 +76,10 @@ class CVSettingChanges(tk.Toplevel):
                                     u'\u00B10.25 \u00B5A',
                                     u'\u00B10.125 \u00B5A']
 
-        current_option_list_index = TIA_RESISTOR_VALUES.index(
-            _master.device_params.adc_tia.tia_resistor)
-        self.current_options.set(self.current_option_list[current_option_list_index])
+        if _master.device_params.adc_tia.tia_resistor in TIA_RESISTOR_VALUES:
+            current_option_list_index = TIA_RESISTOR_VALUES.index(
+                _master.device_params.adc_tia.tia_resistor)
+            self.current_options.set(self.current_option_list[current_option_list_index])
 
         current = tk.OptionMenu(self, self.current_options, *self.current_option_list)
         current.grid(row=3, column=1)
@@ -448,7 +449,9 @@ class UserSelectDataDelete(tk.Toplevel):
         tk.Toplevel.__init__(self, master)
         big_font = tkFont.Font(family="Helvetica", size=14)
         small_font = tkFont.Font(family="Helvetica", size=12)
-        self.geometry("200x200+200+200")
+        size = len(master.data.label)
+        length = 50 * size
+        self.geometry("200x{0}".format(length))
         self.title("Select data to delete")
         tk.Label(self,
                  text="Select data to delete",
@@ -456,8 +459,7 @@ class UserSelectDataDelete(tk.Toplevel):
         frames = []
         choices = []
         index = 0
-        print dir(master)
-        print type(master)
+        print master.data.label
         for _label in master.data.label:
             frames.append(tk.Frame(self))
             choices.append(tk.IntVar())
@@ -608,33 +610,38 @@ class EnterCustomTIAResistor(tk.Toplevel):
 
         middle_frame = tk.Frame(self)
         middle_frame.pack(side='top')
-        tk.Label(middle_frame, text="enter channel used (0 or 1):").pack(side='left')
-        _channel_value = tk.StringVar()
-        channel_value_entry = tk.Entry(middle_frame, textvariable=_channel_value)
-        channel_value_entry.pack(side='left')
+        # tk.Label(middle_frame, text="enter channel used (0 or 1):").pack(side='left')
+        # _channel_value = tk.StringVar()
+        # channel_value_entry = tk.Entry(middle_frame, textvariable=_channel_value)
+        # channel_value_entry.pack(side='left')
 
-        tk.Label(self, text="channel 0 is between P0[4] and p6[0]").pack(side='top')
-        tk.Label(self, text="channel 1 is between P0[5] and p6[0]").pack(side='top')
+        # tk.Label(self, text="channel 0 is between P0[4] and p6[0]").pack(side='top')
+        # tk.Label(self, text="channel 1 is between P0[5] and p6[0]").pack(side='top')
 
         button_frame = tk.Frame(self)
         button_frame.pack(side='top')
         tk.Button(button_frame,
                   text='Save',
                   width=10,
-                  command=lambda: self.save(master,
-                                            resistor_value_enter.get("1.0", 'end-1c'),
-                                            channel_value_entry.get("1.0", 'end-1c'))
+                  command=lambda: self.save(master, resistor_value_enter.get())
+                  # resistor_value_enter.get("1.0", 'end-1c'))  #,
+                  # channel_value_entry.get("1.0", 'end-1c'))
                   ).pack(side='left', padx=10, fill=tk.X, expand=1)
         tk.Button(button_frame,
                   text='Exit',
                   width=10,
                   command=self.destroy).pack(side='left', padx=10, fill=tk.X, expand=1)
 
-    def save(self, master, resistor_value, channel_value):
+    def save(self, master, resistor_value):
         """ Save user entered information
         :param master: overall master
         :param resistor_value: resistor values used
         :param channel_value: ???
         """
-        master.device.set_custom_resistor_channel(channel_value)
-        master.device_params.TIA_resistor = resistor_value
+        # master.device.set_custom_resistor_channel(channel_value)
+        resistor_value = float(resistor_value)
+        master.device_params.adc_tia.set_value(resistor_value)
+        master.device.set_custom_resistor_channel('0')
+        current_limit = 1200.0 / resistor_value
+        master.cv.graph.resize_y(current_limit)
+        self.destroy()

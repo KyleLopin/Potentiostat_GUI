@@ -114,10 +114,10 @@ class CVFrame(ttk.Frame):
                                    text="Add toolbar",
                                    command=cv_graph.toolbar_toggle)
         toolbar_button.pack(side='bottom', fill=tk.BOTH)
-        # tk.Button(_frame,
-        #           text="Read Message",
-        #           command=lambda: self.print_usb_message(device)).pack(side='bottom',
-        #                                                                fill=tk.BOTH)
+        tk.Button(_frame,
+                  text="Read Message",
+                  command=lambda: self.print_usb_message(device)).pack(side='bottom',
+                                                                       fill=tk.BOTH)
         # experimental button to try chronoamperometry experiments
         # tk.Button(_frame,
         #           text="Chronoamp",
@@ -137,7 +137,7 @@ class CVFrame(ttk.Frame):
         """ For developing, check if a message is waiting in the usb
         :param device:  usb device to read
         """
-        print device.usb_read_message(1)
+        print device.usb_read_message()
 
     def change_data_labels(self):
         """ Call a toplevel to allow the user to change data labels in the legend
@@ -385,6 +385,9 @@ class CVFrame(ttk.Frame):
             # 500mV with 1 mV increments then put in 500) to put into the dac and pad it with zeros
             dac_value = self.params.dac.get_dac_count(input_voltage)
             return '{0:04d}'.format(dac_value), dac_value
+
+        def usb_read_message(self):
+            return self.device.usb_read_message()
 
     class CVSettingDisplay(tk.Frame):
         """ Class that makes a frame displaying the settings for a cyclic voltammetry experiment

@@ -45,6 +45,8 @@ class PyplotData(object):
         self.notes.append(" ")
         if _new_raw_y:
             self.y_raw_data.append(_new_raw_y)
+        else:
+            self.y_raw_data.append([0])
         self.index += 1  # increment data index so the next data series will be advanced
         self.name_index += 1
         logging.debug("adding data, index: %i", self.index)
