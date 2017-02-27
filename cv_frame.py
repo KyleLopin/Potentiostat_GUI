@@ -257,6 +257,14 @@ class CVFrame(ttk.Frame):
             formatted_freq_divider, pwm_period = \
                 self.format_divider(self.settings.sweep_rate)
 
+            self.params.cv_settings.low_voltage = ((low_dac_value *
+                                                    self.params.dac.voltage_step_size) -
+                                                   self.params.virtual_ground_shift)
+
+            self.params.cv_settings.high_voltage = ((high_dac_value *
+                                                     self.params.dac.voltage_step_size) -
+                                                    self.params.virtual_ground_shift)
+
             self.params.PWM_period = pwm_period
 
             # send those values to the device in the proper format for the PSoC amperometry device
