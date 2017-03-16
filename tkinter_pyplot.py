@@ -63,6 +63,7 @@ class PyplotEmbed(tk.Frame):
             eval("plt." + key + "(" + value + ")")
         # get the limits of the x axis from the parameters if they are not in the properties
         if "xlim" not in plt_props:
+            logging.info("setting xlim (low, high): {0}, {1}".format(x_low, x_high))
             plt.xlim(x_low, x_high)
 
         # calculate the current limit that can be reached, which depends on the resistor value
@@ -83,7 +84,6 @@ class PyplotEmbed(tk.Frame):
         self.graph_area.canvas.get_tk_widget().pack(side='left', fill=tk.BOTH, expand=1)
 
     def update_data(self, x_data, y_data, _raw_y_data=None, label=None):
-        print _raw_y_data
         if self.user_sets_labels_after_run:
             self.data.add_data(x_data, y_data, _raw_y_data)
             self.display_data()
@@ -138,8 +138,11 @@ class PyplotEmbed(tk.Frame):
                                                _box.height])
             self.legend_displayed = True
         # add the data to the plot area and update the legend
-        print len(x_data), len(y_data)
-        print y_data
+            #  print len(x_data), len(y_data)
+            # print self.data.y_raw_data[index]
+            # print x_data
+            # for i in range(len(x_data)):
+            # print x_data[i], self.data.y_raw_data[index][i]
         l = self.graph_area.axis.plot(x_data, y_data, label=_label)
         self.data.colors.append(l[0].get_color())
         self.plotted_lines.append(l)

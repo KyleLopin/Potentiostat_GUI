@@ -13,6 +13,9 @@ ADC_BITS = 12
 PWM_FREQ = 2400000.
 VIRTUAL_GROUND = 2048.
 
+START_VOLTAGE = 500.
+END_VOLTAGE = -800.
+
 
 class DeviceParameters(object):
     """
@@ -69,11 +72,13 @@ class CVSettings(object):
         :param dac: DAC instance
         :return:
         """
-        self.low_voltage = -500.  # mV, start with basic parameters
-        self.high_voltage = 500.  # mV
+        self.start_voltage = START_VOLTAGE  # mV, start with basic parameters
+        self.end_voltage = END_VOLTAGE  # mV
+        self.low_voltage = min([self.start_voltage, self.end_voltage])
+        self.high_voltage = max([self.start_voltage, self.end_voltage])
         self.sweep_rate = 1.0  # V/s
         self.pwm_period_value = self.calculate_pwm_period(clock_freq, dac)
-        self.delay_time = 2 * (self.high_voltage - self.low_voltage) / self.sweep_rate
+        self.delay_time = 2 * abs(self.high_voltage - self.low_voltage) / self.sweep_rate
 
     def calculate_pwm_period(self, clk_freq, dac):
         """ Take the clock frequency that is driving the PWM and divide it by the number of voltage
@@ -84,17 +89,19 @@ class CVSettings(object):
         pwm_period_value = int(round(clk_freq / (self.sweep_rate * 1000 / dac.voltage_step_size)))
         return pwm_period_value
 
-    def update_settings(self, low_voltage, high_voltage, sweep_rate):
+    def update_settings(self, start_voltage, end_voltage, sweep_rate):
         """ Update the CV settings
-        :param low_voltage: mV, voltage the user wants to start at
-        :param high_voltage: mV, voltage the user wants to end the cyclic voltammetry at
+        :param start_voltage: mV, voltage the user wants to start at
+        :param end_voltage: mV, voltage the user wants to end the cyclic voltammetry at
         :param sweep_rate: V/s, rate of change of the cyclic voltammetry
         :return:
         """
-        self.low_voltage = low_voltage
-        self.high_voltage = high_voltage
+        self.start_voltage = start_voltage
+        self.end_voltage = end_voltage
+        self.low_voltage = min([self.start_voltage, self.end_voltage])  # not dry, in init
+        self.high_voltage = max([self.start_voltage, self.end_voltage])
         self.sweep_rate = sweep_rate
-        self.delay_time = 2 * (self.high_voltage - self.low_voltage) / self.sweep_rate
+        self.delay_time = 2 * abs(self.high_voltage - self.low_voltage) / self.sweep_rate
 
 
 class AmpSettings(object):

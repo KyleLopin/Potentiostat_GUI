@@ -155,8 +155,6 @@ class CVFrame(ttk.Frame):
         """ Save all the data displayed, allow the user to choose the filename
         """
         logging.debug("saving all data")
-        print self.data.index
-        print self.data.voltage_data
         if self.data.index == 0:  # no data to save
             logging.info("No data to save")
             return
@@ -250,34 +248,35 @@ class CVFrame(ttk.Frame):
             # minus sign is needed because the device sets the common electrode to the voltage and
             # assumes the working electrode is ground, but voltammetry has the voltage on the
             # working electrode compared to the common electrode
-            formatted_low_volt, low_dac_value = \
+            formatted_start_volt, start_dac_value = \
                 self.format_voltage(-self.settings.low_voltage)
-            formatted_high_volt, high_dac_value = \
+            formatted_end_volt, end_dac_value = \
                 self.format_voltage(-self.settings.high_voltage)
             formatted_freq_divider, pwm_period = \
                 self.format_divider(self.settings.sweep_rate)
 
-            self.params.cv_settings.low_voltage = ((low_dac_value *
+            self.params.cv_settings.low_voltage = ((start_dac_value *
                                                     self.params.dac.voltage_step_size) -
                                                    self.params.virtual_ground_shift)
 
-            self.params.cv_settings.high_voltage = ((high_dac_value *
+            self.params.cv_settings.high_voltage = ((end_dac_value *
                                                      self.params.dac.voltage_step_size) -
                                                     self.params.virtual_ground_shift)
 
             self.params.PWM_period = pwm_period
 
             # send those values to the device in the proper format for the PSoC amperometry device
-            to_amp_device = '|'.join(["S", formatted_low_volt,
-                                      formatted_high_volt, formatted_freq_divider])
+            to_amp_device = '|'.join(["S", formatted_start_volt,
+                                      formatted_end_volt, formatted_freq_divider])
             # save how many data packets should be received back from the usb
-            packet_count = (2 * (- high_dac_value + low_dac_value + 1)
+            packet_count = (2 * (abs(end_dac_value - start_dac_value) + 1)
                             / (float(USB_IN_BYTE_SIZE) / 2.0))  # data is 2 bytes long
             # round up the packet count
             self.usb_packet_count = int(packet_count) + (packet_count % USB_IN_BYTE_SIZE > 0)
             # calculate what the actual voltage the device will make.  This might be slightly
             # different from the user input because of the VDAC's resolution
-            self.params.actual_low_volt = (- low_dac_value + low_dac_value
+            # TODO: figure out if this is working
+            self.params.actual_low_volt = (- start_dac_value + start_dac_value
                                            % self.params.dac.voltage_step_size)
             time.sleep(0.5)
             self.device.usb_write(to_amp_device)
@@ -285,6 +284,7 @@ class CVFrame(ttk.Frame):
             # Write to the timing PWM compare register so the dac adc timing is correct
             compare_value = pwm_period / 2
             self.device.write_timer_compare(compare_value)
+
 
         def run_scan(self, canvas, run_button):
             """ This will run a cyclic voltammetry scan. To do this it follows the steps
@@ -349,6 +349,7 @@ class CVFrame(ttk.Frame):
             if self.run_chrono:
                 self.usb_packet_count = 125
             raw_data = self.device.get_data(self.usb_packet_count)
+            raw_data.pop(0)
             self.run_button.config(state='active')
             if not raw_data:  # if something is wrong just return
                 return

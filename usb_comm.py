@@ -210,9 +210,10 @@ class AmpUsb(object):
         :param source:
         :return:
         """
+        print 'selecting source: ', source
         if source == self.device_params.dac.source:
             return  # selected source that is already choosen
-        if source == "VDAC":
+        if source == "8-bit DAC":
             # tell the device to set the voltage source as the DVDAC
             self.usb_write("VS1")
             # set the device dac attribute to VDAC
@@ -230,6 +231,11 @@ class AmpUsb(object):
                 "Voltage source: Dithering VDAC (capacitor installed)")
             # resend the CV prameters with new numbers because the dac changes so the
             self.send_cv_parameters()
+
+    def send_cv_parameters(self):
+        """ Make it easier to updata the Cyclic Voltammetry frames, send it to the cv usb handler
+        """
+        self.master.cv.device.send_cv_parameters()
 
     def write_timer_compare(self, value):
         """ Write to the device to update the PWM compare value to set when the current is measured
@@ -265,6 +271,7 @@ class AmpUsb(object):
                 full_array.extend(_hold)
                 if TERMINATION_CODE in _hold:
                     full_array = full_array[:full_array.index(TERMINATION_CODE)]
+                    logging.debug("got termination code")
                     break
                 count += 1
             except Exception as error:

@@ -117,42 +117,37 @@ class CVSettingChanges(tk.Toplevel):
         :param cv_display: display frame of the cyclic voltammetry parameters
         :return: the parameters are updated in the main windows operational_params dictionary
         """
-        # Save the voltage and frequency parameters to the current instance so they don't
-        # have to passed all the time to the functions
-        self._low_volt = _low_volt
-        self._high_volt = _high_volt
-        self._freq = _freq
-        self._current_range = _range
 
         # set a flag that tells the program to send a parameter change to the MCU turn this
         # flag off if there is a problem later on and the MCU should not be sent new parameters
         changing_flag = True
 
-        # try to convert the voltages to integers and sweep rate to a float
+        # try to convert the voltages to integers and sweep rate to a float and save the voltage
+        # and frequency parameters to the current instance so they don't
+        # have to passed all the time to the functions
         try:
-            self._low_volt = int(float(self._low_volt))
-            self._high_volt = int(float(self._high_volt))
-            self._freq = float(self._freq)
+            self._low_volt = int(float(_low_volt))
+            self._high_volt = int(float(_high_volt))
+            self._freq = float(_freq)
             # don't have to check current range cause it was chosen from an option menu
         except ValueError as error:  # user input values failed
             logging.info("Error in data input format: %s", error)
             changing_flag = False  # if the inputted data is not correct, change the flag so
             # that the program will not try to send bad data to the MCU
-
+        print 'low then high1: ', self._low_volt, self._high_volt
         # check for changes to any of the values, do not bother the amplifier if there is no update
         if self.sweep_param_is_changed(_master.device_params):
-            # make sure the lower amplitude is lower than the high amplitude
-            # and that there were no errors from the user
-            if (self._low_volt < self._high_volt) and changing_flag:
-                # update the device_params dict for the master and send all
-                # the parameters to the MCU
-                self.save_changed_settings(_master, cv_display)
+            if changing_flag:
+                # Update all of the main programs operations_params settings so the User's choices
+                # will be remembered and send all the parameters to the MCU
+                _master.device_params.cv_settings.update_settings(self._low_volt,
+                                                                  self._high_volt, self._freq)
+                cv_display.cv_label_update(_master.device_params)
                 self.device.send_cv_parameters()
-            else:
-                logging.debug("no change of settings low > high")
 
         x_lim_low = _master.device_params.cv_settings.low_voltage
         x_lim_high = _master.device_params.cv_settings.high_voltage
+        print 'low then high2: ', x_lim_low, x_lim_high
         cv_graph.resize_x(x_lim_low, x_lim_high)
         # figure out if the current range has changed and update the device if it has
         # NOTE: not the best solution but there are some encoding errors on the other ways tried
@@ -204,21 +199,6 @@ class CVSettingChanges(tk.Toplevel):
             logging.debug("sweep_param are not changed")
             return False
 
-    def save_changed_settings(self, _master, cv_display):
-        """
-        Update all of the main programs operations_params settings so the User's choices will
-        be remembered
-        :param _master: The main program to save the data to
-        :param cv_display: frame displaying the cyclic voltammetry parameters
-        :return:
-        """
-        logging.debug("change saved settings called")
-        _master.device_params.cv_settings.update_settings(self._low_volt,
-                                                          self._high_volt, self._freq)
-        cv_display.cv_label_update(_master.device_params)
-        logging.debug("updating new operational params to:")
-
-
 class AmpSettingsChanges(tk.Toplevel):
     def __init__(self, display, master, graph, device):
         """
@@ -247,9 +227,9 @@ class AmpSettingsChanges(tk.Toplevel):
 
         # make labels and an entry widget for a user to change the sampling rate
         # tk.Label(self, text="Sampling rate: ", padx=10, pady=10).grid(row=1, column=0)
-        # rate = tk.Entry(self)  # entry widget for the user to change the voltage
+        rate = tk.Entry(self)  # entry widget for the user to change the voltage
         # put the current value in the entry widget
-        # rate.insert(0, str(master.device_params.amp_settings.sampling_rate/1000))
+        rate.insert(0, str(master.device_params.amp_settings.sampling_rate / 1000))
         # rate.grid(row=1, column=1)
         # tk.Label(self, text="kHz", padx=10, pady=10).grid(row=1, column=3)
 
@@ -286,7 +266,17 @@ class AmpSettingsChanges(tk.Toplevel):
                   command=self.destroy).grid(row=3, column=1)
 
     def save_amp_changes(self, _voltage, _sampling_rate, device, master, graph, display):
+        """
 
+        NOTE: sampling rate is not working currently
+        :param _voltage:
+        :param _sampling_rate:
+        :param device:
+        :param master:
+        :param graph:
+        :param display:
+        :return:
+        """
         current_range = self.current_options.get()
 
         # set a flag that tells the program to send a parameter change to the MCU turn this
@@ -305,7 +295,7 @@ class AmpSettingsChanges(tk.Toplevel):
         # do not bother the amplifier if there is no update
         if self.params_are_changed(master.device_params, voltage, sampling_rate):
             # send the new parameters to the device
-            device.set_sample_rate(sampling_rate)
+            # device.set_sample_rate(sampling_rate)
             device.set_voltage(voltage)
         self.destroy()
 
