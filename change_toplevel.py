@@ -27,8 +27,8 @@ class CVSettingChanges(tk.Toplevel):
         """
         tk.Toplevel.__init__(self, master=_master)
         # Initialize values needed later
-        self._low_volt = 0
-        self._high_volt = 0
+        self._start_volt = 0
+        self._end_volt = 0
         self._freq = 0.0
         self._current_range = ""
         self.device = device
@@ -37,19 +37,19 @@ class CVSettingChanges(tk.Toplevel):
         # make labels and an entry widget for a user to change the starting
         # voltage of the triangle wave
         tk.Label(self, text="Starting Voltage: ", padx=10, pady=10).grid(row=0, column=0)
-        low_volt = tk.Entry(self)  # entry widget for the user to change the voltage
+        start_volt = tk.Entry(self)  # entry widget for the user to change the voltage
         # put the current value in the entry widget
-        low_volt.insert(0, str(_master.device_params.cv_settings.low_voltage))
-        low_volt.grid(row=0, column=1)
+        start_volt.insert(0, str(_master.device_params.cv_settings.start_voltage))
+        start_volt.grid(row=0, column=1)
         tk.Label(self, text="mV", padx=10, pady=10).grid(row=0, column=3)
 
         # make labels and an entry widget for a user to change the ending voltage
         #  of the triangle wave
         tk.Label(self, text="Ending Voltage: ", padx=10, pady=10).grid(row=1, column=0)
-        high_volt = tk.Entry(self)  # entry widget for the user to change the voltage
+        end_volt = tk.Entry(self)  # entry widget for the user to change the voltage
         # put the current value in the entry widget
-        high_volt.insert(0, _master.device_params.cv_settings.high_voltage)
-        high_volt.grid(row=1, column=1)
+        end_volt.insert(0, _master.device_params.cv_settings.end_voltage)
+        end_volt.grid(row=1, column=1)
         tk.Label(self, text="mV", padx=10, pady=10).grid(row=1, column=3)
 
         # make labels and an entry widget for a user to change the sweep rate of the triangle wave
@@ -88,8 +88,8 @@ class CVSettingChanges(tk.Toplevel):
         # them and send the correct values to the amperometry microcontroller
         tk.Button(self,
                   text='Save Changes',
-                  command=lambda: self.save_cv_changes(low_volt.get(),
-                                                       high_volt.get(),
+                  command=lambda: self.save_cv_changes(start_volt.get(),
+                                                       end_volt.get(),
                                                        freq.get(),
                                                        self.current_options.get(),
                                                        _master, cv_graph,
@@ -101,12 +101,12 @@ class CVSettingChanges(tk.Toplevel):
                   text='Exit',
                   command=self.destroy).grid(row=4, column=1)
 
-    def save_cv_changes(self, _low_volt, _high_volt, _freq, _range, _master, cv_graph, cv_display):
+    def save_cv_changes(self, _start_volt, _end_volt, _freq, _range, _master, cv_graph, cv_display):
         """
         Commit all changes the user entered
-        :param _low_volt: user inputted value, should be an integer that will be the lower level
+        :param _start_volt: user inputted value, should be an integer that will be the lower level
         of the triangle wave
-        :param _high_volt: user inputted value, should be an integer that will be the upper level
+        :param _end_volt: user inputted value, should be an integer that will be the upper level
         of the triangle wave
         :param _freq: user inputted value, should be a float that will be the rate of change
         of the triangle wave
@@ -117,7 +117,8 @@ class CVSettingChanges(tk.Toplevel):
         :param cv_display: display frame of the cyclic voltammetry parameters
         :return: the parameters are updated in the main windows operational_params dictionary
         """
-
+        x_lim_low = _master.device_params.cv_settings.low_voltage
+        x_lim_high = _master.device_params.cv_settings.high_voltage
         # set a flag that tells the program to send a parameter change to the MCU turn this
         # flag off if there is a problem later on and the MCU should not be sent new parameters
         changing_flag = True
@@ -126,28 +127,26 @@ class CVSettingChanges(tk.Toplevel):
         # and frequency parameters to the current instance so they don't
         # have to passed all the time to the functions
         try:
-            self._low_volt = int(float(_low_volt))
-            self._high_volt = int(float(_high_volt))
+            self._start_volt = int(float(_start_volt))
+            self._end_volt = int(float(_end_volt))
             self._freq = float(_freq)
             # don't have to check current range cause it was chosen from an option menu
         except ValueError as error:  # user input values failed
             logging.info("Error in data input format: %s", error)
             changing_flag = False  # if the inputted data is not correct, change the flag so
             # that the program will not try to send bad data to the MCU
-        print 'low then high1: ', self._low_volt, self._high_volt
         # check for changes to any of the values, do not bother the amplifier if there is no update
         if self.sweep_param_is_changed(_master.device_params):
             if changing_flag:
                 # Update all of the main programs operations_params settings so the User's choices
                 # will be remembered and send all the parameters to the MCU
-                _master.device_params.cv_settings.update_settings(self._low_volt,
-                                                                  self._high_volt, self._freq)
+                _master.device_params.cv_settings.update_settings(self._start_volt,
+                                                                  self._end_volt, self._freq)
                 cv_display.cv_label_update(_master.device_params)
                 self.device.send_cv_parameters()
 
         x_lim_low = _master.device_params.cv_settings.low_voltage
         x_lim_high = _master.device_params.cv_settings.high_voltage
-        print 'low then high2: ', x_lim_low, x_lim_high
         cv_graph.resize_x(x_lim_low, x_lim_high)
         # figure out if the current range has changed and update the device if it has
         # NOTE: not the best solution but there are some encoding errors on the other ways tried
@@ -189,8 +188,8 @@ class CVSettingChanges(tk.Toplevel):
         :param _old_params:  old parameters
         :return: True or False if the parameters have been changed
         """
-        if (self._low_volt != _old_params.cv_settings.low_voltage
-            or self._high_volt != _old_params.cv_settings.high_voltage
+        if (self._start_volt != _old_params.cv_settings.low_voltage
+            or self._end_volt != _old_params.cv_settings.high_voltage
             or self._freq != _old_params.cv_settings.sweep_rate):
 
             logging.debug("sweep_param is_changed")

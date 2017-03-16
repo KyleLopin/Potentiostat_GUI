@@ -255,14 +255,6 @@ class CVFrame(ttk.Frame):
             formatted_freq_divider, pwm_period = \
                 self.format_divider(self.settings.sweep_rate)
 
-            self.params.cv_settings.low_voltage = ((start_dac_value *
-                                                    self.params.dac.voltage_step_size) -
-                                                   self.params.virtual_ground_shift)
-
-            self.params.cv_settings.high_voltage = ((end_dac_value *
-                                                     self.params.dac.voltage_step_size) -
-                                                    self.params.virtual_ground_shift)
-
             self.params.PWM_period = pwm_period
 
             # send those values to the device in the proper format for the PSoC amperometry device
@@ -357,11 +349,9 @@ class CVFrame(ttk.Frame):
             # through the working electrode
             self.data = self.device.process_data(raw_data)  # bind data to cv_frame master
             # make the voltages for the x-axis that correspond to the currents read
-            print 'above: ', self.params.cv_settings.low_voltage, self.params.cv_settings.high_voltage
-            x_line = make_x_line(self.params.cv_settings.low_voltage,
-                                 self.params.cv_settings.high_voltage,
+            x_line = make_x_line(self.params.cv_settings.start_voltage,
+                                 self.params.cv_settings.end_voltage,
                                  self.params.dac.voltage_step_size)
-            print 'xline ', x_line
             if self.run_chrono:  # HACK to test chronoamp experiments
                 x_line = range(4001)
             # Send data to the canvas where it will be saved and displayed
