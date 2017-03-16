@@ -249,9 +249,9 @@ class CVFrame(ttk.Frame):
             # assumes the working electrode is ground, but voltammetry has the voltage on the
             # working electrode compared to the common electrode
             formatted_start_volt, start_dac_value = \
-                self.format_voltage(-self.settings.low_voltage)
+                self.format_voltage(self.settings.start_voltage)
             formatted_end_volt, end_dac_value = \
-                self.format_voltage(-self.settings.high_voltage)
+                self.format_voltage(self.settings.end_voltage)
             formatted_freq_divider, pwm_period = \
                 self.format_divider(self.settings.sweep_rate)
 
@@ -357,9 +357,11 @@ class CVFrame(ttk.Frame):
             # through the working electrode
             self.data = self.device.process_data(raw_data)  # bind data to cv_frame master
             # make the voltages for the x-axis that correspond to the currents read
+            print 'above: ', self.params.cv_settings.low_voltage, self.params.cv_settings.high_voltage
             x_line = make_x_line(self.params.cv_settings.low_voltage,
                                  self.params.cv_settings.high_voltage,
                                  self.params.dac.voltage_step_size)
+            print 'xline ', x_line
             if self.run_chrono:  # HACK to test chronoamp experiments
                 x_line = range(4001)
             # Send data to the canvas where it will be saved and displayed
@@ -411,15 +413,15 @@ class CVFrame(ttk.Frame):
             tk.Frame.__init__(self, master=_frame)
             # Make String variables to hold the strings that state the parameters; bind them to self
             # so they are easy to pass between functions
-            self.low_voltage_var_str = tk.StringVar()
-            self.high_voltage_var_str = tk.StringVar()
+            self.start_voltage_var_str = tk.StringVar()
+            self.end_voltage_var_str = tk.StringVar()
             self.freq_var_str = tk.StringVar()
             self.current_var_str = tk.StringVar()
             self.device = device
 
             # Make Labels to display the String variables
-            tk.Label(textvariable=self.low_voltage_var_str, master=self).pack(side='top')
-            tk.Label(textvariable=self.high_voltage_var_str, master=self).pack(side='top')
+            tk.Label(textvariable=self.start_voltage_var_str, master=self).pack(side='top')
+            tk.Label(textvariable=self.end_voltage_var_str, master=self).pack(side='top')
             tk.Label(textvariable=self.freq_var_str, master=self).pack(side='top')
             tk.Label(textvariable=self.current_var_str, master=self).pack(side='top')
             # make a button to change the cyclic voltammetry setting
@@ -435,11 +437,11 @@ class CVFrame(ttk.Frame):
             voltammetry scan are set to
             :param device_params: device settings
             """
-            self.low_voltage_var_str.set('Start voltage: ' +
-                                         str(device_params.cv_settings.low_voltage) +
+            self.start_voltage_var_str.set('Start voltage: ' +
+                                           str(device_params.cv_settings.start_voltage) +
                                          ' mV')
-            self.high_voltage_var_str.set('End voltage: ' +
-                                          str(device_params.cv_settings.high_voltage) +
+            self.end_voltage_var_str.set('End voltage: ' +
+                                         str(device_params.cv_settings.end_voltage) +
                                           ' mV')
             self.freq_var_str.set('Sweep rate: ' +
                                   str(device_params.cv_settings.sweep_rate) +

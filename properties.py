@@ -76,6 +76,7 @@ class CVSettings(object):
         self.end_voltage = END_VOLTAGE  # mV
         self.low_voltage = min([self.start_voltage, self.end_voltage])
         self.high_voltage = max([self.start_voltage, self.end_voltage])
+        print 'props 79 ', self.low_voltage, self.high_voltage
         self.sweep_rate = 1.0  # V/s
         self.pwm_period_value = self.calculate_pwm_period(clock_freq, dac)
         self.delay_time = 2 * abs(self.high_voltage - self.low_voltage) / self.sweep_rate
