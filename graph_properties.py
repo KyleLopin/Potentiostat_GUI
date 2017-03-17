@@ -1,7 +1,13 @@
+# Copyright (c) 2015-2016 Kyle Lopin (Naresuan University) <kylel@nu.ac.th>
+# Licensed under the Creative Commons Attribution-ShareAlike  3.0 (CC BY-SA 3.0 US) License
+
+""" Properties to apply to the graphs"""
+
 __author__ = 'Kyle Vitautas Lopin'
 
 
 class GraphProps(object):
+    """ Bucket to hold graph properties"""
 
     def __init__(self):
 

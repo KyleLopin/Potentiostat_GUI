@@ -84,6 +84,10 @@ class CVSettings(object):
         self.calc_dac_values(dac)
 
     def calc_dac_values(self, dac):
+        """ TODO: Depreated??
+        :param dac:
+        :return:
+        """
         self.start_dac_value = dac.get_dac_count(self.start_voltage, shift=True)
         self.end_dac_value = dac.get_dac_count(self.end_voltage, shift=True)
 

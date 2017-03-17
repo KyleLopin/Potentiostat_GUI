@@ -207,8 +207,7 @@ class AmpUsb(object):
             raise IOError
 
     def select_voltage_source(self, source):
-        """
-        Select which voltage source to use in the device
+        """ Select which voltage source to use in the device
         :param source:
         :return:
         """

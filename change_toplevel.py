@@ -105,10 +105,9 @@ class CVSettingChanges(tk.Toplevel):
                   command=self.destroy).grid(row=4, column=1)
 
     def save_cv_changes(self, _start_volt, _end_volt, _freq, _range, _master, cv_graph, cv_display):
-        """
-        Commit all changes the user entered
-        :param _start_volt: user inputted value, should be an integer that will be the lower level
-        of the triangle wave
+        """ Commit all changes the user entered
+        :param _start_volt: user inputted value, should be an integer that will be the voltage the
+        protocol starts at
         :param _end_volt: user inputted value, should be an integer that will be the upper level
         of the triangle wave
         :param _freq: user inputted value, should be a float that will be the rate of change
@@ -202,6 +201,8 @@ class CVSettingChanges(tk.Toplevel):
             return False
 
 class AmpSettingsChanges(tk.Toplevel):
+    """ Toplevel that displays the current amperoemtry settings and allows the user to change
+     them """
     def __init__(self, display, master, graph, device):
         """
         :param display: the AmpSettingsDisplay (tk.Frame) where the
@@ -212,8 +213,7 @@ class AmpSettingsChanges(tk.Toplevel):
         """
 
         tk.Toplevel.__init__(self, master=master)
-        """ Not DRY, very similar to CVSettingsChange, can be refactored
-        """
+        # very similar to CVSettingsChange, can be refactored
         # Initialize values needed later
         self.sample_rate = 0
         self.current_range = ""
@@ -481,8 +481,7 @@ class UserSelectDataDelete(tk.Toplevel):
         button_frame.pack(side='top', fill=tk.X, expand=1)
 
     def send_delete_selection(self, master, picks):
-        """
-        Decode the check boxes the user selected and send the list to master to delete the data
+        """ Decode the check boxes the user selected and send the list to master to delete the data
         :param master: root application
         :param picks: list of the checkboxes the user choose from
         """
@@ -640,8 +639,7 @@ class EnterCustomTIAResistor(tk.Toplevel):
 
 
 class VoltageSourceSelect(tk.Toplevel):
-    """
-    Toplevel for the user to select what voltage souce to use
+    """ Toplevel for the user to select what voltage souce to use
     """
 
     def __init__(self, master, current_value):

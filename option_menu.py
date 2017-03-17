@@ -144,5 +144,3 @@ def make_developer_menu(developer_menu, master):
 
     developer_menu.add_cascade(label="Change timing PWM compare value",
                                command=lambda: change_toplevel.ChangeCompareValue(master))
-
-

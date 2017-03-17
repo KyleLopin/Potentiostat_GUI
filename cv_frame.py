@@ -388,6 +388,7 @@ class CVFrame(ttk.Frame):
             return '{0:04d}'.format(dac_value), dac_value
 
         def usb_read_message(self):
+            """ For development, check if device wants to speak """
             return self.device.usb_read_message()
 
     class CVSettingDisplay(tk.Frame):
@@ -429,10 +430,10 @@ class CVFrame(ttk.Frame):
             """
             self.start_voltage_var_str.set('Start voltage: ' +
                                            str(device_params.cv_settings.start_voltage) +
-                                         ' mV')
+                                           ' mV')
             self.end_voltage_var_str.set('End voltage: ' +
                                          str(device_params.cv_settings.end_voltage) +
-                                          ' mV')
+                                         ' mV')
             self.freq_var_str.set('Sweep rate: ' +
                                   str(device_params.cv_settings.sweep_rate) +
                                   ' V/s')
