@@ -221,7 +221,7 @@ class AmpUsb(object):
             # set the device dac attribute to VDAC
             self.master.set_voltage_source_label(
                 "Voltage source: 8-bit VDAC (no capacitor installed)")
-            self.device_params.dac.set_source("VDAC")
+            self.device_params.dac.set_source(source)
             # resend the CV prameters with new numbers because the dac changes so the
             self.send_cv_parameters()
         elif source == "DVDAC":
