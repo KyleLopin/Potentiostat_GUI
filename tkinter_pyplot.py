@@ -138,11 +138,13 @@ class PyplotEmbed(tk.Frame):
                                                _box.height])
             self.legend_displayed = True
         # add the data to the plot area and update the legend
-            #  print len(x_data), len(y_data)
+            # print len(x_data), len(y_data)
+            # print x_data
             # print self.data.y_raw_data[index]
             # print x_data
-            # for i in range(len(x_data)):
-            # print x_data[i], self.data.y_raw_data[index][i]
+        # for i in range(len(x_data)):
+        #     print x_data[i], self.data.y_raw_data[index][i]
+        # print 'x: ', x_data
         l = self.graph_area.axis.plot(x_data, y_data, label=_label)
         self.data.colors.append(l[0].get_color())
         self.plotted_lines.append(l)

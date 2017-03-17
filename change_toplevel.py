@@ -5,6 +5,9 @@
 """
 # standard libraries
 import logging
+import os
+import sys
+import time
 import Tkinter as tk
 import tkFont
 
@@ -634,3 +637,59 @@ class EnterCustomTIAResistor(tk.Toplevel):
         current_limit = 1200.0 / resistor_value
         master.cv.graph.resize_y(current_limit)
         self.destroy()
+
+
+class VoltageSourceSelect(tk.Toplevel):
+    """
+    Toplevel for the user to select what voltage souce to use
+    """
+
+    def __init__(self, master, current_value):
+        tk.Toplevel.__init__(self, master=master)
+        self.geometry("300x200")
+        self.source_selected = None
+        self.master = master
+        logging.debug('current value: {0}'.format(current_value))
+        if current_value == 0:  # no choice has been made yet
+            _label = "No voltage selected yet"
+        else:
+            _label = "Default"
+
+        tk.Label(self, text=_label).pack(side='top')
+        tk.Button(self, text="No capacitor installed", width=20,
+                  command=lambda: self.send_selection("VDAC")).pack(side='top')
+        tk.Button(self, text="DAC capacitor installed", width=20,
+                  command=lambda: self.send_selection("DVDAC")).pack(side='top')
+        tk.Button(self, text="Not sure (default)", width=20,
+                  command=lambda: self.send_selection("default")).pack(side='top')
+        tk.Label(self, text="Program needs to restart after selection").pack(side='top')
+
+        self.lift()
+        self.attributes("-topmost", True)
+
+    def send_selection(self, source_selected):
+        logging.info('source: {0}'.format(source_selected))
+
+        if source_selected == 'VDAC':
+            self.master.device.select_voltage_source("8-bit DAC")  # hack
+        elif source_selected == "DVDAC":
+            self.master.device.select_voltage_source(source_selected)
+        else:  # user selected they do not know
+            pass
+
+        self.source_selected = source_selected
+        self.destroy()
+
+
+class MasterDestroyer(tk.Toplevel):
+    def __init__(self, master):
+        tk.Toplevel.__init__(self, master=master)
+        self.geometry("300x300")
+        self.lift()
+        self.attributes("-topmost", True)
+        tk.Label(self, text="Program needs to be restarted").pack(side='top')
+        tk.Label(self, text="to implement changes").pack(side='top')
+        # tk.Button(self, text="Close", width=40, command=lambda: master.destroy()).pack(side='top')
+        master.device.destroy()
+        os.execl(sys.executable, sys.executable, *sys.argv)
+        tk.Button(self, text="Close", width=40, command=lambda: self.destroy()).pack(side='top')

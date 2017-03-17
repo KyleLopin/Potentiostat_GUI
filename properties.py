@@ -79,6 +79,13 @@ class CVSettings(object):
         self.sweep_rate = 1.0  # V/s
         self.pwm_period_value = self.calculate_pwm_period(clock_freq, dac)
         self.delay_time = 2 * abs(self.high_voltage - self.low_voltage) / self.sweep_rate
+        self.start_dac_value = None  # init holder
+        self.end_dac_value = None  # init holder
+        self.calc_dac_values(dac)
+
+    def calc_dac_values(self, dac):
+        self.start_dac_value = dac.get_dac_count(self.start_voltage, shift=True)
+        self.end_dac_value = dac.get_dac_count(self.end_voltage, shift=True)
 
     def calculate_pwm_period(self, clk_freq, dac):
         """ Take the clock frequency that is driving the PWM and divide it by the number of voltage
@@ -147,6 +154,7 @@ class DAC(object):
 
         # (mV) the full voltage step the DAC can take, NOTE: is programmable
         self.range = voltage_range
+        self.virtual_ground = VIRTUAL_GROUND
 
     def set_bits(self):
         """ Set the number of bits of the DAC """
@@ -167,11 +175,16 @@ class DAC(object):
             return 1
         return  # self.range / ((2**self.bits)-1)
 
-    def get_dac_count(self, _input_voltage):
+    def get_dac_count(self, _input_voltage, shift=False):
         """ Get the digital value the dac needs to product the input voltage
         :param _input_voltage: float of the desired voltage
+        :param shift: True / False - should the program shift the voltage to take account of the
+        virtual ground
         :return: int of the digital value that should be inputted  """
-        return int(round(_input_voltage / self.voltage_step_size))
+        if shift:
+            return int(round((_input_voltage + self.virtual_ground) / self.voltage_step_size))
+        else:
+            return int(round(_input_voltage / self.voltage_step_size))
 
     def set_source(self, _source):
         """ Set the source of the voltage sources, either 8-bit VDAC of dithering VDAC

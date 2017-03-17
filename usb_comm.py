@@ -13,7 +13,9 @@ import usb.util
 import usb.backend
 # local files
 import amp_usb_helper as usb_helper
-import toplevels
+import change_toplevel as toplevel
+
+# import toplevels
 
 __author__ = 'Kyle V. Lopin'
 
@@ -185,12 +187,12 @@ class AmpUsb(object):
         :return:
         """
         self.usb_write("VR")
-        time.sleep(1)
+        time.sleep(0.2)
         source_input = self.usb_read_data(2)
         if not source_input:
             return
         if source_input[1] == 0:
-            toplevels.VoltageSourceSelect(self.master, source_input[1])
+            toplevel.VoltageSourceSelect(self.master, source_input[1])
         elif source_input[1] == 1:
             logging.info("VDAC is set in device")
             self.master.set_voltage_source_label(
@@ -210,7 +212,7 @@ class AmpUsb(object):
         :param source:
         :return:
         """
-        print 'selecting source: ', source
+        logging.info('selecting source: {0}'.format(source))
         if source == self.device_params.dac.source:
             return  # selected source that is already choosen
         if source == "8-bit DAC":

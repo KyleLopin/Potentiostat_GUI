@@ -454,20 +454,24 @@ class CVFrame(ttk.Frame):
 
 def make_x_line(start, end, inc):
     """ Make the voltages to associate with the current data from a cyclic voltammetry experiments
+    TODO: make this less hackish
     :param start: first voltage the device goes to in the CV protocol
     :param end: second voltage the device goes to
     :param inc: the voltage step size the device makes
     :return: list of the voltages to associate with the currents
     """
-    start = int(start)
-    end = int(end)
+    start = int(start / inc)
+    end = int(end / inc)
     inc = int(inc)
     line = []
-    line.extend(make_side(0, start, inc))
-    line.extend(make_side(start, end, inc))
-    line.extend(make_side(end, 0, inc))
+    mod = 1
+    if start > end:
+        mod = -1
+    line.extend(make_side(0, start + 1, 1))
+    line.extend(make_side(line[-2], end + mod, 1))  # hack
+    line.extend(make_side(line[-2], 0, 1))  # hack
     line.append(0)
-    return line
+    return [x * inc for x in line]
 
 
 def make_side(start, end, inc):
