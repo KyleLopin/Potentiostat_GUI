@@ -39,33 +39,41 @@ class CVSettingChanges(tk.Toplevel):
         self.title("Change Cyclic Voltammetry Settings")
         # make labels and an entry widget for a user to change the starting
         # voltage of the triangle wave
-        tk.Label(self, text="Starting Voltage: ", padx=10, pady=10).grid(row=0, column=0)
-        start_volt = tk.Entry(self)  # entry widget for the user to change the voltage
+        self.preview_frame = tk.Frame(self)
+        self.options_frame = tk.Frame(self)
+        self.options_frame.pack(side='right')
+
+        tk.Label(self.options_frame, text="Starting Voltage: ",
+                 padx=10, pady=10
+                 ).grid(row=0, column=0)
+        start_volt = tk.Entry(self.options_frame)  # entry widget for the user to change the voltage
         # put the current value in the entry widget
         start_volt.insert(0, str(_master.device_params.cv_settings.start_voltage))
         start_volt.grid(row=0, column=1)
-        tk.Label(self, text="mV", padx=10, pady=10).grid(row=0, column=3)
+        tk.Label(self.options_frame, text="mV", padx=10, pady=10).grid(row=0, column=3)
 
         # make labels and an entry widget for a user to change the ending voltage
         #  of the triangle wave
-        tk.Label(self, text="Ending Voltage: ", padx=10, pady=10).grid(row=1, column=0)
-        end_volt = tk.Entry(self)  # entry widget for the user to change the voltage
+        tk.Label(self.options_frame, text="Ending Voltage: ",
+                 padx=10, pady=10
+                 ).grid(row=1, column=0)
+        end_volt = tk.Entry(self.options_frame)  # entry widget for the user to change the voltage
         # put the current value in the entry widget
         end_volt.insert(0, _master.device_params.cv_settings.end_voltage)
         end_volt.grid(row=1, column=1)
-        tk.Label(self, text="mV", padx=10, pady=10).grid(row=1, column=3)
+        tk.Label(self.options_frame, text="mV", padx=10, pady=10).grid(row=1, column=3)
 
         # make labels and an entry widget for a user to change the sweep rate of the triangle wave
-        tk.Label(self, text="Sweep Rate: ", padx=10, pady=10).grid(row=2, column=0)
-        freq = tk.Entry(self)  # entry widget for the user to change the voltage
+        tk.Label(self.options_frame, text="Sweep Rate: ", padx=10, pady=10).grid(row=2, column=0)
+        freq = tk.Entry(self.options_frame)  # entry widget for the user to change the voltage
         # put the current value in the entry widget
         freq.insert(0, _master.device_params.cv_settings.sweep_rate)
         freq.grid(row=2, column=1)
-        tk.Label(self, text="V/s", padx=10, pady=10).grid(row=2, column=3)
+        tk.Label(self.options_frame, text="V/s", padx=10, pady=10).grid(row=2, column=3)
 
         # make labels and option menu for the user to change current range the device detects
-        tk.Label(self, text="Current Range: ", padx=10, pady=10).grid(row=3, column=0)
-        self.current_options = tk.StringVar(self)
+        tk.Label(self.options_frame, text="Current Range: ", padx=10, pady=10).grid(row=3, column=0)
+        self.current_options = tk.StringVar(self.options_frame)
         # there are sometimes problems with encoding with this
         self.current_option_list = [u'\u00B150 \u00B5A',
                                     u'\u00B133 \u00B5A',
@@ -84,12 +92,18 @@ class CVSettingChanges(tk.Toplevel):
                 _master.device_params.adc_tia.tia_resistor)
             self.current_options.set(self.current_option_list[current_option_list_index])
 
-        current = tk.OptionMenu(self, self.current_options, *self.current_option_list)
+        current = tk.OptionMenu(self.options_frame, self.current_options,
+                                *self.current_option_list)
         current.grid(row=3, column=1)
+
+        self.preview_var = tk.IntVar()
+        preview_option = tk.Checkbutton(self.options_frame, text="Preview voltage protocol",
+                                        var=self.preview_var, command=self.preview)
+        preview_option.grid(row=4, column=0, columnspan=2)
 
         # make a button that will take the entry values and call a function to properly convert
         # them and send the correct values to the amperometry microcontroller
-        tk.Button(self,
+        tk.Button(self.options_frame,
                   text='Save Changes',
                   command=lambda: self.save_cv_changes(start_volt.get(),
                                                        end_volt.get(),
@@ -97,12 +111,19 @@ class CVSettingChanges(tk.Toplevel):
                                                        self.current_options.get(),
                                                        _master, cv_graph,
                                                        cv_display)
-                  ).grid(row=4, column=0)
+                  ).grid(row=6, column=0)
 
         # make a button to exit the toplevel by destroying it
-        tk.Button(self,
+        tk.Button(self.options_frame,
                   text='Exit',
-                  command=self.destroy).grid(row=4, column=1)
+                  command=self.destroy).grid(row=6, column=1)
+
+    def preview(self):
+        print 'clicked', self.preview_var.get()
+        if self.preview_var.get():
+            print 'make graph'
+        else:
+            print 'remove graph'
 
     def save_cv_changes(self, _start_volt, _end_volt, _freq, _range, _master, cv_graph, cv_display):
         """ Commit all changes the user entered

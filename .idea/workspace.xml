@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="251b6b94-30bd-4672-9fcb-503d3e5ae2ad" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data_frame_superclass.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/amp_gui.py" afterPath="$PROJECT_DIR$/amp_gui.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/change_toplevel.py" afterPath="$PROJECT_DIR$/change_toplevel.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tkinter_pyplot.py" afterPath="$PROJECT_DIR$/tkinter_pyplot.py" />
     </list>
     <ignored path="Amp_simple.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -52,11 +52,11 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="tkinter_pyplot.py" pinned="false" current-in-tab="false">
+          <file leaf-file-name="tkinter_pyplot.py" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/tkinter_pyplot.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="2448">
-                  <caret line="144" column="38" selection-start-line="144" selection-start-column="38" selection-end-line="144" selection-end-column="38" />
+                <state relative-caret-position="486">
+                  <caret line="152" column="41" selection-start-line="152" selection-start-column="41" selection-end-line="152" selection-end-column="41" />
                   <folding>
                     <element signature="e#272#286#0" expanded="true" />
                   </folding>
@@ -86,11 +86,11 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="change_toplevel.py" pinned="false" current-in-tab="true">
+          <file leaf-file-name="change_toplevel.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/change_toplevel.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="17">
-                  <caret line="215" column="10" selection-start-line="215" selection-start-column="10" selection-end-line="215" selection-end-column="10" />
+                <state relative-caret-position="521">
+                  <caret line="123" column="30" selection-start-line="123" selection-start-column="30" selection-end-line="123" selection-end-column="30" />
                   <folding />
                 </state>
               </provider>
@@ -104,26 +104,6 @@
                   <folding>
                     <element signature="e#272#282#0" expanded="true" />
                   </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="Tkinter.py" pinned="false" current-in-tab="false">
-            <entry file="file://C:/Python27/Lib/lib-tk/Tkinter.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="451">
-                  <caret line="1898" column="0" selection-start-line="1898" selection-start-column="0" selection-end-line="1898" selection-end-column="0" />
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="tkFont.py" pinned="false" current-in-tab="false">
-            <entry file="file://C:/Python27/Lib/lib-tk/tkFont.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="451">
-                  <caret line="88" column="0" selection-start-line="88" selection-start-column="0" selection-end-line="88" selection-end-column="0" />
-                  <folding />
                 </state>
               </provider>
             </entry>
@@ -205,21 +185,21 @@
         <option value="$PROJECT_DIR$/amp_frame.py" />
         <option value="$PROJECT_DIR$/pyplot_data_class.py" />
         <option value="$PROJECT_DIR$/toplevels.py" />
-        <option value="$PROJECT_DIR$/tkinter_pyplot.py" />
         <option value="$PROJECT_DIR$/option_menu.py" />
         <option value="$PROJECT_DIR$/cv_frame.py" />
         <option value="$PROJECT_DIR$/properties.py" />
         <option value="$PROJECT_DIR$/graph_properties.py" />
         <option value="$PROJECT_DIR$/usb_comm.py" />
-        <option value="$PROJECT_DIR$/change_toplevel.py" />
         <option value="$PROJECT_DIR$/data_frame_superclass.py" />
         <option value="$PROJECT_DIR$/amp_gui.py" />
+        <option value="$PROJECT_DIR$/change_toplevel.py" />
+        <option value="$PROJECT_DIR$/tkinter_pyplot.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-1869" />
-    <option name="y" value="28" />
+    <option name="x" value="-1883" />
+    <option name="y" value="12" />
     <option name="width" value="1865" />
     <option name="height" value="973" />
   </component>
@@ -672,7 +652,14 @@
       <option name="project" value="LOCAL" />
       <updated>1489753281151</updated>
     </task>
-    <option name="localTasksCounter" value="29" />
+    <task id="LOCAL-00029" summary="Added a label to let the user know what electrode configuration is being used, assumes the device starts in 3 electrode mode&#10;&#10;Changed font style for the voltage source label">
+      <created>1490001772171</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1490001772171</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <servers />
   </component>
   <component name="TodoView" selected-index="4">
@@ -685,7 +672,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-1869" y="28" width="1865" height="973" extended-state="0" />
+    <frame x="-1883" y="12" width="1865" height="973" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24985337" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -764,7 +751,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="CV scans working, updated changes to work with PSoC changes" />
     <MESSAGE value="CV works, changes made to work with PSoC changes, need to work on getting data lengths correct with how the PSoC sends the data" />
     <MESSAGE value="A lot of refactoring to separate the cyclic voltammetry into a separate file from main, fixed pylint issues and add descriptions." />
     <MESSAGE value="Refactor, added a new amperometry frame and moved all usb communication specific to a certain experiment into that experimental frame&#10;&#10;Also added a hack to run chronoamperometry experiments in the CV window to test" />
@@ -789,7 +775,8 @@
     <MESSAGE value="Changed how the voltages for the x-axis is calculated so it works for both types of DAC.&#10;&#10;Fixed some issues with changing the voltage source." />
     <MESSAGE value="Fixed changing the voltage source." />
     <MESSAGE value="Fixed some pylint warnings" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed some pylint warnings" />
+    <MESSAGE value="Added a label to let the user know what electrode configuration is being used, assumes the device starts in 3 electrode mode&#10;&#10;Changed font style for the voltage source label" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added a label to let the user know what electrode configuration is being used, assumes the device starts in 3 electrode mode&#10;&#10;Changed font style for the voltage source label" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">
@@ -1095,16 +1082,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tkinter_pyplot.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2448">
-          <caret line="144" column="38" selection-start-line="144" selection-start-column="38" selection-end-line="144" selection-end-column="38" />
-          <folding>
-            <element signature="e#272#286#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/option_menu.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -1199,9 +1176,19 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/change_toplevel.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="215" column="10" selection-start-line="215" selection-start-column="10" selection-end-line="215" selection-end-column="10" />
+        <state relative-caret-position="521">
+          <caret line="123" column="30" selection-start-line="123" selection-start-column="30" selection-end-line="123" selection-end-column="30" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tkinter_pyplot.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="486">
+          <caret line="152" column="41" selection-start-line="152" selection-start-column="41" selection-end-line="152" selection-end-column="41" />
+          <folding>
+            <element signature="e#272#286#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

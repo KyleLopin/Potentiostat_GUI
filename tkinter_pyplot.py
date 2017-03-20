@@ -145,6 +145,13 @@ class PyplotEmbed(tk.Frame):
         # for i in range(len(x_data)):
         #     print x_data[i], self.data.y_raw_data[index][i]
         # print 'x: ', x_data
+        if len(x_data) > len(y_data):
+            x_data = x_data[:len(y_data)]
+            logging.error('MISMATCHED DATA LENGTH X DATA IS TOO LONG')
+
+        elif len(y_data) > len(x_data):
+            y_data = y_data[:len(x_data)]
+            logging.error('MISMATCHED DATA LENGTH Y DATA IS TOO LONG')
         l = self.graph_area.axis.plot(x_data, y_data, label=_label)
         self.data.colors.append(l[0].get_color())
         self.plotted_lines.append(l)
