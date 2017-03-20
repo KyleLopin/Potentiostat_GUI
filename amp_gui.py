@@ -6,6 +6,7 @@
 # standard libraries
 import csv
 import logging
+import tkFont
 import Tkinter as tk
 import ttk
 # local files
@@ -35,6 +36,8 @@ class ElectroChemGUI(tk.Tk):
         tk.Tk.__init__(self, parent)
         self.parent = parent
         self.voltage_source_label = tk.StringVar()
+        self.electrode_config_label = tk.StringVar()
+        self.electrode_config_label.set("3 electrode configuration")
         self.device = usb_comm.AmpUsb(self, self.device_params)
         graph_props = graph_properties.GraphProps()
         # frame to put the connection button, graph toolbar and label for VDAC source
@@ -48,7 +51,10 @@ class ElectroChemGUI(tk.Tk):
         self.notebook.add(self.cv, text="Cyclic Voltammetry")
         self.notebook.add(self.amp, text="Amperometry")
         self.notebook.pack(side='top', expand=True, fill=tk.BOTH)
-        tk.Label(self.frames[2], textvariable=self.voltage_source_label).pack(side='right')
+        tk.Label(self.frames[2], textvariable=self.voltage_source_label, font=("Bookman", 10)
+                 ).pack(side='top')
+        tk.Label(self.frames[2], textvariable=self.electrode_config_label, font=("Bookman", 10)
+                 ).pack(side='top')
         # make a button to display connection settings and allow user to try to reconnect
         self.make_connect_button(self.frames[1])
         option_menu.OptionMenu(self)
