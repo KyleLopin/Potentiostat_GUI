@@ -15,7 +15,7 @@ VIRTUAL_GROUND = 2048.
 
 START_VOLTAGE = 500.
 END_VOLTAGE = -800.
-SWEEP_RATE = 0.1
+SWEEP_RATE = 1.0
 
 
 class DeviceParameters(object):
@@ -80,6 +80,11 @@ class CVSettings(object):
         self.sweep_rate = SWEEP_RATE  # V/s
         self.pwm_period_value = self.calculate_pwm_period(clock_freq, dac)
         self.delay_time = 2 * abs(self.high_voltage - self.low_voltage) / self.sweep_rate
+        self.sweep_type = "Cyclic Voltammetry"  # "Cyclic Voltammetry" or "Linear Sweep"
+        # variable to store if the voltage protocol starts and 0 V and
+        # then to go start volts or if the protocol starts at the start_voltage immediately
+        self.sweep_start_type = "Zero volts"  # "Zero volts" or "Start volts"
+        # TODO: are these still needed??
         self.start_dac_value = None  # init holder
         self.end_dac_value = None  # init holder
         self.calc_dac_values(dac)

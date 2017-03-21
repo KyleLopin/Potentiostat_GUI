@@ -10,6 +10,8 @@ import sys
 import time
 import Tkinter as tk
 import tkFont
+# local files
+import tkinter_pyplot
 
 __author__ = 'Kyle Vitautas Lopin'
 
@@ -35,6 +37,7 @@ class CVSettingChanges(tk.Toplevel):
         self._freq = 0.0
         self._current_range = ""
         self.device = device
+        self.geometry("300x300")
 
         self.title("Change Cyclic Voltammetry Settings")
         # make labels and an entry widget for a user to change the starting
@@ -46,10 +49,11 @@ class CVSettingChanges(tk.Toplevel):
         tk.Label(self.options_frame, text="Starting Voltage: ",
                  padx=10, pady=10
                  ).grid(row=0, column=0)
-        start_volt = tk.Entry(self.options_frame)  # entry widget for the user to change the voltage
+        self.start_volt = tk.Entry(
+            self.options_frame)  # entry widget for the user to change the voltage
         # put the current value in the entry widget
-        start_volt.insert(0, str(_master.device_params.cv_settings.start_voltage))
-        start_volt.grid(row=0, column=1)
+        self.start_volt.insert(0, str(_master.device_params.cv_settings.start_voltage))
+        self.start_volt.grid(row=0, column=1)
         tk.Label(self.options_frame, text="mV", padx=10, pady=10).grid(row=0, column=3)
 
         # make labels and an entry widget for a user to change the ending voltage
@@ -57,18 +61,19 @@ class CVSettingChanges(tk.Toplevel):
         tk.Label(self.options_frame, text="Ending Voltage: ",
                  padx=10, pady=10
                  ).grid(row=1, column=0)
-        end_volt = tk.Entry(self.options_frame)  # entry widget for the user to change the voltage
+        self.end_volt = tk.Entry(
+            self.options_frame)  # entry widget for the user to change the voltage
         # put the current value in the entry widget
-        end_volt.insert(0, _master.device_params.cv_settings.end_voltage)
-        end_volt.grid(row=1, column=1)
+        self.end_volt.insert(0, _master.device_params.cv_settings.end_voltage)
+        self.end_volt.grid(row=1, column=1)
         tk.Label(self.options_frame, text="mV", padx=10, pady=10).grid(row=1, column=3)
 
         # make labels and an entry widget for a user to change the sweep rate of the triangle wave
         tk.Label(self.options_frame, text="Sweep Rate: ", padx=10, pady=10).grid(row=2, column=0)
-        freq = tk.Entry(self.options_frame)  # entry widget for the user to change the voltage
+        self.freq = tk.Entry(self.options_frame)  # entry widget for the user to change the voltage
         # put the current value in the entry widget
-        freq.insert(0, _master.device_params.cv_settings.sweep_rate)
-        freq.grid(row=2, column=1)
+        self.freq.insert(0, _master.device_params.cv_settings.sweep_rate)
+        self.freq.grid(row=2, column=1)
         tk.Label(self.options_frame, text="V/s", padx=10, pady=10).grid(row=2, column=3)
 
         # make labels and option menu for the user to change current range the device detects
@@ -96,43 +101,82 @@ class CVSettingChanges(tk.Toplevel):
                                 *self.current_option_list)
         current.grid(row=3, column=1)
 
-        self.preview_var = tk.IntVar()
-        preview_option = tk.Checkbutton(self.options_frame, text="Preview voltage protocol",
-                                        var=self.preview_var, command=self.preview)
-        preview_option.grid(row=4, column=0, columnspan=2)
+        self.make_buttons(self.options_frame)
 
         # make a button that will take the entry values and call a function to properly convert
         # them and send the correct values to the amperometry microcontroller
         tk.Button(self.options_frame,
                   text='Save Changes',
-                  command=lambda: self.save_cv_changes(start_volt.get(),
-                                                       end_volt.get(),
-                                                       freq.get(),
-                                                       self.current_options.get(),
+                  command=lambda: self.save_cv_changes(self.current_options.get(),
                                                        _master, cv_graph,
                                                        cv_display)
-                  ).grid(row=6, column=0)
+                  ).grid(row=9, column=0)
 
         # make a button to exit the toplevel by destroying it
         tk.Button(self.options_frame,
                   text='Exit',
-                  command=self.destroy).grid(row=6, column=1)
+                  command=self.destroy).grid(row=9, column=1)
+
+    def make_buttons(self, frame):
+        # TODO: think these can be removed
+        self.preview_var = tk.IntVar()
+        self.sweep_type = tk.StringVar()
+        self.sweep_type.set("CV")
+
+        self.start_voltage_type = tk.StringVar()
+        self.start_voltage_type.set("Zero")
+
+        tk.Label(frame, text="Voltage Sweep type: "
+                 ).grid(row=4, column=0, columnspan=2, sticky='w')
+        tk.Radiobutton(frame, text="Cyclic Voltammetry", variable=self.sweep_type,
+                       value="CV", command=self.set_sweep_type
+                       ).grid(row=5, column=0, sticky='w')
+        tk.Radiobutton(frame, text="Linear Sweep", variable=self.sweep_type,
+                       value="LS", command=self.set_sweep_type
+                       ).grid(row=5, column=1, sticky='w')
+
+        tk.Label(frame, text="Start voltage: "
+                 ).grid(row=6, column=0, columnspan=2, sticky='w')
+        tk.Radiobutton(frame, text="0 V", variable=self.start_voltage_type,
+                       value="Zero", command=self.set_sweep_type
+                       ).grid(row=7, column=0, sticky='w')
+        tk.Radiobutton(frame, text="Start Voltage", variable=self.start_voltage_type,
+                       value="Start", command=self.set_sweep_type
+                       ).grid(row=7, column=1, sticky='w')
+
+        preview_option = tk.Checkbutton(frame, text="Preview voltage protocol",
+                                        var=self.preview_var, command=self.preview)
+        preview_option.grid(row=8, column=0, columnspan=2)
+
+    def set_sweep_type(self):
+        pass
+
 
     def preview(self):
         print 'clicked', self.preview_var.get()
         if self.preview_var.get():
             print 'make graph'
+            sweep_type = self.sweep_type.get()
+            start_place = self.start_voltage_type.get()
+            print 'type: ', sweep_type, start_place
+            self.make_graph(sweep_type, start_place)
         else:
+            self.geometry("300x300")
             print 'remove graph'
 
-    def save_cv_changes(self, _start_volt, _end_volt, _freq, _range, _master, cv_graph, cv_display):
+    def make_graph(self, sweep_type, starting_voltage_type):
+        self.geometry("700x300")
+        blank_frame = tk.Frame()  # holder for toolbar that is not needed
+        try:
+            start_volt = int(float(self.start_volt.get()))
+            end_volt = int(float(self.end_volt.get()))
+        except:
+            return -1
+        ylims = [1, 1]
+        graph = tkinter_pyplot.PyplotEmbed(None, blank_frame, None, self, ylims)
+
+    def save_cv_changes(self, _range, _master, cv_graph, cv_display):
         """ Commit all changes the user entered
-        :param _start_volt: user inputted value, should be an integer that will be the voltage the
-        protocol starts at
-        :param _end_volt: user inputted value, should be an integer that will be the upper level
-        of the triangle wave
-        :param _freq: user inputted value, should be a float that will be the rate of change
-        of the triangle wave
         :param _range: string from self.current_option_list that the user picked
         :param _master: main window of the program, used so that the operational parameters
         of the main window can be changed
@@ -140,36 +184,37 @@ class CVSettingChanges(tk.Toplevel):
         :param cv_display: display frame of the cyclic voltammetry parameters
         :return: the parameters are updated in the main windows operational_params dictionary
         """
-        x_lim_low = _master.device_params.cv_settings.low_voltage
-        x_lim_high = _master.device_params.cv_settings.high_voltage
-        # set a flag that tells the program to send a parameter change to the MCU turn this
-        # flag off if there is a problem later on and the MCU should not be sent new parameters
-        changing_flag = True
+
+        cv_settings = _master.device_params.cv_settings
 
         # try to convert the voltages to integers and sweep rate to a float and save the voltage
         # and frequency parameters to the current instance so they don't
         # have to passed all the time to the functions
         try:
-            self._start_volt = int(float(_start_volt))
-            self._end_volt = int(float(_end_volt))
-            self._freq = float(_freq)
+            self._start_volt = int(float(self.start_volt.get()))  # first voltage of the protocol
+            self._end_volt = int(float(self.end_volt.get()))  # second voltage the protocol goes to
+            self._freq = float(self.freq.get())
             # don't have to check current range cause it was chosen from an option menu
         except ValueError as error:  # user input values failed
             logging.info("Error in data input format: %s", error)
-            changing_flag = False  # if the inputted data is not correct, change the flag so
+            # TODO: put a toplevel telling the user about the error
+            print 'aa'
+            self.destroy()  # if the inputted data is not correct, just destroy the toplevel so
             # that the program will not try to send bad data to the MCU
+            print 'bb'
+            return
         # check for changes to any of the values, do not bother the amplifier if there is no update
         if self.sweep_param_is_changed(_master.device_params):
-            if changing_flag:
-                # Update all of the main programs operations_params settings so the User's choices
-                # will be remembered and send all the parameters to the MCU
-                _master.device_params.cv_settings.update_settings(self._start_volt,
-                                                                  self._end_volt, self._freq)
-                cv_display.cv_label_update(_master.device_params)
-                self.device.send_cv_parameters()
+            # Update all of the main programs operations_params settings so the User's choices
+            # will be remembered and send all the parameters to the MCU
+            cv_settings.update_settings(self._start_volt, self._end_volt, self._freq)
+            cv_display.cv_label_update(_master.device_params)
+            self.device.send_cv_parameters()
 
-        x_lim_low = _master.device_params.cv_settings.low_voltage
-        x_lim_high = _master.device_params.cv_settings.high_voltage
+        print 'sweep type: ', self.sweep_type
+
+        x_lim_low = cv_settings.low_voltage
+        x_lim_high = cv_settings.high_voltage
         cv_graph.resize_x(x_lim_low, x_lim_high)
         # figure out if the current range has changed and update the device if it has
         # NOTE: not the best solution but there are some encoding errors on the other ways tried

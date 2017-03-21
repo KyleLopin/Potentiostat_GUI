@@ -26,6 +26,8 @@ class PyplotEmbed(tk.Frame):
         """
         Initialize the class with a parent of tkinter Frame and embed a pyplot graph in it
         The class also will have a list to hold the data series that is displayed
+        # TODO: remove master from variable list
+
         :param toolbox_frame: tkinter frame that the toolbox can be shown in
         :param plt_props: properties of the pyplot
         :param _master: the frame that is the master to this frame
