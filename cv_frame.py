@@ -456,8 +456,34 @@ class CVFrame(ttk.Frame):
                                         self.device)  # bind toplevel to the root tk.tk
 
 
-def make_x_line(start, end, inc):
+def make_x_line(start, end, inc, sweep_type="CV", start_volt_type="Zero"):  # type=("Zero", "CV")):
+    print 'got in x line: ', sweep_type, start_volt_type
+    # if type == ("Zero", "CV"):
+    if sweep_type == "CV" and start_volt_type == "Zero":
+        return make_x_line_zero_cv(start, end, inc)
+    elif sweep_type == "LS":  # for linear sweep ignore what the user inputted for start_volt_type
+        return make_x_line_linear(start, end, inc)
+
+    else:
+        print 'got: ', type
+        raise NotImplementedError
+
+
+def make_x_line_linear(start, end, inc):
     """ Make the voltages to associate with the current data from a cyclic voltammetry experiments
+    Makes a linear sweep that goes from start to end
+    :param start:  starting voltage of the protocol
+    :param end: last voltage of the protocol
+    :param inc: voltage step size
+    :return: list of voltages
+    """
+    return range(start, end, inc)
+
+
+def make_x_line_zero_cv(start, end, inc):
+    """ Make the voltages to associate with the current data from a cyclic voltammetry experiments
+    This will start the protocol at 0 V, go to the start voltage, then the end voltage, and then to
+    0 V
     TODO: make this less hackish
     :param start: first voltage the device goes to in the CV protocol
     :param end: second voltage the device goes to

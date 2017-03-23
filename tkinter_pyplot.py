@@ -33,6 +33,7 @@ class PyplotEmbed(tk.Frame):
         :param _master: the frame that is the master to this frame
         :param _params: parameters needed for setting up the class
         :return:
+        TODO: refactor x low and high into a tuple
         """
         tk.Frame.__init__(self, master=_master_frame)  # initialize with the parent class
         self.master = _master_frame
@@ -61,16 +62,20 @@ class PyplotEmbed(tk.Frame):
         self.graph_area.axis = plt.subplot(111)
         self.graph_area.axis.format_coord = lambda x, y: ""  # remove the coordinates in the toolbox
         # go through the plot properties and apply each one that is listed
-        for key, value in plt_props.iteritems():
-            eval("plt." + key + "(" + value + ")")
+        if plt_props:
+            for key, value in plt_props.iteritems():
+                eval("plt." + key + "(" + value + ")")
         # get the limits of the x axis from the parameters if they are not in the properties
-        if "xlim" not in plt_props:
+        if plt_props and "xlim" not in plt_props:
             logging.info("setting xlim (low, high): {0}, {1}".format(x_low, x_high))
             plt.xlim(x_low, x_high)
 
         # calculate the current limit that can be reached, which depends on the resistor value
         #  of the TIAassume the adc can read +- 1V (1000 mV)
-        plt.ylim(-y_lim, y_lim)
+        if isinstance(y_lim, list):
+            plt.ylim(y_lim[0], y_lim[1])
+        else:
+            plt.ylim(-y_lim, y_lim)
         # format the graph area, make the canvas and show it
         self.graph_area.figure_bed.set_facecolor('white')
         self.graph_area.canvas = FigureCanvasTkAgg(self.graph_area.figure_bed, master=self)
@@ -96,6 +101,14 @@ class PyplotEmbed(tk.Frame):
         else:
             self.data.add_data(x_data, y_data, _raw_y_data)
             self.display_data()
+
+    def simple_update_data(self, x_data, y_data):
+        """ Used for the pyplot used to diplay the voltage protocol in the CVSettingChange toplevel
+        :param x_data:
+        :param y_data:
+        :return:
+        """
+        self.graph_area.axis.plot(x_data, y_data)
 
     def change_label(self, label, index=None):
         """
