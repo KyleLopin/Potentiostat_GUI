@@ -463,7 +463,8 @@ def make_x_line(start, end, inc, sweep_type="CV", start_volt_type="Zero"):  # ty
         return make_x_line_zero_cv(start, end, inc)
     elif sweep_type == "LS":  # for linear sweep ignore what the user inputted for start_volt_type
         return make_x_line_linear(start, end, inc)
-
+    elif sweep_type == "CV" and start_volt_type == "Start":
+        return make_x_line_triangle(start, end, inc)
     else:
         print 'got: ', type
         raise NotImplementedError
@@ -477,6 +478,8 @@ def make_x_line_linear(start, end, inc):
     :param inc: voltage step size
     :return: list of voltages
     """
+    if start > end:
+        inc *= -1
     return range(start, end, inc)
 
 
@@ -523,16 +526,28 @@ def make_x_line_triangle(start, end, inc):
     :param inc: the voltage step size
     :return: list of numbers
     """
-    i = start
+    logging.debug("making triangle sweep with {0}, {1}, {2}".format(start, end, inc))
+    start = int(start / inc)
+    end = int(end / inc)
+    inc = int(inc)
     line = []
-    while i <= end:
-        line.append(i)
-        i += inc
-    i -= inc  # do the last value twice but i is 1 inc too high here
-    while i >= start:
-        line.append(i)
-        i -= inc
-    return line
+    mod = 1
+    if start > end:
+        mod = -1
+    line.extend(make_side(start, end + 1, 1))
+    line.extend(make_side(line[-2], start, 1))
+    line.append(start)  # make side uses range so it doesnt have the last value, add manually
+    return [x * inc for x in line]
+    # i = start
+    # line = []
+    # while i <= end:
+    #     line.append(i)
+    #     i += inc
+    # i -= inc  # do the last value twice but i is 1 inc too high here
+    # while i >= start:
+    #     line.append(i)
+    #     i -= inc
+    # return line
 
 
 def open_file(_type):

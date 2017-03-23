@@ -155,11 +155,8 @@ class CVSettingChanges(tk.Toplevel):
     def set_sweep_type(self):
         print 'sweep type: ', self.sweep_type.get(), self.start_voltage_type.get()
         if self.sweep_type.get() == 'LS':
-            if self.start_voltage_type.get() == 'Zero':
-                # this is not allowed, set start_votlage_type to "Start"
-                self.start_voltage_type.set("Start")  # a linear sweep cant start at 0 V
+            pass
         self.update_graph(self.start_voltage_type.get(), self.sweep_type.get())
-
 
     def preview(self):
         print 'clicked', self.preview_var.get()
@@ -231,7 +228,9 @@ class CVSettingChanges(tk.Toplevel):
         xlims = [0, total_time]
         # resize the x axis
         self.graph.graph_area.axis.set_xlim(xlims)  # TODO: horrible for encapsulation
-        self.graph.graph_area.axis.set_data(time, self.data)
+        print 'new voltage data: ', self.data
+        self.graph.voltage_line.set_data(time, self.data)
+        self.graph.update_graph()
 
 
     def save_cv_changes(self, _range, _master, cv_graph, cv_display):

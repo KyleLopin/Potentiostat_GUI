@@ -108,7 +108,7 @@ class PyplotEmbed(tk.Frame):
         :param y_data:
         :return:
         """
-        self.graph_area.axis.plot(x_data, y_data)
+        self.voltage_line, = self.graph_area.axis.plot(x_data, y_data)
 
     def change_label(self, label, index=None):
         """
