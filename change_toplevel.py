@@ -34,9 +34,11 @@ class CVSettingChanges(tk.Toplevel):
         tk.Toplevel.__init__(self, master=_master)
         # Initialize values needed later
         self.master = _master
-        self._start_volt = 0
-        self._end_volt = 0
-        self._freq = 0.0
+        self.start_volt = tk.DoubleVar()
+        self.end_volt = tk.DoubleVar()
+        self.entry_delay = None  # variable to bind the after calls to
+
+        self.freq = tk.DoubleVar()
         self._current_range = ""
         self.device = device
         self.data = None  # placeholder for voltage protocol to be held in, for tkinter_pyplot
@@ -52,11 +54,10 @@ class CVSettingChanges(tk.Toplevel):
         tk.Label(self.options_frame, text="Starting Voltage: ",
                  padx=10, pady=10
                  ).grid(row=0, column=0)
-        self.start_volt = tk.Entry(
-            self.options_frame)  # entry widget for the user to change the voltage
+        # entry widget for the user to change the voltage
+        tk.Entry(self.options_frame, textvariable=self.start_volt).grid(row=0, column=1)
         # put the current value in the entry widget
-        self.start_volt.insert(0, str(_master.device_params.cv_settings.start_voltage))
-        self.start_volt.grid(row=0, column=1)
+        self.start_volt.set(_master.device_params.cv_settings.start_voltage)
         tk.Label(self.options_frame, text="mV", padx=10, pady=10).grid(row=0, column=3)
 
         # make labels and an entry widget for a user to change the ending voltage
@@ -64,20 +65,19 @@ class CVSettingChanges(tk.Toplevel):
         tk.Label(self.options_frame, text="Ending Voltage: ",
                  padx=10, pady=10
                  ).grid(row=1, column=0)
-
-        self.end_volt = tk.Entry(
-            self.options_frame)  # entry widget for the user to change the voltage
+        # spinbox for the user to change the voltage
+        tk.Entry(self.options_frame, textvariable=self.end_volt).grid(row=1, column=1)
         # put the current value in the entry widget
-        self.end_volt.insert(0, _master.device_params.cv_settings.end_voltage)
-        self.end_volt.grid(row=1, column=1)
+        self.end_volt.set(_master.device_params.cv_settings.end_voltage)
         tk.Label(self.options_frame, text="mV", padx=10, pady=10).grid(row=1, column=3)
 
         # make labels and an entry widget for a user to change the sweep rate of the triangle wave
         tk.Label(self.options_frame, text="Sweep Rate: ", padx=10, pady=10).grid(row=2, column=0)
-        self.freq = tk.Entry(self.options_frame)  # entry widget for the user to change the voltage
+        # entry widget for the user to change the voltage
+        tk.Entry(self.options_frame, textvariable=self.freq).grid(row=2, column=1)
         # put the current value in the entry widget
-        self.freq.insert(0, _master.device_params.cv_settings.sweep_rate)
-        self.freq.grid(row=2, column=1)
+        self.freq.set(_master.device_params.cv_settings.sweep_rate)
+
         tk.Label(self.options_frame, text="V/s", padx=10, pady=10).grid(row=2, column=3)
 
         # make labels and option menu for the user to change current range the device detects
@@ -121,6 +121,11 @@ class CVSettingChanges(tk.Toplevel):
                   text='Exit',
                   command=self.destroy).grid(row=9, column=1)
 
+        # set varaible traces
+        self.end_volt.trace("w", self.trace_delay)
+        self.start_volt.trace("w", self.trace_delay)
+        self.freq.trace("w", self.trace_delay)
+
     def make_buttons(self, frame):
         # TODO: think these can be removed
         self.preview_var = tk.IntVar()
@@ -152,7 +157,16 @@ class CVSettingChanges(tk.Toplevel):
                                         var=self.preview_var, command=self.preview)
         preview_option.grid(row=8, column=0, columnspan=2)
 
-    def set_sweep_type(self):
+    def trace_delay(self, *args):
+        """ Trace callback, add a small delay to changing the voltage line so the user can finish
+        """
+        self.entry_delay = self.after(300, self.set_sweep_type)
+
+    def set_sweep_type(self, *args):
+        if self.entry_delay:
+            self.after_cancel(self.entry_delay)  # if user types multiple numbers,
+            # trace will be called multiple times, just update the graph once
+            self.entry_delay = None
         print 'sweep type: ', self.sweep_type.get(), self.start_voltage_type.get()
         if self.sweep_type.get() == 'LS':
             pass
@@ -223,7 +237,10 @@ class CVSettingChanges(tk.Toplevel):
                                          sweep_type, start_voltage_type)
         # make a new t-axis data
         steps_per_second = rate / float(voltage_step)
-        total_time = len(self.data) * steps_per_second
+        if steps_per_second <= 0:
+            return  # user is not done typing in the varible yet
+        total_time = len(self.data) / steps_per_second
+        print 'total time: ', total_time, steps_per_second, len(self.data)
         time = [x / steps_per_second for x in range(len(self.data))]
         xlims = [0, total_time]
         # resize the x axis
