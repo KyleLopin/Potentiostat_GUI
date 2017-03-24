@@ -358,9 +358,14 @@ class CVFrame(ttk.Frame):
             # through the working electrode
             self.data = self.device.process_data(raw_data)  # bind data to cv_frame master
             # make the voltages for the x-axis that correspond to the currents read
+            print 'type of run = ', self.params.cv_settings.sweep_type, \
+                self.params.cv_settings.sweep_start_type
+
             x_line = make_x_line(self.params.cv_settings.start_voltage,
                                  self.params.cv_settings.end_voltage,
-                                 self.params.dac.voltage_step_size)
+                                 self.params.dac.voltage_step_size,
+                                 self.params.cv_settings.sweep_type,
+                                 self.params.cv_settings.sweep_start_type)
             if self.run_chrono:  # HACK to test chronoamp experiments
                 x_line = range(4001)
             # Send data to the canvas where it will be saved and displayed
@@ -486,7 +491,7 @@ def make_x_line_linear(start, end, inc):
     """
     if start > end:
         inc *= -1
-    return range(start, end, inc)
+    return range(start, end + inc, inc)
 
 
 def make_x_line_zero_cv(start, end, inc):

@@ -131,10 +131,12 @@ class CVSettingChanges(tk.Toplevel):
         # TODO: think these can be removed
         self.preview_var = tk.IntVar()
         self.sweep_type = tk.StringVar()
-        self.sweep_type.set("CV")
+        print 'it is sweep type: ', self.master.device_params.cv_settings.sweep_type
+        self.sweep_type.set(self.master.device_params.cv_settings.sweep_type)
 
         self.start_voltage_type = tk.StringVar()
-        self.start_voltage_type.set("Zero")
+        print 'it is sweep type: ', self.master.device_params.cv_settings.sweep_start_type
+        self.start_voltage_type.set(self.master.device_params.cv_settings.sweep_start_type)
 
         tk.Label(frame, text="Voltage Sweep type: "
                  ).grid(row=4, column=0, columnspan=2, sticky='w')

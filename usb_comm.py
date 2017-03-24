@@ -271,8 +271,11 @@ class AmpUsb(object):
                 _hold = convert_uint8_to_signed_int16(usb_input.tolist())
                 full_array.extend(_hold)
                 if TERMINATION_CODE in _hold:
+                    print full_array[-1], full_array[-2]
                     full_array = full_array[:full_array.index(TERMINATION_CODE)]
-                    logging.debug("got termination code")
+                    logging.debug(
+                        "got termination code at count: {0}, {1}".format(count, len(full_array)))
+                    print full_array[-1]
                     break
                 count += 1
             except Exception as error:
