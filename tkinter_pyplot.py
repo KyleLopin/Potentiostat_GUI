@@ -161,14 +161,16 @@ class PyplotEmbed(tk.Frame):
             print "i = ", i, x_data[i], self.data.y_raw_data[index][i] - 2048
             if x_data[i] != self.data.y_raw_data[index][i] - 2048:
                 print "==============MISMATCH==============="
+                raise IOError
         # print 'x: ', x_data
         if len(x_data) > len(y_data):
             x_data = x_data[:len(y_data)]
             logging.error('MISMATCHED DATA LENGTH X DATA IS TOO LONG')
-
+            raise IOError
         elif len(y_data) > len(x_data):
             y_data = y_data[:len(x_data)]
             logging.error('MISMATCHED DATA LENGTH Y DATA IS TOO LONG')
+            raise IOError
         l = self.graph_area.axis.plot(x_data, y_data, label=_label)
         self.data.colors.append(l[0].get_color())
         self.plotted_lines.append(l)

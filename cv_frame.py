@@ -545,7 +545,7 @@ def make_x_line_triangle(start, end, inc):
     mod = 1
     if start > end:
         mod = -1
-    line.extend(make_side(start, end + 1, 1))
+    line.extend(make_side(start, end + mod, 1))
     line.extend(make_side(line[-2], start, 1))
     line.append(start)  # make side uses range so it doesnt have the last value, add manually
     return [x * inc for x in line]
