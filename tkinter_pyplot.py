@@ -157,8 +157,10 @@ class PyplotEmbed(tk.Frame):
             # print x_data
             # print self.data.y_raw_data[index]
             # print x_data
-        # for i in range(len(x_data)):
-        #     print x_data[i], self.data.y_raw_data[index][i]
+        for i in range(len(x_data)):
+            print x_data[i], self.data.y_raw_data[index][i] - 2048
+            if x_data[i] != self.data.y_raw_data[index][i] - 2048:
+                print "==============MISMATCH==============="
         # print 'x: ', x_data
         if len(x_data) > len(y_data):
             x_data = x_data[:len(y_data)]

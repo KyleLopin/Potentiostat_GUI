@@ -80,10 +80,10 @@ class CVSettings(object):
         self.sweep_rate = SWEEP_RATE  # V/s
         self.pwm_period_value = self.calculate_pwm_period(clock_freq, dac)
         self.delay_time = 2 * abs(self.high_voltage - self.low_voltage) / self.sweep_rate
-        self.sweep_type = "Cyclic Voltammetry"  # "Cyclic Voltammetry" or "Linear Sweep"
+        self.sweep_type = "CV"  # "CV" for Cyclic Voltammetry or "LS" for linear Sweep
         # variable to store if the voltage protocol starts and 0 V and
         # then to go start volts or if the protocol starts at the start_voltage immediately
-        self.sweep_start_type = "Zero volts"  # "Zero volts" or "Start volts"
+        self.sweep_start_type = "Zero"  # "Zero" or "Start" for what voltage to start at
         # TODO: are these still needed??
         self.start_dac_value = None  # init holder
         self.end_dac_value = None  # init holder
@@ -106,7 +106,7 @@ class CVSettings(object):
         pwm_period_value = int(round(clk_freq / (self.sweep_rate * 1000 / dac.voltage_step_size)))
         return pwm_period_value
 
-    def update_settings(self, start_voltage, end_voltage, sweep_rate):
+    def update_settings(self, start_voltage, end_voltage, sweep_rate, sweep_type, start_type):
         """ Update the CV settings
         :param start_voltage: mV, voltage the user wants to start at
         :param end_voltage: mV, voltage the user wants to end the cyclic voltammetry at
@@ -119,6 +119,8 @@ class CVSettings(object):
         self.high_voltage = max([self.start_voltage, self.end_voltage])
         self.sweep_rate = sweep_rate
         self.delay_time = 2 * abs(self.high_voltage - self.low_voltage) / self.sweep_rate
+        self.sweep_type = sweep_type
+        self.sweep_start_type = start_type
 
 
 class AmpSettings(object):

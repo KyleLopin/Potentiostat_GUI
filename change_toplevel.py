@@ -34,6 +34,7 @@ class CVSettingChanges(tk.Toplevel):
         tk.Toplevel.__init__(self, master=_master)
         # Initialize values needed later
         self.master = _master
+        self.graph = cv_graph
         self.start_volt = tk.DoubleVar()
         self.end_volt = tk.DoubleVar()
         self.entry_delay = None  # variable to bind the after calls to
@@ -163,6 +164,8 @@ class CVSettingChanges(tk.Toplevel):
         self.entry_delay = self.after(300, self.set_sweep_type)
 
     def set_sweep_type(self, *args):
+        if not self.preview_var.get():
+            return  # there is not graph displayed so exit
         if self.entry_delay:
             self.after_cancel(self.entry_delay)  # if user types multiple numbers,
             # trace will be called multiple times, just update the graph once
@@ -249,7 +252,6 @@ class CVSettingChanges(tk.Toplevel):
         self.graph.voltage_line.set_data(time, self.data)
         self.graph.update_graph()
 
-
     def save_cv_changes(self, _range, _master, cv_graph, cv_display):
         """ Commit all changes the user entered
         :param _range: string from self.current_option_list that the user picked
@@ -261,7 +263,6 @@ class CVSettingChanges(tk.Toplevel):
         """
 
         cv_settings = _master.device_params.cv_settings
-
         # try to convert the voltages to integers and sweep rate to a float and save the voltage
         # and frequency parameters to the current instance so they don't
         # have to passed all the time to the functions
@@ -278,13 +279,12 @@ class CVSettingChanges(tk.Toplevel):
             # that the program will not try to send bad data to the MCU
             print 'bb'
             return
-        # check for changes to any of the values, do not bother the amplifier if there is no update
-        if self.sweep_param_is_changed(_master.device_params):
-            # Update all of the main programs operations_params settings so the User's choices
-            # will be remembered and send all the parameters to the MCU
-            cv_settings.update_settings(self._start_volt, self._end_volt, self._freq)
-            cv_display.cv_label_update(_master.device_params)
-            self.device.send_cv_parameters()
+        # Update all of the main programs operations_params settings so the User's choices
+        # will be remembered and send all the parameters to the MCU
+        cv_settings.update_settings(self._start_volt, self._end_volt, self._freq,
+                                    self.sweep_type.get(), self.start_voltage_type.get())
+        cv_display.cv_label_update(_master.device_params)
+        self.device.send_cv_parameters()
 
         print 'sweep type: ', self.sweep_type
 
@@ -326,6 +326,7 @@ class CVSettingChanges(tk.Toplevel):
         self.destroy()
 
     def sweep_param_is_changed(self, _old_params):
+        # TODO: is depricated???
         """ Check to see if any of the parameters of the cyclic voltammetry experiments
          have been changed
         :param _old_params:  old parameters

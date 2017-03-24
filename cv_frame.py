@@ -260,9 +260,15 @@ class CVFrame(ttk.Frame):
 
             self.params.PWM_period = pwm_period
 
+            # figure out what voltage protocol to give the device
+            print 'sweep type is: ', self.settings.sweep_type, self.settings.sweep_start_type
+            sweep_type_to_send = self.settings.sweep_type[0] + self.settings.sweep_start_type[0]
+            print 'sweep string: ', sweep_type_to_send
+
             # send those values to the device in the proper format for the PSoC amperometry device
             to_amp_device = '|'.join(["S", formatted_start_volt,
-                                      formatted_end_volt, formatted_freq_divider])
+                                      formatted_end_volt, formatted_freq_divider,
+                                      sweep_type_to_send])
             # save how many data packets should be received back from the usb
             packet_count = (2 * (abs(end_dac_value - start_dac_value) + 1)
                             / (float(USB_IN_BYTE_SIZE) / 2.0))  # data is 2 bytes long
