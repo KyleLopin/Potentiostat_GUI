@@ -261,9 +261,7 @@ class CVFrame(ttk.Frame):
             self.params.PWM_period = pwm_period
 
             # figure out what voltage protocol to give the device
-            print 'sweep type is: ', self.settings.sweep_type, self.settings.sweep_start_type
             sweep_type_to_send = self.settings.sweep_type[0] + self.settings.sweep_start_type[0]
-            print 'sweep string: ', sweep_type_to_send
 
             # send those values to the device in the proper format for the PSoC amperometry device
             to_amp_device = '|'.join(["S", formatted_start_volt,
@@ -310,6 +308,7 @@ class CVFrame(ttk.Frame):
                 # amount of time to wait for the data to be collected before getting it
                 # give a 200 ms buffer to the calculated delay time
                 _delay = int(200 + self.params.cv_settings.delay_time)
+                print 'delay time: ', _delay
                 self.master.after(_delay, lambda: self.run_scan_continue(canvas))  # step 2
             else:
                 logging.debug("Couldn't find out endpoint to send message to run")
@@ -358,8 +357,6 @@ class CVFrame(ttk.Frame):
             # through the working electrode
             self.data = self.device.process_data(raw_data)  # bind data to cv_frame master
             # make the voltages for the x-axis that correspond to the currents read
-            print 'type of run = ', self.params.cv_settings.sweep_type, \
-                self.params.cv_settings.sweep_start_type
 
             x_line = make_x_line(self.params.cv_settings.start_voltage,
                                  self.params.cv_settings.end_voltage,
@@ -468,16 +465,26 @@ class CVFrame(ttk.Frame):
 
 
 def make_x_line(start, end, inc, sweep_type="CV", start_volt_type="Zero"):  # type=("Zero", "CV")):
-    print 'got in x line: ', sweep_type, start_volt_type
     # if type == ("Zero", "CV"):
+    print 'got first start: ', start, int(float(start) / inc)
+    # fix any issues with the dac being 16 mV / step
+    # fix issues with always rounding down, prevent rounding 'down' to a bigger negative number
+    # start = int(round((start+2048) / inc)) * inc - (2048/inc)
+    start = int(float(start) / inc) * inc
+    # end = int(round((end+2048) / inc)) * inc  - (2048/inc)
+    end = int(float(end) / inc) * inc
+    logging.debug("making x line with {0}, {1}, type: {2}, {3}".format(start,
+                                                                       end, sweep_type,
+                                                                       start_volt_type))
     if sweep_type == "CV" and start_volt_type == "Zero":
+        # start = int(start/inc) * inc
         return make_x_line_zero_cv(start, end, inc)
     elif sweep_type == "LS":  # for linear sweep ignore what the user inputted for start_volt_type
         return make_x_line_linear(start, end, inc)
     elif sweep_type == "CV" and start_volt_type == "Start":
         return make_x_line_triangle(start, end, inc)
     else:
-        print 'got: ', type
+        logging.error("make x line got a bad type: {0}, {1}".format(sweep_type, start_volt_type))
         raise NotImplementedError
 
 
@@ -489,9 +496,12 @@ def make_x_line_linear(start, end, inc):
     :param inc: voltage step size
     :return: list of voltages
     """
+    print 'make x line linear: ', start, end, inc
+    start_mod = 0
     if start > end:
         inc *= -1
-    return range(start, end + inc, inc)
+        start_mod = 0
+    return range(start + start_mod, end + inc, inc)
 
 
 def make_x_line_zero_cv(start, end, inc):
@@ -504,17 +514,26 @@ def make_x_line_zero_cv(start, end, inc):
     :param inc: the voltage step size the device makes
     :return: list of the voltages to associate with the currents
     """
-    start = int(start / inc)
-    end = int(end / inc)
+    start = int(float(start / inc))
+    end = int(float(end / inc))
     inc = int(inc)
     line = []
     mod = 1
-    if start > end:
+    start_mod = 0
+    if start > end:  # fix problems with range not going to the last value
         mod = -1
-    line.extend(make_side(0, start + 1, 1))
-    line.extend(make_side(line[-2], end + mod, 1))  # hack
-    line.extend(make_side(line[-2], 0, 1))  # hack
-    line.append(0)
+        start_mod = 1
+    print 'mod is: ', mod, start, end, start_mod
+    # line.extend(make_side(0, start + start_mod, 1))
+    line.extend(make_side(0, start, 1))
+    print line
+    # line.extend(make_side(line[-2], end + mod, 1))  # hack
+    line.extend(make_side(line[-2], end, 1))
+    print line
+    # line.extend(make_side(line[-2], 0, 1))  # hack
+    line.extend(make_side(line[-2], 0, 1))
+    print line
+    # line.append(0)
     return [x * inc for x in line]
 
 
@@ -525,9 +544,20 @@ def make_side(start, end, inc):
     :param inc: step size
     :return: list
     """
-    if end < start:
-        inc *= -1
-    return range(start, end, inc)
+    # if end < start:
+    #     inc *= -1
+    # return range(start, end, inc)
+    lut = []
+    index = 0
+    if start < end:
+        while start <= end:
+            lut.append(start)
+            start += inc
+    else:
+        while start >= end:
+            lut.append(start)
+            start -= inc
+    return lut
 
 
 def make_x_line_triangle(start, end, inc):
@@ -545,20 +575,12 @@ def make_x_line_triangle(start, end, inc):
     mod = 1
     if start > end:
         mod = -1
-    line.extend(make_side(start, end + mod, 1))
+    # line.extend(make_side(start, end + mod, 1))
+    # line.extend(make_side(line[-2], start, 1))
+    # line.append(start)  # make side uses range so it doesnt have the last value, add manually
+    line.extend(make_side(start, end, 1))
     line.extend(make_side(line[-2], start, 1))
-    line.append(start)  # make side uses range so it doesnt have the last value, add manually
     return [x * inc for x in line]
-    # i = start
-    # line = []
-    # while i <= end:
-    #     line.append(i)
-    #     i += inc
-    # i -= inc  # do the last value twice but i is 1 inc too high here
-    # while i >= start:
-    #     line.append(i)
-    #     i -= inc
-    # return line
 
 
 def open_file(_type):

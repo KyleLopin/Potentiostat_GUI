@@ -212,8 +212,8 @@ class AmpUsb(object):
         :return:
         """
         logging.info('selecting source: {0}'.format(source))
-        if source == self.device_params.dac.source:
-            return  # selected source that is already choosen
+        # if source == self.device_params.dac.source:
+        # return  # selected source that is already choosen
         if source == "8-bit DAC":
             # tell the device to set the voltage source as the DVDAC
             self.usb_write("VS1")

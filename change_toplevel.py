@@ -208,11 +208,13 @@ class CVSettingChanges(tk.Toplevel):
         # make the voltage protocol, use the functions used by the cv_frame
         self.data = cv_frame.make_x_line(start_volt,
                                          end_volt, voltage_step, sweep_type, start_volt_type)
-        steps_per_second = rate / float(voltage_step)
+        steps_per_second = rate * float(voltage_step)
         print 'xdata: ', self.data
+        print 'steps per second: ', steps_per_second
         print 'xlims: ', 0, len(self.data) * steps_per_second
         total_time = len(self.data) * steps_per_second
-        time = [x / steps_per_second for x in range(len(self.data))]
+        time = [x * steps_per_second for x in range(len(self.data))]
+        print 'time data: ', time
         plt_props = {'xlabel': "'time (msec)'",
                      'ylabel': "'voltage (mV)'",
                      'title': "'Voltage profile'",

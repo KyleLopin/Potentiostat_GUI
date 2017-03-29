@@ -10,7 +10,7 @@ __author__ = 'Kyle Vitautas Lopin'
 
 ADC_VREF = 2048  # mV
 ADC_BITS = 12
-PWM_FREQ = 2400000.
+PWM_FREQ = 240000.
 VIRTUAL_GROUND = 2048.
 
 START_VOLTAGE = 500.
