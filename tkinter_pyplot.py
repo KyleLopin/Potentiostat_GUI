@@ -153,16 +153,6 @@ class PyplotEmbed(tk.Frame):
                                                _box.height])
             self.legend_displayed = True
         # add the data to the plot area and update the legend
-        print len(x_data), len(y_data)
-            # print x_data
-            # print self.data.y_raw_data[index]
-            # print x_data
-        for i in range(len(x_data)):
-            print "i = ", i, x_data[i], self.data.y_raw_data[index][i] - 2048
-            if x_data[i] != self.data.y_raw_data[index][i] - 2048:
-                print "==============MISMATCH==============="
-        # raise IOError
-        # print 'x: ', x_data
         if len(x_data) > len(y_data):
             x_data = x_data[:len(y_data)]
             logging.error('MISMATCHED DATA LENGTH X DATA IS TOO LONG')

@@ -131,11 +131,9 @@ class CVSettingChanges(tk.Toplevel):
         # TODO: think these can be removed
         self.preview_var = tk.IntVar()
         self.sweep_type = tk.StringVar()
-        print 'it is sweep type: ', self.master.device_params.cv_settings.sweep_type
         self.sweep_type.set(self.master.device_params.cv_settings.sweep_type)
 
         self.start_voltage_type = tk.StringVar()
-        print 'it is sweep type: ', self.master.device_params.cv_settings.sweep_start_type
         self.start_voltage_type.set(self.master.device_params.cv_settings.sweep_start_type)
 
         tk.Label(frame, text="Voltage Sweep type: "
@@ -172,23 +170,18 @@ class CVSettingChanges(tk.Toplevel):
             self.after_cancel(self.entry_delay)  # if user types multiple numbers,
             # trace will be called multiple times, just update the graph once
             self.entry_delay = None
-        print 'sweep type: ', self.sweep_type.get(), self.start_voltage_type.get()
         if self.sweep_type.get() == 'LS':
             pass
         self.update_graph(self.start_voltage_type.get(), self.sweep_type.get())
 
     def preview(self):
-        print 'clicked', self.preview_var.get()
         if self.preview_var.get():
-            print 'make graph'
             sweep_type = self.sweep_type.get()
             start_place = self.start_voltage_type.get()
             type = (start_place, sweep_type)
-            print 'type: ', start_place, sweep_type
             self.make_graph(sweep_type, start_place)
         else:
             self.geometry("300x300")
-            print 'remove graph'
 
     def make_graph(self, sweep_type, start_volt_type):
         self.geometry("700x300")
@@ -204,17 +197,13 @@ class CVSettingChanges(tk.Toplevel):
         voltage_step = self.master.device_params.dac.voltage_step_size
         ylims = [low_voltage, high_volt]
 
-        print 'plot params: ', ylims
         # make the voltage protocol, use the functions used by the cv_frame
         self.data = cv_frame.make_x_line(start_volt,
                                          end_volt, voltage_step, sweep_type, start_volt_type)
         steps_per_second = rate * float(voltage_step)
-        print 'xdata: ', self.data
-        print 'steps per second: ', steps_per_second
-        print 'xlims: ', 0, len(self.data) * steps_per_second
         total_time = len(self.data) * steps_per_second
         time = [x * steps_per_second for x in range(len(self.data))]
-        print 'time data: ', time
+
         plt_props = {'xlabel': "'time (msec)'",
                      'ylabel': "'voltage (mV)'",
                      'title': "'Voltage profile'",
@@ -247,12 +236,12 @@ class CVSettingChanges(tk.Toplevel):
         if steps_per_second <= 0:
             return  # user is not done typing in the varible yet
         total_time = len(self.data) / steps_per_second
-        print 'total time: ', total_time, steps_per_second, len(self.data)
+
         time = [x / steps_per_second for x in range(len(self.data))]
         xlims = [0, total_time]
         # resize the x axis
         self.graph.graph_area.axis.set_xlim(xlims)  # TODO: horrible for encapsulation
-        print 'new voltage data: ', self.data
+
         self.graph.voltage_line.set_data(time, self.data)
         self.graph.update_graph()
 
@@ -278,10 +267,10 @@ class CVSettingChanges(tk.Toplevel):
         except ValueError as error:  # user input values failed
             logging.info("Error in data input format: %s", error)
             # TODO: put a toplevel telling the user about the error
-            print 'aa'
+
             self.destroy()  # if the inputted data is not correct, just destroy the toplevel so
             # that the program will not try to send bad data to the MCU
-            print 'bb'
+
             return
         # Update all of the main programs operations_params settings so the User's choices
         # will be remembered and send all the parameters to the MCU
@@ -289,8 +278,6 @@ class CVSettingChanges(tk.Toplevel):
                                     self.sweep_type.get(), self.start_voltage_type.get())
         cv_display.cv_label_update(_master.device_params)
         self.device.send_cv_parameters()
-
-        print 'sweep type: ', self.sweep_type
 
         x_lim_low = cv_settings.low_voltage
         x_lim_high = cv_settings.high_voltage
@@ -414,8 +401,7 @@ class AmpSettingsChanges(tk.Toplevel):
                   command=self.destroy).grid(row=3, column=1)
 
     def save_amp_changes(self, _voltage, _sampling_rate, device, master, graph, display):
-        """
-
+        """ Save user's entered data to the device
         NOTE: sampling rate is not working currently
         :param _voltage:
         :param _sampling_rate:

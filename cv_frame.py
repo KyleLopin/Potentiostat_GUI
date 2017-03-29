@@ -308,7 +308,6 @@ class CVFrame(ttk.Frame):
                 # amount of time to wait for the data to be collected before getting it
                 # give a 200 ms buffer to the calculated delay time
                 _delay = int(200 + self.params.cv_settings.delay_time)
-                print 'delay time: ', _delay
                 self.master.after(_delay, lambda: self.run_scan_continue(canvas))  # step 2
             else:
                 logging.debug("Couldn't find out endpoint to send message to run")
@@ -466,16 +465,9 @@ class CVFrame(ttk.Frame):
 
 def make_x_line(start, end, inc, sweep_type="CV", start_volt_type="Zero"):  # type=("Zero", "CV")):
     # if type == ("Zero", "CV"):
-    print 'got first start: ', start, int(float(start) / inc)
-    # fix any issues with the dac being 16 mV / step
-    # fix issues with always rounding down, prevent rounding 'down' to a bigger negative number
-    # start = int(round((start+2048) / inc)) * inc - (2048/inc)
-    start = int(float(start) / inc) * inc
-    # end = int(round((end+2048) / inc)) * inc  - (2048/inc)
-    end = int(float(end) / inc) * inc
-    logging.debug("making x line with {0}, {1}, type: {2}, {3}".format(start,
-                                                                       end, sweep_type,
-                                                                       start_volt_type))
+
+    start = int(float(start) / inc) * inc  # fix any issues with the dac being 16 mV / step
+    end = int(float(end) / inc) * inc  # always round towards 0 V
     if sweep_type == "CV" and start_volt_type == "Zero":
         # start = int(start/inc) * inc
         return make_x_line_zero_cv(start, end, inc)
@@ -496,7 +488,6 @@ def make_x_line_linear(start, end, inc):
     :param inc: voltage step size
     :return: list of voltages
     """
-    print 'make x line linear: ', start, end, inc
     start_mod = 0
     if start > end:
         inc *= -1
@@ -518,22 +509,9 @@ def make_x_line_zero_cv(start, end, inc):
     end = int(float(end / inc))
     inc = int(inc)
     line = []
-    mod = 1
-    start_mod = 0
-    if start > end:  # fix problems with range not going to the last value
-        mod = -1
-        start_mod = 1
-    print 'mod is: ', mod, start, end, start_mod
-    # line.extend(make_side(0, start + start_mod, 1))
     line.extend(make_side(0, start, 1))
-    print line
-    # line.extend(make_side(line[-2], end + mod, 1))  # hack
     line.extend(make_side(line[-2], end, 1))
-    print line
-    # line.extend(make_side(line[-2], 0, 1))  # hack
     line.extend(make_side(line[-2], 0, 1))
-    print line
-    # line.append(0)
     return [x * inc for x in line]
 
 
@@ -548,7 +526,6 @@ def make_side(start, end, inc):
     #     inc *= -1
     # return range(start, end, inc)
     lut = []
-    index = 0
     if start < end:
         while start <= end:
             lut.append(start)
@@ -567,17 +544,11 @@ def make_x_line_triangle(start, end, inc):
     :param inc: the voltage step size
     :return: list of numbers
     """
-    logging.debug("making triangle sweep with {0}, {1}, {2}".format(start, end, inc))
     start = int(start / inc)
     end = int(end / inc)
     inc = int(inc)
     line = []
-    mod = 1
-    if start > end:
-        mod = -1
-    # line.extend(make_side(start, end + mod, 1))
-    # line.extend(make_side(line[-2], start, 1))
-    # line.append(start)  # make side uses range so it doesnt have the last value, add manually
+
     line.extend(make_side(start, end, 1))
     line.extend(make_side(line[-2], start, 1))
     return [x * inc for x in line]

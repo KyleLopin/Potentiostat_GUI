@@ -239,7 +239,6 @@ class ADC_TIA(object):
         if new_adc_gain_value:
             self.adc_gain = new_adc_gain_value
         self.counts_to_current = self.calc_counts_to_current_ua()
-        print 'counts to current: ', self.counts_to_current
 
     def calibrate(self, data):
         """ Calibrate the TIA ADC with the onboard IDAC and calculate the adc shift gain functions
