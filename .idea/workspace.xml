@@ -3,11 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="251b6b94-30bd-4672-9fcb-503d3e5ae2ad" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/change_toplevel.py" afterPath="$PROJECT_DIR$/change_toplevel.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cv_frame.py" afterPath="$PROJECT_DIR$/cv_frame.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/properties.py" afterPath="$PROJECT_DIR$/properties.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tkinter_pyplot.py" afterPath="$PROJECT_DIR$/tkinter_pyplot.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/usb_comm.py" afterPath="$PROJECT_DIR$/usb_comm.py" />
     </list>
     <ignored path="Amp_simple.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -744,7 +739,14 @@
       <option name="project" value="LOCAL" />
       <updated>1490754629710</updated>
     </task>
-    <option name="localTasksCounter" value="40" />
+    <task id="LOCAL-00040" summary="Remove print statements used to debug the function to make the x lines">
+      <created>1490760206136</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1490760206136</updated>
+    </task>
+    <option name="localTasksCounter" value="41" />
     <servers />
   </component>
   <component name="TodoView" selected-index="4">
@@ -836,7 +838,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Fix Save Data button on CV frame" />
     <MESSAGE value="Fix Change Data labels toplevel" />
     <MESSAGE value="Fix Delete all data in options menu" />
     <MESSAGE value="Open data now works" />
@@ -861,7 +862,8 @@
     <MESSAGE value="Fixed some errors with doing linear sweep, device updated too.&#10;&#10;NOTE: a lot of print statements for debugging being displayed" />
     <MESSAGE value="Voltage preview and all different cyclic voltammetry experiments working, verified by aligning DAC reading with x_line function" />
     <MESSAGE value="Fixed all errors with making the voltage line for cyclic voltammetry experiments.&#10;&#10;NOTE: lot of print statements still out" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed all errors with making the voltage line for cyclic voltammetry experiments.&#10;&#10;NOTE: lot of print statements still out" />
+    <MESSAGE value="Remove print statements used to debug the function to make the x lines" />
+    <option name="LAST_COMMIT_MESSAGE" value="Remove print statements used to debug the function to make the x lines" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">
