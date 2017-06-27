@@ -6,6 +6,8 @@
 
 from __future__ import division
 
+import logging
+
 __author__ = 'Kyle Vitautas Lopin'
 
 ADC_VREF = 2048  # mV
@@ -13,9 +15,25 @@ ADC_BITS = 12
 PWM_FREQ = 240000.
 VIRTUAL_GROUND = 2048.
 
-START_VOLTAGE = 500.
-END_VOLTAGE = -800.
+DEFAULT_CV_SETTIGNS = {'start_dac_value': 159, 'start_voltage': 200, 'end_voltage': 900,
+                       'sweep_start_type': 'Start', 'end_dac_value': 78,
+                       'sweep_type': 'CV', 'sweep_rate': 1.0,
+                       'delay_time': 1400.0, 'pwm_period_value': 3840}
+# 'low_voltage': 200, 'high_voltage': 900,
+
+START_VOLTAGE_CV = 200.
+END_VOLTAGE_CV = 900.
 SWEEP_RATE = 1.0
+
+CLEAN_VOLTAGE_ASV = 500  # mV
+CLEAN_TIME = 20  # seconds
+PLATING_VOLTAGE = -800  # mV
+PLATING_TIME = 120  # seconds
+END_ASV_VOLTAGE = 800  # mV
+
+SAVED_SETTINGS_FILE = "settings.txt"
+
+
 
 
 class DeviceParameters(object):
@@ -36,6 +54,7 @@ class DeviceParameters(object):
         self.dac = DAC("8-bit DAC", voltage_range=4080)
         self.cv_settings = CVSettings(self.clk_freq_isr_pwm, self.dac)
         self.amp_settings = AmpSettings(self.clk_freq_isr_pwm, self.dac)
+        self.asv_settings = ASVSettings(self.clk_freq_isr_pwm, self.dac)
 
         # variable parameters
         self.pwm_period_value = self.calculate_pwm_period()
@@ -71,19 +90,36 @@ class CVSettings(object):
         """
         :param clock_freq: frequency that the DAC is change the voltage
         :param dac: DAC instance
-        :return:
         """
-        self.start_voltage = START_VOLTAGE  # mV, start with basic parameters
-        self.end_voltage = END_VOLTAGE  # mV
+        # try to open settings file
+        try:
+            with open("settings.txt", 'r') as _file:
+                for line in _file.readlines():
+                    attribute, value = line.split('=')
+                    attribute = attribute.strip(' ')
+                    value = value.strip()
+                    # print attribute, value
+                    self[attribute] = int(value)
+
+        except:
+            pass
+
+        for key in DEFAULT_CV_SETTIGNS:
+            if not hasattr(self, key):
+                setattr(self, key, DEFAULT_CV_SETTIGNS[key])
+        print 'vars'
+        print vars(self)
+        # self.start_voltage = START_VOLTAGE_CV  # mV, start with basic parameters
+        # self.end_voltage = END_VOLTAGE_CV  # mV
         self.low_voltage = min([self.start_voltage, self.end_voltage])
         self.high_voltage = max([self.start_voltage, self.end_voltage])
-        self.sweep_rate = SWEEP_RATE  # V/s
-        self.pwm_period_value = self.calculate_pwm_period(clock_freq, dac)
-        self.delay_time = 2 * abs(self.high_voltage - self.low_voltage) / self.sweep_rate
-        self.sweep_type = "CV"  # "CV" for Cyclic Voltammetry or "LS" for linear Sweep
-        # variable to store if the voltage protocol starts and 0 V and
-        # then to go start volts or if the protocol starts at the start_voltage immediately
-        self.sweep_start_type = "Zero"  # "Zero" or "Start" for what voltage to start at
+        # self.sweep_rate = SWEEP_RATE  # V/s
+        # self.pwm_period_value = self.calculate_pwm_period(clock_freq, dac)
+        # self.delay_time = 2 * abs(self.start_voltage - self.end_voltage) / self.sweep_rate
+        # self.sweep_type = "CV"  # "CV" for Cyclic Voltammetry or "LS" for linear Sweep
+        # # variable to store if the voltage protocol starts and 0 V and
+        # # then to go start volts or if the protocol starts at the start_voltage immediately
+        # self.sweep_start_type = "Start"  # "Zero" or "Start" for what voltage to start at
         # TODO: are these still needed??
         self.start_dac_value = None  # init holder
         self.end_dac_value = None  # init holder
@@ -111,16 +147,32 @@ class CVSettings(object):
         :param start_voltage: mV, voltage the user wants to start at
         :param end_voltage: mV, voltage the user wants to end the cyclic voltammetry at
         :param sweep_rate: V/s, rate of change of the cyclic voltammetry
-        :return:
         """
         self.start_voltage = start_voltage
         self.end_voltage = end_voltage
-        self.low_voltage = min([self.start_voltage, self.end_voltage])  # not dry, in init
-        self.high_voltage = max([self.start_voltage, self.end_voltage])
+        # self.low_voltage = min([self.start_voltage, self.end_voltage])  # not dry, in init
+        # self.high_voltage = max([self.start_voltage, self.end_voltage])
         self.sweep_rate = sweep_rate
-        self.delay_time = 2 * abs(self.high_voltage - self.low_voltage) / self.sweep_rate
+        self.delay_time = 2 * abs(self.start_voltage - self.end_voltage) / self.sweep_rate
         self.sweep_type = sweep_type
         self.sweep_start_type = start_type
+
+        try:
+            with open(SAVED_SETTINGS_FILE, 'r') as _file:
+                old_file = _file.read()
+
+        except Exception as e:
+            logging.debug("exception in loading settings file: {0}".format(e))
+            pass  # there is no file so skip
+
+        try:
+            with open(SAVED_SETTINGS_FILE, 'w') as _file:
+                for item in vars(self):
+                    _file.write("{0} = {1}\n".format(item, eval("self.{0}".format(item))))
+
+        except Exception as e:
+            logging.debug("exception in loading settings file: {0}".format(e))
+            pass  # there is no file so skip
 
 
 class AmpSettings(object):
@@ -148,6 +200,36 @@ class AmpSettings(object):
         """
         self.voltage = voltage
         self.sampling_rate = rate
+
+
+class ASVSettings(CVSettings):
+    def __init__(self, clock_freq, dac):
+        CVSettings.__init__(self, clock_freq, dac)
+        self.sweep_type = "LS"
+        self.clean_volt = CLEAN_VOLTAGE_ASV
+        self.clean_time = CLEAN_TIME
+        self.plate_volt = PLATING_VOLTAGE
+        self.plate_time = PLATING_TIME
+        self.end_voltage = END_ASV_VOLTAGE
+        self.sweep_rate = SWEEP_RATE
+        self.delay_time = 2 * abs(self.end_voltage - self.plate_volt) / self.sweep_rate
+
+    def update_settings(self, clean_voltage, clean_time, electroplate_voltage,
+                        plating_time, end_voltage, sweep_rate):
+        """ Update the CV settings
+        :param start_voltage: mV, voltage the user wants to start at
+        :param end_voltage: mV, voltage the user wants to end the cyclic voltammetry at
+        :param sweep_rate: V/s, rate of change of the cyclic voltammetry
+        """
+        self.clean_volt = clean_voltage
+        self.clean_time = clean_time
+        self.plate_volt = electroplate_voltage
+        self.plate_time = plating_time
+        self.end_voltage = end_voltage
+        self.low_voltage = self.plate_volt
+        self.high_voltage = self.end_voltage
+        self.sweep_rate = sweep_rate
+        self.delay_time = abs(self.high_voltage - self.low_voltage) / self.sweep_rate
 
 
 class DAC(object):

@@ -26,19 +26,22 @@ FAILURE_DELAY = 500
 class CVFrame(ttk.Frame):
     """ Frame to hold all the widgets and information to perform cyclic voltammetry experiments
     """
-    def __init__(self, master, parent_notebook, graph_properties):
+
+    def __init__(self, master, parent_notebook, graph_properties, bg=OPTIONS_BACKGROUND,
+                 initialize=True):
         """ Make a ttk frame to hold all the info for cyclic voltammetry, frame is split in 2,
-        one for graph area and other for buttons
+        one for graph area and another for the buttons
         :param master: tk.Tk overall master program
         :param parent_notebook: ttk.Notebook that this frame is embedded in
         :param graph_properties: properties for the graph
+        :param bg: color to make the background frame
         """
         ttk.Frame.__init__(self, parent_notebook)
         self.master = master
         self.data = data_class.PyplotData()
         self.graph = self.make_graph_area(master, graph_properties)  # make graph
         self.graph.pack(side='left', expand=True, fill=tk.BOTH)
-        options_frame = tk.Frame(self, bg=OPTIONS_BACKGROUND, bd=3)
+        options_frame = tk.Frame(self, bg=bg, bd=3)
         options_frame.pack(side='left', fill=tk.BOTH)
         buttons_frame = tk.Frame(options_frame)
         buttons_frame.pack(side='bottom', fill=tk.X)
@@ -50,11 +53,12 @@ class CVFrame(ttk.Frame):
                                                        self.device)
         self.cv_settings_frame.pack(side="top", fill=tk.X)
         # initialize the device so the user can hit the run button
-        time.sleep(0.4)  # give time for the calibration data to be processed
-        self.device.send_cv_parameters()
-        time.sleep(0.1)
-        master.device.usb_write("L|3")
-        time.sleep(0.1)
+        if initialize:
+            time.sleep(0.4)  # give time for the calibration data to be processed
+            self.device.send_cv_parameters()
+            time.sleep(0.1)
+            master.device.usb_write("L|3")
+            time.sleep(0.1)
         # make the buttons the user can use in the CV experiments
         self.make_cv_buttons(buttons_frame, self.graph, self.device)
 
@@ -117,10 +121,10 @@ class CVFrame(ttk.Frame):
                                    text="Add toolbar",
                                    command=cv_graph.toolbar_toggle)
         toolbar_button.pack(side='bottom', fill=tk.BOTH)
-        tk.Button(_frame,
-                  text="Read Message",
-                  command=lambda: self.print_usb_message(device)).pack(side='bottom',
-                                                                       fill=tk.BOTH)
+        # tk.Button(_frame,
+        #           text="Read Message",
+        #           command=lambda: self.print_usb_message(device)).pack(side='bottom',
+        #                                                                fill=tk.BOTH)
         # experimental button to try chronoamperometry experiments
         # tk.Button(_frame,
         #           text="Chronoamp",
@@ -205,6 +209,9 @@ class CVFrame(ttk.Frame):
         for i in range(1, len(first_line)):  # go through each data line and add it to self.data
             self.graph.update_data(_data_hold[0], _data_hold[i], label=first_line[i])
 
+    def set_tia_current_lim_str(self, str):
+        self.cv_settings_frame.set_current_var_str(str)
+
 
     class USBHandler(object):
         """ NOTE: self.device is the AMpUSB class and device.device is the pyUSB class
@@ -212,10 +219,10 @@ class CVFrame(ttk.Frame):
 
         def __init__(self, graph, device, master, data):
             """ Class to handle all the usb calls to perform cyclic voltammetry experiments
-            :param graph: graph the data is displayed in
-            :param device: usb_comm device to send calls with
+            :param graph: tkinter_pyplot - graph the data is displayed in
+            :param device: usb_comm.AmpUSB device to send calls with
             :param master: root tk.TK
-            :param data: pyplot_data_class
+            :param data: pyplot_data_class.PyplotData - class data is stored in
             """
             self.graph = graph
             self.device = device  # bind master device to self
@@ -248,9 +255,6 @@ class CVFrame(ttk.Frame):
             logging.debug("sending cv params here")
             # convert the values into the values the device needs
             # this part is done on the computer side to save MCU code length
-            # minus sign is needed because the device sets the common electrode to the voltage and
-            # assumes the working electrode is ground, but voltammetry has the voltage on the
-            # working electrode compared to the common electrode
             formatted_start_volt, start_dac_value = \
                 self.format_voltage(self.settings.start_voltage)
             formatted_end_volt, end_dac_value = \
@@ -284,8 +288,10 @@ class CVFrame(ttk.Frame):
             compare_value = pwm_period / 2
             self.device.write_timer_compare(compare_value)
 
+        def update_adc_setting(self):
+            pass
 
-        def run_scan(self, canvas, run_button):
+        def run_scan(self, canvas, run_button, _delay=None):
             """ This will run a cyclic voltammetry scan. To do this it follows the steps
             1) sent 'R' to the microcontroller to run the scan and collect the data
             2) wait for the scan to run and poll the amperometry device to see if its ready for data
@@ -299,6 +305,9 @@ class CVFrame(ttk.Frame):
             :param run_button: run button that was pressed to start the scan
             :return: binds the data to the master instead of returning anything
             """
+            if self.device.last_experiment != "CV":  # the look up table is not correct
+
+                self.device.set_last_run = "CV"
             self.run_button = run_button  # bind button to self so it can be put active again
             # inactive the button so the user cant hit it twice
             self.run_button.config(state='disabled')
@@ -307,7 +316,9 @@ class CVFrame(ttk.Frame):
                 logging.debug("device reading")
                 # amount of time to wait for the data to be collected before getting it
                 # give a 200 ms buffer to the calculated delay time
-                _delay = int(200 + self.params.cv_settings.delay_time)
+
+                if not _delay:
+                    _delay = int(200 + self.params.cv_settings.delay_time)
                 self.master.after(_delay, lambda: self.run_scan_continue(canvas))  # step 2
             else:
                 logging.debug("Couldn't find out endpoint to send message to run")
@@ -378,9 +389,8 @@ class CVFrame(ttk.Frame):
             clk_freq = self.params.clk_freq_isr_pwm
             # take the clock frequency that is driving the PWM and divide it by the number of
             # voltage steps per second: this is how many clk ticks between each interrupt
-            raw_divider = int(
-                round(
-                    clk_freq / (_sweep_rate * 1000 / self.params.dac.voltage_step_size)) - 1)
+            raw_divider = int(round(clk_freq /
+                                    (_sweep_rate * 1000 / self.params.dac.voltage_step_size)) - 1)
             return '{0:05d}'.format(raw_divider), raw_divider
 
         def format_voltage(self, _in_volts):
@@ -391,11 +401,14 @@ class CVFrame(ttk.Frame):
             values long to be transmitted to the device
             """
             # shift the user's voltage by the amount of the virtual ground
-            input_voltage = self.params.virtual_ground_shift + _in_volts  # mV
+            input_voltage = self.params.virtual_ground_shift - _in_volts  # mV
             # get the value needed (number of increments needed to get desired voltage, ex. desire
             # 500mV with 1 mV increments then put in 500) to put into the dac and pad it with zeros
             dac_value = self.params.dac.get_dac_count(input_voltage)
             return '{0:04d}'.format(dac_value), dac_value
+
+        def set_adc_tia(self, *args):
+            self.device.set_adc_tia(*args)
 
         def usb_read_message(self):
             """ For development, check if device wants to speak """
@@ -432,6 +445,10 @@ class CVFrame(ttk.Frame):
                                                                                     fill=tk.BOTH)
 
             self.cv_label_update(device_params)
+
+        def set_current_var_str(self, tia_value):
+            self.current_var_str.set(u'Current range: {0}'
+                                     .format(tia_value))
 
         def cv_label_update(self, device_params):
             """ Update the user's display of what the parameters of the cyclic

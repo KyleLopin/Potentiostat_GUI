@@ -11,6 +11,7 @@ import Tkinter as tk
 import ttk
 # local files
 import amp_frame
+import asv_frame
 import change_toplevel as change_top
 import cv_frame
 import graph_properties
@@ -36,7 +37,9 @@ class ElectroChemGUI(tk.Tk):
         tk.Tk.__init__(self, parent)
         self.parent = parent
         self.voltage_source_label = tk.StringVar()
+        # let the user see if the device is set for 2 or 3 electrodes
         self.electrode_config_label = tk.StringVar()
+        # device starts in 3 electrode config
         self.electrode_config_label.set("3 electrode configuration")
         self.device = usb_comm.AmpUsb(self, self.device_params)
         graph_props = graph_properties.GraphProps()
@@ -47,9 +50,12 @@ class ElectroChemGUI(tk.Tk):
         self.notebook = ttk.Notebook(self)
         self.cv = cv_frame.CVFrame(self, self.notebook, graph_props)
         self.amp = amp_frame.AmpFrame(self, self.notebook, graph_props)
+        self.asv = asv_frame.ASVFrame(self, self.notebook, graph_props)
 
         self.notebook.add(self.cv, text="Cyclic Voltammetry")
         self.notebook.add(self.amp, text="Amperometry")
+        self.notebook.add(self.asv, text="Anode Stripping Voltammetry")
+
         self.notebook.pack(side='top', expand=True, fill=tk.BOTH)
         tk.Label(self.frames[2], textvariable=self.voltage_source_label, font=("Bookman", 10)
                  ).pack(side='top')
@@ -101,6 +107,10 @@ class ElectroChemGUI(tk.Tk):
         :param message: message to give the user
         """
         self.voltage_source_label.set(message)
+
+    def set_current_var_str(self, str):
+        self.cv.set_tia_current_lim_str(str)
+        self.asv.set_tia_current_lim_str(str)
 
     def open_data(self):
         """ Open a csv file that has the data saved in it, in the same format as this program

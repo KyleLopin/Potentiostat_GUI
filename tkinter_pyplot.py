@@ -5,10 +5,11 @@
 """
 # standard libraries
 import logging
+import Tkinter as tk
+# installed libraries
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.backends.backend_tkagg import NavigationToolbar2TkAgg as NavToolbar
-import Tkinter as tk
 # local files
 import change_toplevel as toplevel
 

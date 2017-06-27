@@ -32,6 +32,9 @@ FAILURE_DELAY = 500
 COMPLETE_MESSAGE = "Done"
 TERMINATION_CODE = -16384
 
+# device parameter list
+TIA_RESISTOR_VALUES = [20, 30, 40, 80, 120, 250, 500, 1000]
+
 
 class AmpUsb(object):
     """
@@ -64,6 +67,7 @@ class AmpUsb(object):
         self.device_params = _device_params
         self.master = _master
         self.device_type = None
+        self.last_experiment = "CV"  # keep track of what type of experiment was run last, CV or ASV
         logging.info("attempting connection")
         self.device, self.ep_out, self.ep_in = self.connect_usb(vendor_id, product_id)
 
@@ -130,7 +134,7 @@ class AmpUsb(object):
         :param _vendor_id: the USB vendor id, used to identify the proper device connected to
         sthe computer
         :param _product_id: the USB product id
-        :return:
+        :return: the device if it is found, None if not
         """
         # attempt to find the PSoC amperometry device
         amp_device = usb.core.find(idVendor=_vendor_id, idProduct=_product_id)
@@ -182,9 +186,8 @@ class AmpUsb(object):
         self.device_type = _device_type
 
     def find_voltage_source(self):
-        """
-        Test the device to see if it is using the 8-bit VDAC or the 12-bit DVDAC
-        :return:
+        """ Test the device to see if it is using the 8-bit VDAC or the 12-bit DVDAC
+        :return: None, bind voltage source to self.device_params.dac
         """
         self.usb_write("VR")
         time.sleep(0.2)
@@ -333,12 +336,14 @@ class AmpUsb(object):
         if self.working:
             self.usb_write('B')
             self.master.after(400, func=self._calibrate_data)
+            logging.debug("running calibration")
 
     def _calibrate_data(self):
         """ To be used after the command for the device to measure the calibration data has been
         sent.  Gets the data from the device and sends it to the adc_tia module to be processed
         """
         raw_data = self.usb_read_data(20, encoding='signed int16')
+        logging.debug("Calibration data: {0}".format(raw_data))
         self.device_params.adc_tia.calibrate(raw_data)
 
     def get_export_channel(self, channel=None):
@@ -353,10 +358,16 @@ class AmpUsb(object):
     def set_electrode_config(self, num_electrodes):
         """ The PSoC can perform either 2 electrode or 3 electrode measurements, send the device the
         command 'L|X' to change its config where X is either 2 or 3 for the # of electrodes to use
-        :param _configs:
-        :return:
+        :param num_electrodes: int, number of electrodes the user wants to use
         """
-        self.usb_write('L|' + str(num_electrodes))
+        self.usb_write('L|' + str(num_electrodes))  # tell the device
+        # update the gui
+        self.master.electrode_config_label.set("{0} electrode configuration".format(num_electrodes))
+
+    def set_anode_voltage(self, voltage):
+        logging.debug("setting anode voltage to {0} mV".format(voltage))
+        print "fill in thie function"
+        self.usb_write("D|{0}".format(self.device_params.dac.get_dac_count(voltage)))
 
     def set_custom_resistor_channel(self, channel):
         """ Incase the currents are too large and a smaller external TIA resistor is needed
@@ -368,6 +379,13 @@ class AmpUsb(object):
         self.usb_write("A7|0|T|" + channel)
         # the 7 is to set the TIA resistor to 1M to minimize the change it will have on
         # the equivalent resistance
+
+    def set_adc_tia(self, tia_position, adc_gain):
+        self.usb_write("A{0}|{1}|F|0".format(tia_position, adc_gain))
+        self.device_params.adc_tia.set_value(TIA_RESISTOR_VALUES[tia_position],
+                                             adc_gain)
+        logging.debug("TIA resistor changed to: %s", self.device_params.adc_tia.tia_resistor)
+        self.calibrate()
 
     def format_divider(self, _sweep_rate):
         """ Take in the users desired sweet rate and convert it to the number needed to input
@@ -491,6 +509,9 @@ class AmpUsb(object):
                                                  USB_IN_BYTE_SIZE)
             except:
                 usb_in_buffer = None
+
+    def set_last_run(self, run_type):
+        self.last_experiment = run_type
 
 
 def convert_uint8_uint16(_array):

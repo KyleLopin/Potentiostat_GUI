@@ -10,6 +10,7 @@ import sys
 import time
 import Tkinter as tk
 import tkFont
+import ttk
 # local files
 import cv_frame
 import tkinter_pyplot
@@ -19,6 +20,18 @@ __author__ = 'Kyle Vitautas Lopin'
 TIA_RESISTOR_VALUES = [20, 30, 40, 80, 120, 250, 500, 1000]
 CURRENT_LIMIT_VALUES = [50, 33, 25, 12.5, 8.4, 4, 2, 1, 0.5, 0.25, 0.125]
 COLOR_CHOICES = ['black', 'gray', 'red', 'green', 'blue', 'orange', 'magenta']
+
+CURRENT_OPTION_LIST = [u'\u00B150 \u00B5A',
+                       u'\u00B133 \u00B5A',
+                       u'\u00B125 \u00B5A',
+                       u'\u00B112.5 \u00B5A',
+                       u'\u00B18.3 \u00B5A',
+                       u'\u00B14 \u00B5A',
+                       u'\u00B12 \u00B5A',
+                       u'\u00B11 \u00B5A',
+                       u'\u00B10.5 \u00B5A',
+                       u'\u00B10.25 \u00B5A',
+                       u'\u00B10.125 \u00B5A']
 
 
 class CVSettingChanges(tk.Toplevel):
@@ -85,17 +98,7 @@ class CVSettingChanges(tk.Toplevel):
         tk.Label(self.options_frame, text="Current Range: ", padx=10, pady=10).grid(row=3, column=0)
         self.current_options = tk.StringVar(self.options_frame)
         # there are sometimes problems with encoding with this
-        self.current_option_list = [u'\u00B150 \u00B5A',
-                                    u'\u00B133 \u00B5A',
-                                    u'\u00B125 \u00B5A',
-                                    u'\u00B112.5 \u00B5A',
-                                    u'\u00B18.3 \u00B5A',
-                                    u'\u00B14 \u00B5A',
-                                    u'\u00B12 \u00B5A',
-                                    u'\u00B11 \u00B5A',
-                                    u'\u00B10.5 \u00B5A',
-                                    u'\u00B10.25 \u00B5A',
-                                    u'\u00B10.125 \u00B5A']
+        self.current_option_list = CURRENT_OPTION_LIST
 
         if _master.device_params.adc_tia.tia_resistor in TIA_RESISTOR_VALUES:
             current_option_list_index = TIA_RESISTOR_VALUES.index(
@@ -254,7 +257,6 @@ class CVSettingChanges(tk.Toplevel):
         :param cv_display: display frame of the cyclic voltammetry parameters
         :return: the parameters are updated in the main windows operational_params dictionary
         """
-
         cv_settings = _master.device_params.cv_settings
         # try to convert the voltages to integers and sweep rate to a float and save the voltage
         # and frequency parameters to the current instance so they don't
@@ -298,22 +300,22 @@ class CVSettingChanges(tk.Toplevel):
 
         # Check if the gain setting has changed and the TIA resistor value should be updated
         if _master.device_params.adc_tia.tia_resistor is not TIA_RESISTOR_VALUES[tia_position]:
-            _master.device.usb_write('A' + str(tia_position) + '|' + str(adc_gain_setting) +
-                                     '|F|0')  # update device
+            # _master.device.usb_write('A' + str(tia_position) + '|' + str(adc_gain_setting) +
+            #                          '|F|0')  # update device
             # update program
-            _master.device_params.adc_tia.set_value(TIA_RESISTOR_VALUES[tia_position],
-                                                    adc_gain_setting)
+            # _master.device_params.adc_tia.set_value(TIA_RESISTOR_VALUES[tia_position],
+            #                                          adc_gain_setting)
             # _master.device_params.adc_tia.tia_resistor = TIA_RESISTOR_VALUES[tia_position]
-            logging.debug("TIA resistor changed to: %s", _master.device_params.adc_tia.tia_resistor)
-
+            # logging.debug("TIA resistor changed to: %s", _master.device_params.adc_tia.tia_resistor)
+            self.device.set_adc_tia(tia_position, adc_gain_setting)
             # Change the value for the current limits displayed to the user and
             # update the graph's scale
-            cv_display.current_var_str.set(self.current_option_list[position])
+            self.master.set_current_var_str(self.current_option_list[position])
+            # cv_display.set_current_var_str(self.current_option_list[position])
             cv_graph.resize_y(CURRENT_LIMIT_VALUES[position])
+
         logging.debug('position: %s', position)
         # destroy the top level now that every is saved and updated
-        logging.debug("running calibration")
-        _master.device.calibrate()
         self.destroy()
 
     def sweep_param_is_changed(self, _old_params):
@@ -332,6 +334,114 @@ class CVSettingChanges(tk.Toplevel):
         else:
             logging.debug("sweep_param are not changed")
             return False
+
+
+class ASVSettingChanges(tk.Toplevel):
+    def __init__(self, asv_frame, master, graph, device):
+        """
+
+        :param display: the CVSettingsDisplay (tk.Frame) in the ASV frame where the
+        settings are displayed
+        :param master: root application master
+        :param graph: tkinter_pyplot graph area
+        :param device; asv_frame device handler
+        """
+        tk.Toplevel.__init__(self, master=master)
+        self.title("Change Anode Stripping Voltammetry Settings")
+        # Initialize values needed later
+        self.asv_frame = asv_frame
+        self.master = master
+        self.graph = graph
+        self.device = device
+        self.entry_delay = None  # variable to bind the after calls to
+        self.geometry("400x300")
+
+        # make all the variables to fill
+        self.clean_volt = tk.DoubleVar()
+        self.clean_time = tk.DoubleVar()
+        self.plate_volt = tk.DoubleVar()
+        self.plate_time = tk.DoubleVar()
+        self.end_voltage = tk.DoubleVar()
+        self.sweep_rate = tk.DoubleVar()
+
+        self.settings = master.device_params
+        self.clean_volt.set(self.settings.asv_settings.clean_volt)
+        self.clean_time.set(self.settings.asv_settings.clean_time)
+        self.plate_volt.set(self.settings.asv_settings.plate_volt)
+        self.plate_time.set(self.settings.asv_settings.plate_time)
+        self.end_voltage.set(self.settings.asv_settings.end_voltage)
+        self.sweep_rate.set(self.settings.asv_settings.sweep_rate)
+
+        self.options_frame = tk.Frame(self)
+        self.options_frame.pack()
+
+        label_strs = ["Cleaning voltage: ", "Cleaning time: ", "Plating voltage: ",
+                      "Plating time: ", "Peak voltage: ", "Sweep rate: "]
+        entries = [self.clean_volt, self.clean_time, self.plate_volt,
+                   self.plate_time, self.end_voltage, self.sweep_rate]
+        unit_str = [" mV", "secs", "mV", "secs", "mV", "V/s"]
+        for i in range(6):  # framework for making
+            self.entry_row(self.options_frame, label_strs[i], entries[i], unit_str[i], i)
+
+        tk.Label(self.options_frame, text="Current Range: ", padx=10, pady=10
+                 ).grid(row=7, column=0)
+
+        self.current_range = tk.StringVar()
+
+        if master.device_params.adc_tia.tia_resistor in TIA_RESISTOR_VALUES:
+            current_option_list_index = TIA_RESISTOR_VALUES.index(
+                master.device_params.adc_tia.tia_resistor)
+            self.current_range.set(CURRENT_OPTION_LIST[current_option_list_index])
+
+        tk.OptionMenu(self.options_frame, self.current_range, *CURRENT_OPTION_LIST
+                      ).grid(row=7, column=1)
+
+        tk.Button(self, text="Save", width=15, command=self.save
+                  ).pack(side='left', expand=True)
+        tk.Button(self, text="Exit", width=15, command=self.destroy
+                  ).pack(side='left', expand=True)
+
+    def entry_row(self, frame, label_str, entry_variable, unit_str, row):
+        tk.Label(frame, text=label_str, padx=10, pady=10
+                 ).grid(row=row, column=0)
+        tk.Entry(frame, textvariable=entry_variable).grid(row=row, column=1)
+        tk.Label(frame, text=unit_str, padx=10, pady=10).grid(row=row, column=2)
+
+    def save(self):
+        self.settings.asv_settings.update_settings(self.clean_volt.get(),
+                                                   self.clean_time.get(),
+                                                   self.plate_volt.get(),
+                                                   self.plate_time.get(),
+                                                   self.end_voltage.get(),
+                                                   self.sweep_rate.get())
+
+        # figure out what the user selected for the current range
+        position = CURRENT_OPTION_LIST.index(
+            self.current_range.get())  # get user's choice from the option menu
+        max_tia_setting = 7  # max value you an send the TIA in the device
+        # the largest setting change the ADC gain but not the TIA value
+        if position > max_tia_setting:
+            # the last 3 settings increase the adc gain setting
+            adc_gain_setting = position % max_tia_setting
+            # but leaves the TIA setting at the highest setting available
+            tia_position = max_tia_setting
+        else:
+            tia_position = position  # the setting to send to the MCU is the same as the index
+            adc_gain_setting = 0  # the gain setting is 0 for no gain on the adc
+
+        if self.settings.adc_tia.tia_resistor is not TIA_RESISTOR_VALUES[tia_position]:
+            self.device.set_adc_tia(tia_position, adc_gain_setting)
+
+        # self.settings.adc_tia.tia_resistor = TIA_RESISTOR_VALUES[position]
+        # logging.debug("TIA resistor changed to: %s", self.settings.adc_tia.tia_resistor)
+
+        # Change the value for the current limits displayed to the user and
+        # update the graph's scale
+        self.master.set_current_var_str(CURRENT_OPTION_LIST[position])
+
+        self.asv_frame.label_update(self.settings)
+        self.destroy()
+
 
 class AmpSettingsChanges(tk.Toplevel):
     """ Toplevel that displays the current amperoemtry settings and allows the user to change
