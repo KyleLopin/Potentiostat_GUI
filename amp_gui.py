@@ -233,7 +233,7 @@ def check_display_type():
         import matplotlib.pyplot as plt
         from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
         return "matplotlib"
-    except ImportError, e:
+    except ImportError as e:
         return "canvas"
 
 if __name__ == '__main__':

@@ -23,7 +23,7 @@ DEFAULT_CV_SETTIGNS = {'start_dac_value': 159, 'start_voltage': 200, 'end_voltag
 
 START_VOLTAGE_CV = 200.
 END_VOLTAGE_CV = 900.
-SWEEP_RATE = 1.0
+SWEEP_RATE = 0.1
 
 CLEAN_VOLTAGE_ASV = 500  # mV
 CLEAN_TIME = 20  # seconds
@@ -107,8 +107,8 @@ class CVSettings(object):
         for key in DEFAULT_CV_SETTIGNS:
             if not hasattr(self, key):
                 setattr(self, key, DEFAULT_CV_SETTIGNS[key])
-        print 'vars'
-        print vars(self)
+        # print 'vars'
+        # print vars(self)
         # self.start_voltage = START_VOLTAGE_CV  # mV, start with basic parameters
         # self.end_voltage = END_VOLTAGE_CV  # mV
         self.low_voltage = min([self.start_voltage, self.end_voltage])
@@ -211,6 +211,8 @@ class ASVSettings(CVSettings):
         self.plate_volt = PLATING_VOLTAGE
         self.plate_time = PLATING_TIME
         self.end_voltage = END_ASV_VOLTAGE
+        self.low_voltage = self.plate_volt
+        self.high_voltage = self.end_voltage
         self.sweep_rate = SWEEP_RATE
         self.delay_time = 2 * abs(self.end_voltage - self.plate_volt) / self.sweep_rate
 
@@ -269,12 +271,15 @@ class DAC(object):
             return 1
         return  # self.range / ((2**self.bits)-1)
 
-    def get_dac_count(self, _input_voltage, shift=False):
+    def get_dac_count(self, _input_voltage, shift=False, actual=False):
         """ Get the digital value the dac needs to product the input voltage
         :param _input_voltage: float of the desired voltage
         :param shift: True / False - should the program shift the voltage to take account of the
         virtual ground
         :return: int of the digital value that should be inputted  """
+        if actual:
+            return int(round(-_input_voltage + self.virtual_ground) / self.voltage_step_size)
+
         if shift:
             return int(round((_input_voltage + self.virtual_ground) / self.voltage_step_size))
         else:

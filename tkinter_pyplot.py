@@ -7,6 +7,9 @@
 import logging
 import Tkinter as tk
 # installed libraries
+import matplotlib
+
+matplotlib.use("TkAgg")
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.backends.backend_tkagg import NavigationToolbar2TkAgg as NavToolbar

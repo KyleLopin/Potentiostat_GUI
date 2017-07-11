@@ -236,8 +236,11 @@ class AmpUsb(object):
             # resend the CV prameters with new numbers because the dac changes so the
             self.send_cv_parameters()
 
+    def start_hardware(self):
+        self.usb_write('H')
+
     def send_cv_parameters(self):
-        """ Make it easier to updata the Cyclic Voltammetry frames, send it to the cv usb handler
+        """ Make it easier to update the Cyclic Voltammetry frames, send it to the cv usb handler
         """
         self.master.cv.device.send_cv_parameters()
 
@@ -328,6 +331,9 @@ class AmpUsb(object):
             logging.debug("sending raw data back")
             return _raw_data
 
+    def reset(self):
+        self.usb_write('X')
+
     def calibrate(self):
         """ Start calibrating the ADC - TIA module by first sending the proper command to the
         device for it to measure the data, then call _calibrate_data to get the data and send
@@ -366,8 +372,10 @@ class AmpUsb(object):
 
     def set_anode_voltage(self, voltage):
         logging.debug("setting anode voltage to {0} mV".format(voltage))
-        print "fill in thie function"
-        self.usb_write("D|{0}".format(self.device_params.dac.get_dac_count(voltage)))
+        formatted_voltage_to_send = self.device_params.dac.get_dac_count(voltage,
+                                                                         actual=True)
+        voltage_str = str(formatted_voltage_to_send).zfill(4)
+        self.usb_write("D|{0}".format(formatted_voltage_to_send))
 
     def set_custom_resistor_channel(self, channel):
         """ Incase the currents are too large and a smaller external TIA resistor is needed
