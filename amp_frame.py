@@ -214,6 +214,9 @@ class AmpFrame(ttk.Frame):
             formatted_voltage = self.format_voltage(voltage)
             self.device.usb_write('D|' + formatted_voltage)
 
+        def set_adc_tia(self, *args):
+            self.device.set_adc_tia(*args)
+
         def format_period(self, rate):
             """ Take the users desired sampling rate and convert it to the number to put in the
             PWM used to time the interrupts.

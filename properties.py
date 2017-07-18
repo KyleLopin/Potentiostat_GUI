@@ -335,6 +335,10 @@ class ADC_TIA(object):
     def __init__(self, tia_resistor=20, adc_gain=1, bits=ADC_BITS):
         self.tia_resistor = tia_resistor
         self.adc_gain = adc_gain
+        if adc_gain == 1:
+            self.range_index = tia_resistor  # what current range choice to set
+        else:
+            self.range_index = tia_resistor + adc_gain / 2
         self.bits = bits
         self.counts_to_current = self.calc_counts_to_current_ua()
         self.shift = 0
@@ -358,6 +362,10 @@ class ADC_TIA(object):
         self.tia_resistor = new_tia_value
         if new_adc_gain_value:
             self.adc_gain = new_adc_gain_value
+        if self.adc_gain == 1:
+            self.range_index = self.tia_resistor  # what current range choice to set
+        else:
+            self.range_index = self.tia_resistor + self.adc_gain / 2
         self.counts_to_current = self.calc_counts_to_current_ua()
 
     def calibrate(self, data):

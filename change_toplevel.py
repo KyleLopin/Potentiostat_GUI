@@ -460,7 +460,6 @@ class AmpSettingsChanges(tk.Toplevel):
         # Initialize values needed later
         self.sample_rate = 0
         self.current_range = ""
-
         self.title("Change Amperometry Settings")
         # make labels and an entry widget for a user to change the voltage
         tk.Label(self, text="Voltage: ", padx=10, pady=10).grid(row=0, column=0)
@@ -501,8 +500,7 @@ class AmpSettingsChanges(tk.Toplevel):
         tk.Button(self,
                   text='Save Changes',
                   command=lambda: self.save_amp_changes(voltage.get(), rate.get(), device,
-                                                        master, graph,
-                                                        display)
+                                                        master)
                   ).grid(row=3, column=0)
 
         # make a button to exit the toplevel by destroying it
@@ -510,42 +508,45 @@ class AmpSettingsChanges(tk.Toplevel):
                   text='Exit',
                   command=self.destroy).grid(row=3, column=1)
 
-    def save_amp_changes(self, _voltage, _sampling_rate, device, master, graph, display):
+    def save_amp_changes(self, _voltage, _sampling_rate, device, master):
         """ Save user's entered data to the device
         NOTE: sampling rate is not working currently
-        :param _voltage:
-        :param _sampling_rate:
-        :param device:
-        :param master:
-        :param graph:
-        :param display:
-        :return:
+        :param _voltage:  int - voltage the user wants to run an amperometry experiment at
+        :param _sampling_rate:  int - sampling rate (in kHz) the user wants to sample at
+        :param device:  usb_comm.AmpUsb device that will communicate with the device through a USB
+        :param master:  master GUI this
         """
         current_range = self.current_options.get()
 
-        # set a flag that tells the program to send a parameter change to the MCU turn this
-        # flag off if there is a problem later on and the MCU should not be sent new parameters
-        change_flag = True
         try:  # make sure the user entered the correct data format
             voltage = int(float(_voltage))
             sampling_rate = float(_sampling_rate)
             # don't have to check current range cause it was chosen from an option menu
         except ValueError as error:  # user input values failed
             logging.info("Error in data input format: %s", error)
-            changing_flag = False  # if the inputted data is not correct, change the flag so
-            # that the program will not try to send bad data to the MCU
 
         # check for changes to the voltage and sampling rate,
         # do not bother the amplifier if there is no update
         if self.params_are_changed(master.device_params, voltage, sampling_rate):
             # send the new parameters to the device
-            # device.set_sample_rate(sampling_rate)
+            # device.set_sample_rate(sampling_rate)  # not working yet
             device.set_voltage(voltage)
+
+        print current_range, 'll'
+        current_range_index = CURRENT_OPTION_LIST.index(current_range)
+        tia_position, adc_gain = get_tia_settings(current_range_index)
+
+        if check_tia_changed(master.device_params, adc_gain, tia_position):
+            device.set_adc_tia(tia_position, adc_gain)  # this updates all frames
+
         self.destroy()
 
-    def params_are_changed(self, old_params, new_voltage, new_rate):
+    @staticmethod
+    def params_are_changed(old_params, new_voltage, new_rate):
         """ Check to see if any of the parameters of the amperometry experiments have been changed
-        :param _old_params:  old parameters
+        :param old_params:  properties.DeviceParameters() what the device is currently set to
+        :param new_voltage:  int - new voltage the user wants
+        :params new_rate:  int - new sampling rate the user wants
         :return: True or False if the parameters have been changed
         """
         if (new_voltage != old_params.amp_settings.voltage
@@ -938,16 +939,20 @@ class MasterDestroyer(tk.Toplevel):
 MAX_TIA_SETTING = 7
 
 
-def calc_tia_settings(device, old_settings, range_selected):
-    position = CURRENT_OPTION_LIST.index(range_selected)
-    if position > MAX_TIA_SETTING:
+def get_tia_settings(range_selected):
+    if range_selected > MAX_TIA_SETTING:
         # the last 3 settings increase the adc gain setting
-        adc_gain_setting = position % MAX_TIA_SETTING
+        adc_gain_setting = range_selected % MAX_TIA_SETTING
         # but leaves the TIA setting at the highest setting available
         tia_position = MAX_TIA_SETTING
     else:
-        tia_position = position  # the setting to send to the MCU is the same as the index
+        tia_position = range_selected  # the setting to send to the MCU is the same as the index
         adc_gain_setting = 0  # the gain setting is 0 for no gain on the adc
+    return tia_position, adc_gain_setting
 
-    if old_settings.adc_tia.tia_resistor is not TIA_RESISTOR_VALUES[tia_position]:
-        device.set_adc_tia(tia_position, adc_gain_setting)  # this updates all frames
+
+def check_tia_changed(old_settings, adc_gain, tia_position):
+    if (old_settings.adc_tia.tia_resistor != tia_position or
+                old_settings.adc_tia.adc_gain != adc_gain):
+        return True
+    return False
