@@ -37,6 +37,8 @@ TERMINATION_CODE = -16384
 TIA_RESISTOR_VALUES = [20, 30, 40, 80, 120, 250, 500, 1000]
 CURRENT_OPTION_LIST = globals.CURRENT_OPTION_LIST
 
+CURRENT_LIMIT_VALUES = [50, 33, 25, 12.5, 8.4, 4, 2, 1, 0.5, 0.25, 0.125]
+
 
 class AmpUsb(object):
     """
@@ -402,8 +404,9 @@ class AmpUsb(object):
         self.device_params.adc_tia.set_value(TIA_RESISTOR_VALUES[tia_position],
                                              adc_gain)  # update params
         logging.debug("TIA resistor changed to: %s", self.device_params.adc_tia.tia_resistor)
-        # change current range string in all frames
-        self.master.update_current_range(CURRENT_OPTION_LIST[tia_position])
+        # change current range and current range string in all frames
+        current_limit = CURRENT_LIMIT_VALUES[tia_position]
+        self.master.update_current_range(CURRENT_OPTION_LIST[tia_position], current_limit)
         # run the calibration routine to update the adc counts to current value
         self.calibrate()
 

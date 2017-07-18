@@ -91,7 +91,8 @@ class AmpFrame(ttk.Frame):
             device.time = []
             device.amp_run(graph, self)
 
-    def save_data(self, device):
+    @staticmethod
+    def save_data(device):
         if len(device.data) == 0:
             logging.info("No amperometry data to save")
             return
@@ -105,8 +106,15 @@ class AmpFrame(ttk.Frame):
                 writer.writerow([device.time[i], device.data[i]])
             _file.close()
 
-    def set_tia_current_lim_str(self, _value):
+    def set_tia_current_lim(self, _value, current_limit):
+        """ The TIA setting has been changed so update the value shown to the user in the
+        display frame and resize the graph
+        :param _value: str - the current range string to show the user
+        :param current_lim: int - the current range to resize the graph to
+        """
+        print 'settign current lim: ', _value
         self.settings_frame.set_current_var_str(_value)
+        self.graph.resize_y(current_limit)
 
     def change_data_labels(self):
         """ Override parent cv_frame's method to do nothing """

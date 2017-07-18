@@ -13,6 +13,7 @@ import tkFont
 import ttk
 # local files
 import cv_frame
+import globals
 import tkinter_pyplot
 
 __author__ = 'Kyle Vitautas Lopin'
@@ -21,17 +22,7 @@ TIA_RESISTOR_VALUES = [20, 30, 40, 80, 120, 250, 500, 1000]
 CURRENT_LIMIT_VALUES = [50, 33, 25, 12.5, 8.4, 4, 2, 1, 0.5, 0.25, 0.125]
 COLOR_CHOICES = ['black', 'gray', 'red', 'green', 'blue', 'orange', 'magenta']
 
-CURRENT_OPTION_LIST = [u'\u00B150 \u00B5A',
-                       u'\u00B133 \u00B5A',
-                       u'\u00B125 \u00B5A',
-                       u'\u00B112.5 \u00B5A',
-                       u'\u00B18.3 \u00B5A',
-                       u'\u00B14 \u00B5A',
-                       u'\u00B12 \u00B5A',
-                       u'\u00B11 \u00B5A',
-                       u'\u00B10.5 \u00B5A',
-                       u'\u00B10.25 \u00B5A',
-                       u'\u00B10.125 \u00B5A']
+CURRENT_OPTION_LIST = globals.CURRENT_OPTION_LIST
 
 
 class CVSettingChanges(tk.Toplevel):
@@ -284,37 +275,32 @@ class CVSettingChanges(tk.Toplevel):
         x_lim_low = cv_settings.low_voltage
         x_lim_high = cv_settings.high_voltage
         cv_graph.resize_x(x_lim_low, x_lim_high)
+
         # figure out if the current range has changed and update the device if it has
-        # NOTE: not the best solution but there are some encoding errors on the other ways tried
-        position = self.current_option_list.index(_range)  # get user's choice from the option menu
-        max_tia_setting = 7  # max value you an send the TIA in the device
-        # the largest setting change the ADC gain but not the TIA value
-        if position > max_tia_setting:
-            # the last 3 settings increase the adc gain setting
-            adc_gain_setting = position % max_tia_setting
-            # but leaves the TIA setting at the highest setting available
-            tia_position = max_tia_setting
-        else:
-            tia_position = position  # the setting to send to the MCU is the same as the index
-            adc_gain_setting = 0  # the gain setting is 0 for no gain on the adc
+        current_range_index = CURRENT_OPTION_LIST.index(_range)
+        tia_position, adc_gain = get_tia_settings(current_range_index)
+        if check_tia_changed(_master.device_params, adc_gain, tia_position):
+            self.device.set_adc_tia(tia_position, adc_gain)
 
-        # Check if the gain setting has changed and the TIA resistor value should be updated
-        if _master.device_params.adc_tia.tia_resistor is not TIA_RESISTOR_VALUES[tia_position]:
-            # _master.device.usb_write('A' + str(tia_position) + '|' + str(adc_gain_setting) +
-            #                          '|F|0')  # update device
-            # update program
-            # _master.device_params.adc_tia.set_value(TIA_RESISTOR_VALUES[tia_position],
-            #                                          adc_gain_setting)
-            # _master.device_params.adc_tia.tia_resistor = TIA_RESISTOR_VALUES[tia_position]
-            # logging.debug("TIA resistor changed to: %s", _master.device_params.adc_tia.tia_resistor)
-            self.device.set_adc_tia(tia_position, adc_gain_setting)
-            # Change the value for the current limits displayed to the user and
-            # update the graph's scale
-            self.master.update_current_range(self.current_option_list[position])
-            # cv_display.set_current_var_str(self.current_option_list[position])
-            cv_graph.resize_y(CURRENT_LIMIT_VALUES[position])
+        #
+        #
+        # # Check if the gain setting has changed and the TIA resistor value should be updated
+        # if _master.device_params.adc_tia.tia_resistor is not TIA_RESISTOR_VALUES[tia_position]:
+        #     # _master.device.usb_write('A' + str(tia_position) + '|' + str(adc_gain_setting) +
+        #     #                          '|F|0')  # update device
+        #     # update program
+        #     # _master.device_params.adc_tia.set_value(TIA_RESISTOR_VALUES[tia_position],
+        #     #                                          adc_gain_setting)
+        #     # _master.device_params.adc_tia.tia_resistor = TIA_RESISTOR_VALUES[tia_position]
+        #     # logging.debug("TIA resistor changed to: %s", _master.device_params.adc_tia.tia_resistor)
+        #     self.device.set_adc_tia(tia_position, adc_gain)
+        #     # Change the value for the current limits displayed to the user and
+        #     # update the graph's scale
+        #     self.master.update_current_range(self.current_option_list[tia_position])
+        #     # cv_display.set_current_var_str(self.current_option_list[position])
+        #     cv_graph.resize_y(CURRENT_LIMIT_VALUES[tia_position])
 
-        logging.debug('position: %s', position)
+        logging.debug('position: %s', tia_position)
         # destroy the top level now that every is saved and updated
         self.destroy()
 
@@ -437,7 +423,8 @@ class ASVSettingChanges(tk.Toplevel):
 
         # Change the value for the current limits displayed to the user and
         # update the graph's scale
-        self.master.update_current_range(CURRENT_OPTION_LIST[position])
+        self.master.update_current_range(CURRENT_OPTION_LIST[position],
+                                         CURRENT_LIMIT_VALUES[position])
 
         self.asv_frame.label_update(self.settings)
         self.destroy()

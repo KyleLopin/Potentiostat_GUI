@@ -209,8 +209,10 @@ class CVFrame(ttk.Frame):
         for i in range(1, len(first_line)):  # go through each data line and add it to self.data
             self.graph.update_data(_data_hold[0], _data_hold[i], label=first_line[i])
 
-    def set_tia_current_lim_str(self, _value):
+    def set_tia_current_lim(self, _value, current_limit):
+        print 'value: ', _value
         self.cv_settings_frame.set_current_var_str(_value)
+        self.graph.resize_y(current_limit)
 
 
     class USBHandler(object):

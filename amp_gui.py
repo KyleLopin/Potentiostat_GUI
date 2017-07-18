@@ -109,10 +109,10 @@ class ElectroChemGUI(tk.Tk):
         """
         self.voltage_source_label.set(message)
 
-    def update_current_range(self, _value):
-        self.cv.set_tia_current_lim_str(_value)
-        self.amp.set_tia_current_lim_str(_value)
-        self.asv.set_tia_current_lim_str(_value)
+    def update_current_range(self, _value, current_limit):
+        self.cv.set_tia_current_lim(_value, current_limit)
+        self.amp.set_tia_current_lim(_value, current_limit)
+        self.asv.set_tia_current_lim(_value, current_limit)
 
     def open_data(self):
         """ Open a csv file that has the data saved in it, in the same format as this program
