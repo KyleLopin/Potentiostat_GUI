@@ -109,6 +109,9 @@ class ASVFrame(cv_frame.CVFrame):
             compare_value = pwm_period / 2
             self.device.write_timer_compare(compare_value)
 
+        def set_adc_tia(self, *args):
+            self.device.set_adc_tia(*args)
+
         def asv_run(self, graph, run_button):
             # TODO;  when button is pressed have it run an ASV protocol
             # Set the device working electrode to the cleaning voltage

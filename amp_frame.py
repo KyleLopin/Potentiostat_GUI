@@ -108,6 +108,10 @@ class AmpFrame(ttk.Frame):
     def set_tia_current_lim_str(self, _value):
         self.settings_frame.set_current_var_str(_value)
 
+    def change_data_labels(self):
+        """ Override parent cv_frame's method to do nothing """
+        pass
+
     class USBHandler(object):
         """ NOTE: self.device is the AMpUSB class and device.device is the pyUSB class
         """
