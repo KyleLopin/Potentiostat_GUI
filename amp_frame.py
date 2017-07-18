@@ -41,10 +41,10 @@ class AmpFrame(ttk.Frame):
         buttons_frame.pack(side='bottom', fill=tk.X)
 
         device = self.USBHandler(self.graph, master.device, master)
-        self.amp_settings_frame = self.AmpSettingsDisplay(master, options_frame,
-                                                          self.graph, device,
-                                                          master.device_params)
-        self.amp_settings_frame.pack(side="top", fill=tk.X)
+        self.settings_frame = self.AmpSettingsDisplay(master, options_frame,
+                                                      self.graph, device,
+                                                      master.device_params)
+        self.settings_frame.pack(side="top", fill=tk.X)
         self.make_buttons(buttons_frame, self.graph, device)
 
     def make_graph_area(self, master, graph_props):
@@ -66,11 +66,10 @@ class AmpFrame(ttk.Frame):
         :param device: device to send commands too
         """
         # make a button to run a amperometry scan
-        tk.Button(frame,
-                  text="Start Amperometry",
-                  # command=lambda: device.amp_run(graph, self)).pack(side='bottom',
-                  command=lambda: self.toggle_amp_run(device, graph)).pack(side='bottom',
-                                                                           fill=tk.BOTH)
+        self.run_button = tk.Button(frame,
+                                    text="Start Amperometry",
+                                    command=lambda: self.toggle_amp_run(device, graph)).pack(side='bottom',
+                                                                                             fill=tk.BOTH)
         tk.Button(frame,
                   text="Save Data",
                   command=lambda: self.save_data(device)).pack(side='bottom',
@@ -79,12 +78,14 @@ class AmpFrame(ttk.Frame):
     def toggle_amp_run(self, device, graph):
         if self.running:  # stop reading data and tell the device to stop running
             print 'STOPPING'
+            self.run_button.config(text="Stop Amperometry")
             self.running = False
             device.cancel_run()
 
         else:
             print "START"
             print "======================== also process the data to use the calibration routine"
+            self.run_button.config(text="Start Amperometry")
             self.running = True
             device.data = []
             device.time = []
@@ -103,6 +104,9 @@ class AmpFrame(ttk.Frame):
             for i in range(len(device.data)):
                 writer.writerow([device.time[i], device.data[i]])
             _file.close()
+
+    def set_tia_current_lim_str(self, _value):
+        self.settings_frame.set_current_var_str(_value)
 
     class USBHandler(object):
         """ NOTE: self.device is the AMpUSB class and device.device is the pyUSB class
@@ -258,6 +262,10 @@ class AmpFrame(ttk.Frame):
                       command=self.change_amp_settings).pack(side='bottom',
                                                              fill=tk.BOTH)
             self.label_update(device_params)
+
+        def set_current_var_str(self, tia_value):
+            self.current_var_str.set(u'Current range: {0}'
+                                     .format(tia_value))
 
         def label_update(self, params):
             """ Update the user's display of what the parameters of the amperometry are set to

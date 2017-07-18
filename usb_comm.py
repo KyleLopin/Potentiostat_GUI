@@ -34,6 +34,17 @@ TERMINATION_CODE = -16384
 
 # device parameter list
 TIA_RESISTOR_VALUES = [20, 30, 40, 80, 120, 250, 500, 1000]
+CURRENT_OPTION_LIST = [u'\u00B150 \u00B5A',
+                       u'\u00B133 \u00B5A',
+                       u'\u00B125 \u00B5A',
+                       u'\u00B112.5 \u00B5A',
+                       u'\u00B18.3 \u00B5A',
+                       u'\u00B14 \u00B5A',
+                       u'\u00B12 \u00B5A',
+                       u'\u00B11 \u00B5A',
+                       u'\u00B10.5 \u00B5A',
+                       u'\u00B10.25 \u00B5A',
+                       u'\u00B10.125 \u00B5A']
 
 
 class AmpUsb(object):
@@ -389,10 +400,20 @@ class AmpUsb(object):
         # the equivalent resistance
 
     def set_adc_tia(self, tia_position, adc_gain):
-        self.usb_write("A{0}|{1}|F|0".format(tia_position, adc_gain))
+        """ The user selected a different current range, tell the device to change the
+        impedance of the transimpedance amplifier, update the parameters and all the current
+        ranges displayed in the frames
+        :param tia_position:
+        :param adc_gain:
+        :return:
+        """
+        self.usb_write("A{0}|{1}|F|0".format(tia_position, adc_gain))  # update device
         self.device_params.adc_tia.set_value(TIA_RESISTOR_VALUES[tia_position],
-                                             adc_gain)
+                                             adc_gain)  # update params
         logging.debug("TIA resistor changed to: %s", self.device_params.adc_tia.tia_resistor)
+        # change current range string in all frames
+        self.master.update_current_range(CURRENT_OPTION_LIST[tia_position])
+        # run the calibration routine to update the adc counts to current value
         self.calibrate()
 
     def format_divider(self, _sweep_rate):

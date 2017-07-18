@@ -8,6 +8,7 @@ import csv
 import logging
 import tkFont
 import Tkinter as tk
+import FileDialog
 import ttk
 # local files
 import amp_frame
@@ -108,9 +109,10 @@ class ElectroChemGUI(tk.Tk):
         """
         self.voltage_source_label.set(message)
 
-    def set_current_var_str(self, str):
-        self.cv.set_tia_current_lim_str(str)
-        self.asv.set_tia_current_lim_str(str)
+    def update_current_range(self, _value):
+        self.cv.set_tia_current_lim_str(_value)
+        self.amp.set_tia_current_lim_str(_value)
+        self.asv.set_tia_current_lim_str(_value)
 
     def open_data(self):
         """ Open a csv file that has the data saved in it, in the same format as this program

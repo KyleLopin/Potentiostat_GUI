@@ -310,7 +310,7 @@ class CVSettingChanges(tk.Toplevel):
             self.device.set_adc_tia(tia_position, adc_gain_setting)
             # Change the value for the current limits displayed to the user and
             # update the graph's scale
-            self.master.set_current_var_str(self.current_option_list[position])
+            self.master.update_current_range(self.current_option_list[position])
             # cv_display.set_current_var_str(self.current_option_list[position])
             cv_graph.resize_y(CURRENT_LIMIT_VALUES[position])
 
@@ -437,7 +437,7 @@ class ASVSettingChanges(tk.Toplevel):
 
         # Change the value for the current limits displayed to the user and
         # update the graph's scale
-        self.master.set_current_var_str(CURRENT_OPTION_LIST[position])
+        self.master.update_current_range(CURRENT_OPTION_LIST[position])
 
         self.asv_frame.label_update(self.settings)
         self.destroy()
@@ -933,3 +933,21 @@ class MasterDestroyer(tk.Toplevel):
         master.device.destroy()
         os.execl(sys.executable, sys.executable, *sys.argv)
         tk.Button(self, text="Close", width=40, command=lambda: self.destroy()).pack(side='top')
+
+
+MAX_TIA_SETTING = 7
+
+
+def calc_tia_settings(device, old_settings, range_selected):
+    position = CURRENT_OPTION_LIST.index(range_selected)
+    if position > MAX_TIA_SETTING:
+        # the last 3 settings increase the adc gain setting
+        adc_gain_setting = position % MAX_TIA_SETTING
+        # but leaves the TIA setting at the highest setting available
+        tia_position = MAX_TIA_SETTING
+    else:
+        tia_position = position  # the setting to send to the MCU is the same as the index
+        adc_gain_setting = 0  # the gain setting is 0 for no gain on the adc
+
+    if old_settings.adc_tia.tia_resistor is not TIA_RESISTOR_VALUES[tia_position]:
+        device.set_adc_tia(tia_position, adc_gain_setting)  # this updates all frames

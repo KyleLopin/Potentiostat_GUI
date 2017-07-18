@@ -15,13 +15,15 @@ ADC_BITS = 12
 PWM_FREQ = 240000.
 VIRTUAL_GROUND = 2048.
 
-DEFAULT_CV_SETTIGNS = {'start_dac_value': 159, 'start_voltage': 200, 'end_voltage': 900,
+DEFAULT_CV_SETTINGS = {'start_dac_value': 159, 'start_voltage': -900, 'end_voltage': 900,
                        'sweep_start_type': 'Start', 'end_dac_value': 78,
-                       'sweep_type': 'CV', 'sweep_rate': 1.0,
+                       'sweep_type': 'CV', 'sweep_rate': 0.2,
                        'delay_time': 1400.0, 'pwm_period_value': 3840}
 # 'low_voltage': 200, 'high_voltage': 900,
+SWEEP_TYPE_OPTIONS = ['CV', 'LS']
+SWEEP_START_TYPE_OPTIONS = ['Start', 'Zero']
 
-START_VOLTAGE_CV = 200.
+START_VOLTAGE_CV = -900.
 END_VOLTAGE_CV = 900.
 SWEEP_RATE = 0.1
 
@@ -32,8 +34,6 @@ PLATING_TIME = 120  # seconds
 END_ASV_VOLTAGE = 800  # mV
 
 SAVED_SETTINGS_FILE = "settings.txt"
-
-
 
 
 class DeviceParameters(object):
@@ -98,15 +98,18 @@ class CVSettings(object):
                     attribute, value = line.split('=')
                     attribute = attribute.strip(' ')
                     value = value.strip()
-                    # print attribute, value
-                    self[attribute] = int(value)
+                    print attribute, value
+                    # valid_value = self.check_valid_value(attribute, value)
+                    # if valid_value:
+                    #     setattr(self, attribute, value)
+                    # self[attribute] = int(value)
 
-        except:
-            pass
+        except Exception as e:
+            print "Load error: ", e
 
-        for key in DEFAULT_CV_SETTIGNS:
+        for key in DEFAULT_CV_SETTINGS:
             if not hasattr(self, key):
-                setattr(self, key, DEFAULT_CV_SETTIGNS[key])
+                setattr(self, key, DEFAULT_CV_SETTINGS[key])
         # print 'vars'
         # print vars(self)
         # self.start_voltage = START_VOLTAGE_CV  # mV, start with basic parameters
@@ -124,6 +127,36 @@ class CVSettings(object):
         self.start_dac_value = None  # init holder
         self.end_dac_value = None  # init holder
         self.calc_dac_values(dac)
+
+    @staticmethod
+    def check_valid_value(attribute, value):
+        """ Check if value entered is valid for the attribute it wants to be assigned to.
+        Cross reference th DEFAULT_CV_SETTINGS dict to make sure types are consistent
+        :param attribute:
+        :param value:
+        :return:
+        """
+        if attribute in DEFAULT_CV_SETTINGS:
+            if isinstance(DEFAULT_CV_SETTINGS[attribute], int):
+                # try to convert the string to int
+                try:
+                    return int(value)
+                except:
+                    return False
+            elif attribute == 'sweep_start_type':
+                if value in SWEEP_START_TYPE_OPTIONS:
+                    return value
+                else:
+                    return False
+            elif attribute == 'sweep_type':
+                if value in SWEEP_TYPE_OPTIONS:
+                    return value
+                else:
+                    return False
+
+        else:
+            return False
+
 
     def calc_dac_values(self, dac):
         """ TODO: Depreated??
