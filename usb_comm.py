@@ -400,6 +400,7 @@ class AmpUsb(object):
         :param adc_gain:
         :return:
         """
+        logging.debug('setting tia/adc to position: %s, gain: %s', tia_position, adc_gain)
         self.usb_write("A{0}|{1}|F|0".format(tia_position, adc_gain))  # update device
         self.device_params.adc_tia.set_value(TIA_RESISTOR_VALUES[tia_position],
                                              adc_gain)  # update params

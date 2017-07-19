@@ -178,6 +178,10 @@ class CVSettingChanges(tk.Toplevel):
             self.geometry("300x300")
 
     def make_graph(self, sweep_type, start_volt_type):
+        """ Make a graph of what the voltage versus time protocol looks like
+        :param sweep_type: str - 'LS' or 'CV' for a linear sweep or cyclic voltammetry
+        :param start_volt_type: str - 'Zero' or 'Start' for starting the protocol at zero volts or the starting voltage
+        """
         self.geometry("700x300")
         blank_frame = tk.Frame()  # holder for toolbar that is not needed
         try:
@@ -208,6 +212,11 @@ class CVSettingChanges(tk.Toplevel):
         self.graph.simple_update_data(time, self.data)
 
     def update_graph(self, start_voltage_type, sweep_type):
+        """ Update the graph displaying the voltage protocol
+        :param start_voltage_type: str - 'LS' or 'CV' for a linear sweep or cyclic voltammetry
+        :param sweep_type: str - 'Zero' or 'Start' for starting the protocol at zero volts or the starting voltage
+        :return:
+        """
         try:
             start_volt = int(float(self.start_volt.get()))
             end_volt = int(float(self.end_volt.get()))
@@ -267,14 +276,17 @@ class CVSettingChanges(tk.Toplevel):
             return
         # Update all of the main programs operations_params settings so the User's choices
         # will be remembered and send all the parameters to the MCU
-        cv_settings.update_settings(self._start_volt, self._end_volt, self._freq,
-                                    self.sweep_type.get(), self.start_voltage_type.get())
-        cv_display.cv_label_update(_master.device_params)
-        self.device.send_cv_parameters()
+        if self.sweep_param_is_changed(_master.device_params):
+            cv_settings.update_settings(self._start_volt, self._end_volt, self._freq,
+                                        self.sweep_type.get(), self.start_voltage_type.get())
+            cv_display.cv_label_update(_master.device_params)
+            self.device.send_cv_parameters()
 
-        x_lim_low = cv_settings.low_voltage
-        x_lim_high = cv_settings.high_voltage
-        cv_graph.resize_x(x_lim_low, x_lim_high)
+            # resize the graph to the new voltages
+            x_lim_low = cv_settings.low_voltage
+            x_lim_high = cv_settings.high_voltage
+            cv_graph.resize_x(x_lim_low, x_lim_high)
+
 
         # figure out if the current range has changed and update the device if it has
         current_range_index = CURRENT_OPTION_LIST.index(_range)
@@ -282,30 +294,10 @@ class CVSettingChanges(tk.Toplevel):
         if check_tia_changed(_master.device_params, adc_gain, tia_position):
             self.device.set_adc_tia(tia_position, adc_gain)
 
-        #
-        #
-        # # Check if the gain setting has changed and the TIA resistor value should be updated
-        # if _master.device_params.adc_tia.tia_resistor is not TIA_RESISTOR_VALUES[tia_position]:
-        #     # _master.device.usb_write('A' + str(tia_position) + '|' + str(adc_gain_setting) +
-        #     #                          '|F|0')  # update device
-        #     # update program
-        #     # _master.device_params.adc_tia.set_value(TIA_RESISTOR_VALUES[tia_position],
-        #     #                                          adc_gain_setting)
-        #     # _master.device_params.adc_tia.tia_resistor = TIA_RESISTOR_VALUES[tia_position]
-        #     # logging.debug("TIA resistor changed to: %s", _master.device_params.adc_tia.tia_resistor)
-        #     self.device.set_adc_tia(tia_position, adc_gain)
-        #     # Change the value for the current limits displayed to the user and
-        #     # update the graph's scale
-        #     self.master.update_current_range(self.current_option_list[tia_position])
-        #     # cv_display.set_current_var_str(self.current_option_list[position])
-        #     cv_graph.resize_y(CURRENT_LIMIT_VALUES[tia_position])
-
-        logging.debug('position: %s', tia_position)
         # destroy the top level now that every is saved and updated
         self.destroy()
 
     def sweep_param_is_changed(self, _old_params):
-        # TODO: is depricated???
         """ Check to see if any of the parameters of the cyclic voltammetry experiments
          have been changed
         :param _old_params:  old parameters
@@ -519,7 +511,6 @@ class AmpSettingsChanges(tk.Toplevel):
             # device.set_sample_rate(sampling_rate)  # not working yet
             device.set_voltage(voltage)
 
-        print current_range, 'll'
         current_range_index = CURRENT_OPTION_LIST.index(current_range)
         tia_position, adc_gain = get_tia_settings(current_range_index)
 
@@ -857,7 +848,6 @@ class EnterCustomTIAResistor(tk.Toplevel):
         """ Save user entered information
         :param master: overall master
         :param resistor_value: resistor values used
-        :param channel_value: ???
         """
         # master.device.set_custom_resistor_channel(channel_value)
         resistor_value = float(resistor_value)

@@ -37,14 +37,12 @@ SAVED_SETTINGS_FILE = "settings.txt"
 
 
 class DeviceParameters(object):
+    """ Class to hold all the properties and parameters of the PSoC amperometry device
     """
-    class to hold all the properties and parameters of the PSoC amperometry device
-    """
-
     def __init__(self):
         # constant parameters
         self.number_in_endpoints = 1  # how many IN ENDPOINTS to connect to
-        self.number_out_endpoints = 1  # how many IN ENDPOINTS to connect to
+        self.number_out_endpoints = 1  # how many OUT ENDPOINTS to connect to
 
         # frequency of the clock that is driving the PWM that triggers isr
         self.clk_freq_isr_pwm = PWM_FREQ
@@ -52,6 +50,7 @@ class DeviceParameters(object):
 
         # create instances for all the important components of the device
         self.dac = DAC("8-bit DAC", voltage_range=4080)
+        self.adc_tia = ADC_TIA()
         self.cv_settings = CVSettings(self.clk_freq_isr_pwm, self.dac)
         self.amp_settings = AmpSettings(self.clk_freq_isr_pwm, self.dac)
         self.asv_settings = ASVSettings(self.clk_freq_isr_pwm, self.dac)
@@ -59,8 +58,7 @@ class DeviceParameters(object):
         # variable parameters
         self.pwm_period_value = self.calculate_pwm_period()
         self.pwm_compare = int(self.pwm_period_value / 2)
-        self.adc_tia = ADC_TIA()
-        # self.adc_channel = 0  # the PSoC has different adc channels that can be read
+
         self.usb_count = 0  # this will be set when getting data from the device
         self.user_sets_labels_after_run = True  # should be moved
         self.last_run = 'cv'  # keep track of what the device is programmed for
@@ -98,20 +96,18 @@ class CVSettings(object):
                     attribute, value = line.split('=')
                     attribute = attribute.strip(' ')
                     value = value.strip()
-                    print attribute, value
-                    # valid_value = self.check_valid_value(attribute, value)
-                    # if valid_value:
-                    #     setattr(self, attribute, value)
-                    # self[attribute] = int(value)
+                    # convert the string read from the file to the proper data type
+                    valid_value = self.check_valid_value(attribute, value)
+                    if valid_value:
+                        setattr(self, attribute, valid_value)
 
         except Exception as e:
             print "Load error: ", e
-
         for key in DEFAULT_CV_SETTINGS:
             if not hasattr(self, key):
                 setattr(self, key, DEFAULT_CV_SETTINGS[key])
-        # print 'vars'
-        # print vars(self)
+
+        self.delay_time = 2 * abs(self.start_voltage - self.end_voltage) / self.sweep_rate
         # self.start_voltage = START_VOLTAGE_CV  # mV, start with basic parameters
         # self.end_voltage = END_VOLTAGE_CV  # mV
         self.low_voltage = min([self.start_voltage, self.end_voltage])
@@ -143,6 +139,12 @@ class CVSettings(object):
                     return int(value)
                 except:
                     return False
+            elif isinstance(DEFAULT_CV_SETTINGS[attribute], float):
+                try:
+                    return float(value)
+                except:
+                    return False
+
             elif attribute == 'sweep_start_type':
                 if value in SWEEP_START_TYPE_OPTIONS:
                     return value
@@ -153,10 +155,8 @@ class CVSettings(object):
                     return value
                 else:
                     return False
-
         else:
             return False
-
 
     def calc_dac_values(self, dac):
         """ TODO: Depreated??
@@ -183,8 +183,8 @@ class CVSettings(object):
         """
         self.start_voltage = start_voltage
         self.end_voltage = end_voltage
-        # self.low_voltage = min([self.start_voltage, self.end_voltage])  # not dry, in init
-        # self.high_voltage = max([self.start_voltage, self.end_voltage])
+        self.low_voltage = min([self.start_voltage, self.end_voltage])  # not dry, in init
+        self.high_voltage = max([self.start_voltage, self.end_voltage])
         self.sweep_rate = sweep_rate
         self.delay_time = 2 * abs(self.start_voltage - self.end_voltage) / self.sweep_rate
         self.sweep_type = sweep_type

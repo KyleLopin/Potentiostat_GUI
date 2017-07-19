@@ -112,7 +112,6 @@ class AmpFrame(ttk.Frame):
         :param _value: str - the current range string to show the user
         :param current_lim: int - the current range to resize the graph to
         """
-        print 'settign current lim: ', _value
         self.settings_frame.set_current_var_str(_value)
         self.graph.resize_y(current_limit)
 
