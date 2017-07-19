@@ -306,10 +306,6 @@ class CVFrame(ttk.Frame):
             :param run_button: run button that was pressed to start the scan
             :return: binds the data to the master instead of returning anything
             """
-            if _delay:
-                print 'got delay: ', _delay
-            else:
-                print 'no delay'
             if self.device.last_experiment != "CV":  # the look up table is not correct
 
                 self.device.set_last_run = "CV"
@@ -324,8 +320,6 @@ class CVFrame(ttk.Frame):
 
                 if not _delay:
                     _delay = int(200 + self.params.cv_settings.delay_time)
-                    print 'made delay: ', _delay
-                print time.time()
                 self.master.after(_delay, lambda: self.run_scan_continue(canvas))  # step 2
             else:
                 logging.debug("Couldn't find out endpoint to send message to run")
@@ -338,7 +332,6 @@ class CVFrame(ttk.Frame):
             :param canvas: the widget that is called to display the data
             :param fail_count: int, running count of how many attempts have been tried
             """
-            print time.time()
             check_message = self.device.usb_read_message()  # step 3
 
             if check_message == COMPLETE_MESSAGE:

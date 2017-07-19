@@ -68,8 +68,8 @@ class AmpFrame(ttk.Frame):
         # make a button to run a amperometry scan
         self.run_button = tk.Button(frame,
                                     text="Start Amperometry",
-                                    command=lambda: self.toggle_amp_run(device, graph)).pack(side='bottom',
-                                                                                             fill=tk.BOTH)
+                                    command=lambda: self.toggle_amp_run(device, graph))
+        self.run_button.pack(side='bottom', fill=tk.BOTH)
         tk.Button(frame,
                   text="Save Data",
                   command=lambda: self.save_data(device)).pack(side='bottom',
@@ -77,18 +77,13 @@ class AmpFrame(ttk.Frame):
 
     def toggle_amp_run(self, device, graph):
         if self.running:  # stop reading data and tell the device to stop running
-            print 'STOPPING'
-            self.run_button.config(text="Stop Amperometry")
+            self.run_button.config(text="Start Amperometry")
             self.running = False
             device.cancel_run()
-
         else:
-            print "START"
-            print "======================== also process the data to use the calibration routine"
-            self.run_button.config(text="Start Amperometry")
+            logging.info("starting amperometry run")
+            self.run_button.config(text="Stop Amperometry")
             self.running = True
-            device.data = []
-            device.time = []
             device.amp_run(graph, self)
 
     @staticmethod
@@ -158,6 +153,10 @@ class AmpFrame(ttk.Frame):
             self.number_packets = 16
 
         def amp_run(self, graph, amp_frame):
+            # reinitialize the data, time and time pointer
+            self.t_ptr = -self.time_step
+            self.data = []
+            self.time = []
             self.running = True
             # set the sampling rate if it is not set correctly
             if (self.device.device_params.pwm_period_value !=
