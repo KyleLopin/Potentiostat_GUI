@@ -369,14 +369,16 @@ class ASVSettingChanges(tk.Toplevel):
         tk.Label(self.options_frame, text="Current Range: ", padx=10, pady=10
                  ).grid(row=7, column=0)
 
-        self.current_range = tk.StringVar()
+        self.current_options = tk.StringVar()
 
-        if master.device_params.adc_tia.tia_resistor in TIA_RESISTOR_VALUES:
-            current_option_list_index = TIA_RESISTOR_VALUES.index(
-                master.device_params.adc_tia.tia_resistor)
-            self.current_range.set(CURRENT_OPTION_LIST[current_option_list_index])
+        # if master.device_params.adc_tia.tia_resistor in TIA_RESISTOR_VALUES:
+        #     current_option_list_index = TIA_RESISTOR_VALUES.index(
+        #         master.device_params.adc_tia.tia_resistor)
+        #     self.current_range.set(CURRENT_OPTION_LIST[current_option_list_index])
 
-        tk.OptionMenu(self.options_frame, self.current_range, *CURRENT_OPTION_LIST
+        self.current_options.set(CURRENT_OPTION_LIST[master.device_params.adc_tia.current_option_index])
+
+        tk.OptionMenu(self.options_frame, self.current_options, *CURRENT_OPTION_LIST
                       ).grid(row=7, column=1)
 
         tk.Button(self, text="Save", width=15, command=self.save
@@ -405,12 +407,13 @@ class ASVSettingChanges(tk.Toplevel):
 
         # figure out what the user selected for the current range
         position = CURRENT_OPTION_LIST.index(
-            self.current_range.get())  # get user's choice from the option menu
+            self.current_options.get())  # get user's choice from the option menu
         # the largest setting change the ADC gain but not the TIA value
-        adc_config, tia_position, adc_gain_setting = get_tia_settings(position)
+        # adc_config, tia_position, adc_gain_setting = get_tia_settings(position)
 
-        if check_tia_changed(self.settings, adc_gain_setting, tia_position):
-            self.device.set_adc_tia(adc_config, tia_position, adc_gain_setting)
+        # if check_tia_changed(self.settings, adc_gain_setting, tia_position):
+        if position != self.master.device_params.adc_tia.current_option_index:
+            self.device.set_adc_tia(position)
 
         # self.settings.adc_tia.tia_resistor = TIA_RESISTOR_VALUES[position]
         # logging.debug("TIA resistor changed to: %s", self.settings.adc_tia.tia_resistor)
@@ -466,9 +469,6 @@ class AmpSettingsChanges(tk.Toplevel):
         self.current_option_list = CURRENT_OPTION_LIST
         self.current_options.set(self.current_option_list[master.device_params.adc_tia.current_option_index])
 
-        # current_option_list_index = TIA_RESISTOR_VALUES.index(
-        #     master.device_params.adc_tia.tia_resistor)
-        # self.current_options.set(self.current_option_list[current_option_list_index])
         current = tk.OptionMenu(self, self.current_options, *self.current_option_list)
         current.grid(row=2, column=1)
         tk.Button(self,
@@ -507,10 +507,8 @@ class AmpSettingsChanges(tk.Toplevel):
             device.set_voltage(voltage)
 
         current_range_index = CURRENT_OPTION_LIST.index(current_range)
-        adc_config, tia_position, adc_gain = get_tia_settings(current_range_index)
-
-        if check_tia_changed(master.device_params, adc_config, adc_gain, tia_position):
-            device.set_adc_tia(adc_config, tia_position, adc_gain)  # this updates all frames
+        if master.device_params.adc_tia.current_option_index != current_range_index:
+            device.set_adc_tia(current_range_index)  # this updates all frames
 
         self.display.label_update(master.device_params)
         self.destroy()
