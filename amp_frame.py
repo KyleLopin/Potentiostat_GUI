@@ -49,9 +49,10 @@ class AmpFrame(ttk.Frame):
 
     def make_graph_area(self, master, graph_props):
         if check_display_type() == 'matplotlib':
-            current_lim = 1.2 * 1000. / master.device_params.adc_tia.tia_resistor
+            # current_lim = 1.2 * 1000. / master.device_params.adc_tia.tia_resistor
+            current_lim = master.device_params.adc_tia.current_lims
             # 1's are not needed, the properties will override this
-            graph = tkinter_pyplot.PyplotEmbed(master, master.frames[1],
+            graph = tkinter_pyplot.PyplotEmbed(master.frames[1],
                                                graph_props.amp_plot, self,
                                                current_lim, 1, 1)
         else:
@@ -135,12 +136,10 @@ class AmpFrame(ttk.Frame):
                 self.data_packet_size = int(sampling_rate / 2.0)
             # calculate the number of packets of data you should get every 200 ms by adding one
             # to the data packet size to account for the termination code at the end and divide by
-            # 32 for the nuumber of data points per packet
+            # 32 for the number of data points per packet
             # (packets are 64 bytes - 2 bytes per uint16 data points
             self.number_packets = (int((self.data_packet_size + 1.0) / 32.0)
-                                   + (
-                                       (
-                                       self.data_packet_size + 1.0) % 32 > 0))  # round the packet up
+                                   + ((self.data_packet_size + 1.0) % 32 > 0))  # round the packet up
             self.time_step = 1.0 / self.settings.sampling_rate
             self.endpoint = None  # placeholder, assign it correctly when an amperometry run starts
             self.uint16_array = [0] * 256
@@ -196,9 +195,17 @@ class AmpFrame(ttk.Frame):
 
                 if usb_input:
                     len_input = len(data)
-                    self.data.extend(data)
+                    # down sampling hack
+                    down_sampled_data = []
+                    first_index = 0
+                    len_sampled = len_input / self.settings.down_sample
+                    for i in range(len_sampled):
+                        first_index += self.settings.down_sample
+                        down_sampled_data.append(sum(data[first_index:first_index + 9]) / self.settings.down_sample)
+
+                    self.data.extend(down_sampled_data)
                     self.time.extend(
-                        [x * self.time_step + self.t_ptr for x in range(1, len_input + 1)])
+                        [x * self.time_step + self.t_ptr for x in range(1, len_sampled + 1)])
                     self.t_ptr += len_input * self.time_step
                     return True
 
@@ -239,9 +246,10 @@ class AmpFrame(ttk.Frame):
             raw_divider = int(round(clk_freq / (rate))) - 1  # PWM is 0 indexed
             return '{0:05d}'.format(raw_divider), raw_divider
 
-        def format_voltage(self, voltage):
-            dac_value = int(((voltage + self.device.device_params.virtual_ground_shift)
-                             / self.device.device_params.dac.voltage_step_size))
+        def format_voltage(self, in_voltage):
+            input_voltage = self.device.device_params.virtual_ground_shift - in_voltage  # mV
+
+            dac_value = self.device.device_params.dac.get_dac_count(input_voltage)
             return '{0:04d}'.format(dac_value)
 
     class AmpSettingsDisplay(tk.Frame):
@@ -288,11 +296,10 @@ class AmpFrame(ttk.Frame):
                                      str(params.amp_settings.voltage) +
                                      ' mV')
             self.sampling_rate_var_str.set('Sampling rate: ' +
-                                           str(int(params.amp_settings.sampling_rate / 1000)) +
-                                           ' kHz')
-            self.current_var_str.set(u'Current range: \u00B1' +
-                                     str(1000 / params.adc_tia.tia_resistor) +
-                                     u' \u00B5A')
+                                           str(int(params.amp_settings.sampling_rate)) +
+                                           ' Hz')
+            self.current_var_str.set(u'Current range: \u00B1 {0:.1f} \u00B5A'
+                                     .format(params.adc_tia.current_lims))
 
         def change_amp_settings(self):
             change_toplevel.AmpSettingsChanges(self, self.master, self.graph, self.device)

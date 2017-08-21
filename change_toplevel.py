@@ -13,16 +13,18 @@ import tkFont
 import ttk
 # local files
 import cv_frame
-import globals
+import globals as _globals
 import tkinter_pyplot
 
 __author__ = 'Kyle Vitautas Lopin'
 
-TIA_RESISTOR_VALUES = [20, 30, 40, 80, 120, 250, 500, 1000]
-CURRENT_LIMIT_VALUES = [50, 33, 25, 12.5, 8.4, 4, 2, 1, 0.5, 0.25, 0.125]
+# TIA_RESISTOR_VALUES = [20, 30, 40, 80, 120, 250, 500, 1000]
+# CURRENT_LIMIT_VALUES = [50, 33, 25, 12.5, 8.4, 4, 2, 1, 0.5, 0.25, 0.125]
 COLOR_CHOICES = ['black', 'gray', 'red', 'green', 'blue', 'orange', 'magenta']
 
-CURRENT_OPTION_LIST = globals.CURRENT_OPTION_LIST
+TIA_RESISTOR_VALUES = _globals.TIA_RESISTOR_VALUES
+CURRENT_LIMIT_VALUES = _globals.CURRENT_LIMIT_VALUES
+CURRENT_OPTION_LIST = _globals.CURRENT_OPTION_LIST
 
 
 class CVSettingChanges(tk.Toplevel):
@@ -32,8 +34,10 @@ class CVSettingChanges(tk.Toplevel):
 
     def __init__(self, cv_display, _master, cv_graph, device):
         """ Initialize the window
-        :param _master: tk.Frame, the main window also has the device bound to it
-        :return:
+        :paran cv_display: cv_frame.CVSettingDisplay: tk.Frame that displays the cyclic voltammertry info
+        :param _master: tk.Frame, the main window
+        :param cv_graph: tkinter_pyplot.PyplotEmbed: embedded graph that needs to be updated if limits change
+        :param device: usb.comm.AmpUsb: USB device being communicated with
         """
         tk.Toplevel.__init__(self, master=_master)
         # Initialize values needed later
@@ -91,11 +95,12 @@ class CVSettingChanges(tk.Toplevel):
         # there are sometimes problems with encoding with this
         self.current_option_list = CURRENT_OPTION_LIST
 
-        if _master.device_params.adc_tia.tia_resistor in TIA_RESISTOR_VALUES:
-            current_option_list_index = TIA_RESISTOR_VALUES.index(
-                _master.device_params.adc_tia.tia_resistor)
-            self.current_options.set(self.current_option_list[current_option_list_index])
+        # if _master.device_params.adc_tia.tia_resistor in TIA_RESISTOR_VALUES:
+        #     current_option_list_index = TIA_RESISTOR_VALUES.index(
+        #         _master.device_params.adc_tia.tia_resistor)
+        #     self.current_options.set(self.current_option_list[current_option_list_index])
 
+        self.current_options.set(self.current_option_list[_master.device_params.adc_tia.current_option_index])
         current = tk.OptionMenu(self.options_frame, self.current_options,
                                 *self.current_option_list)
         current.grid(row=3, column=1)
@@ -206,7 +211,7 @@ class CVSettingChanges(tk.Toplevel):
                      'ylabel': "'voltage (mV)'",
                      'title': "'Voltage profile'",
                      'subplots_adjust': "bottom=0.15, left=0.12"}
-        self.graph = tkinter_pyplot.PyplotEmbed(None, blank_frame, plt_props, self, ylims, 0,
+        self.graph = tkinter_pyplot.PyplotEmbed(blank_frame, plt_props, self, ylims, 0,
                                                 total_time)
         self.graph.pack(side='left')
         self.graph.simple_update_data(time, self.data)
@@ -287,12 +292,12 @@ class CVSettingChanges(tk.Toplevel):
             x_lim_high = cv_settings.high_voltage
             cv_graph.resize_x(x_lim_low, x_lim_high)
 
-
         # figure out if the current range has changed and update the device if it has
         current_range_index = CURRENT_OPTION_LIST.index(_range)
-        tia_position, adc_gain = get_tia_settings(current_range_index)
-        if check_tia_changed(_master.device_params, adc_gain, tia_position):
-            self.device.set_adc_tia(tia_position, adc_gain)
+
+        if _master.device_params.adc_tia.current_option_index != current_range_index:
+            self.device.set_adc_tia(current_range_index)
+        _master.device_params.adc_tia.current_option_index = current_range_index
 
         # destroy the top level now that every is saved and updated
         self.destroy()
@@ -307,10 +312,10 @@ class CVSettingChanges(tk.Toplevel):
             or self._end_volt != _old_params.cv_settings.high_voltage
             or self._freq != _old_params.cv_settings.sweep_rate):
 
-            logging.debug("sweep_param is_changed")
+            logging.debug("sweep_param is changed")
             return True
         else:
-            logging.debug("sweep_param are not changed")
+            logging.debug("sweep param are not changed")
             return False
 
 
@@ -393,22 +398,19 @@ class ASVSettingChanges(tk.Toplevel):
                                                    self.end_voltage.get(),
                                                    self.sweep_rate.get())
 
+        # resize the graph to the new voltages
+        x_lim_low = self.settings.asv_settings.low_voltage
+        x_lim_high = self.settings.asv_settings.high_voltage
+        self.graph.resize_x(x_lim_low, x_lim_high)
+
         # figure out what the user selected for the current range
         position = CURRENT_OPTION_LIST.index(
             self.current_range.get())  # get user's choice from the option menu
-        max_tia_setting = 7  # max value you an send the TIA in the device
         # the largest setting change the ADC gain but not the TIA value
-        if position > max_tia_setting:
-            # the last 3 settings increase the adc gain setting
-            adc_gain_setting = position % max_tia_setting
-            # but leaves the TIA setting at the highest setting available
-            tia_position = max_tia_setting
-        else:
-            tia_position = position  # the setting to send to the MCU is the same as the index
-            adc_gain_setting = 0  # the gain setting is 0 for no gain on the adc
+        adc_config, tia_position, adc_gain_setting = get_tia_settings(position)
 
-        if self.settings.adc_tia.tia_resistor is not TIA_RESISTOR_VALUES[tia_position]:
-            self.device.set_adc_tia(tia_position, adc_gain_setting)
+        if check_tia_changed(self.settings, adc_gain_setting, tia_position):
+            self.device.set_adc_tia(adc_config, tia_position, adc_gain_setting)
 
         # self.settings.adc_tia.tia_resistor = TIA_RESISTOR_VALUES[position]
         # logging.debug("TIA resistor changed to: %s", self.settings.adc_tia.tia_resistor)
@@ -440,6 +442,7 @@ class AmpSettingsChanges(tk.Toplevel):
         self.sample_rate = 0
         self.current_range = ""
         self.title("Change Amperometry Settings")
+        self.display = display  # the info window on notebook
         # make labels and an entry widget for a user to change the voltage
         tk.Label(self, text="Voltage: ", padx=10, pady=10).grid(row=0, column=0)
         voltage = tk.Entry(self)  # entry widget for the user to change the voltage
@@ -460,20 +463,12 @@ class AmpSettingsChanges(tk.Toplevel):
         tk.Label(self, text="Current Range: ", padx=10, pady=10).grid(row=2, column=0)
         self.current_options = tk.StringVar(self)
         # there are sometimes problems with encoding with this
-        self.current_option_list = [u'\u00B150 \u00B5A',
-                                    u'\u00B133 \u00B5A',
-                                    u'\u00B125 \u00B5A',
-                                    u'\u00B112.5 \u00B5A',
-                                    u'\u00B18.3 \u00B5A',
-                                    u'\u00B14 \u00B5A',
-                                    u'\u00B12 \u00B5A',
-                                    u'\u00B11 \u00B5A',
-                                    u'\u00B10.5 \u00B5A',
-                                    u'\u00B10.25 \u00B5A',
-                                    u'\u00B10.125 \u00B5A']
-        current_option_list_index = TIA_RESISTOR_VALUES.index(
-            master.device_params.adc_tia.tia_resistor)
-        self.current_options.set(self.current_option_list[current_option_list_index])
+        self.current_option_list = CURRENT_OPTION_LIST
+        self.current_options.set(self.current_option_list[master.device_params.adc_tia.current_option_index])
+
+        # current_option_list_index = TIA_RESISTOR_VALUES.index(
+        #     master.device_params.adc_tia.tia_resistor)
+        # self.current_options.set(self.current_option_list[current_option_list_index])
         current = tk.OptionMenu(self, self.current_options, *self.current_option_list)
         current.grid(row=2, column=1)
         tk.Button(self,
@@ -512,11 +507,12 @@ class AmpSettingsChanges(tk.Toplevel):
             device.set_voltage(voltage)
 
         current_range_index = CURRENT_OPTION_LIST.index(current_range)
-        tia_position, adc_gain = get_tia_settings(current_range_index)
+        adc_config, tia_position, adc_gain = get_tia_settings(current_range_index)
 
-        if check_tia_changed(master.device_params, adc_gain, tia_position):
-            device.set_adc_tia(tia_position, adc_gain)  # this updates all frames
+        if check_tia_changed(master.device_params, adc_config, adc_gain, tia_position):
+            device.set_adc_tia(adc_config, tia_position, adc_gain)  # this updates all frames
 
+        self.display.label_update(master.device_params)
         self.destroy()
 
     @staticmethod
@@ -911,25 +907,3 @@ class MasterDestroyer(tk.Toplevel):
         master.device.destroy()
         os.execl(sys.executable, sys.executable, *sys.argv)
         tk.Button(self, text="Close", width=40, command=lambda: self.destroy()).pack(side='top')
-
-
-MAX_TIA_SETTING = 7
-
-
-def get_tia_settings(range_selected):
-    if range_selected > MAX_TIA_SETTING:
-        # the last 3 settings increase the adc gain setting
-        adc_gain_setting = range_selected % MAX_TIA_SETTING
-        # but leaves the TIA setting at the highest setting available
-        tia_position = MAX_TIA_SETTING
-    else:
-        tia_position = range_selected  # the setting to send to the MCU is the same as the index
-        adc_gain_setting = 0  # the gain setting is 0 for no gain on the adc
-    return tia_position, adc_gain_setting
-
-
-def check_tia_changed(old_settings, adc_gain, tia_position):
-    if (old_settings.adc_tia.tia_resistor != tia_position or
-                old_settings.adc_tia.adc_gain != adc_gain):
-        return True
-    return False

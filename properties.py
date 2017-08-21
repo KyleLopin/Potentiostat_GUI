@@ -8,12 +8,14 @@ from __future__ import division
 
 import logging
 
+import globals as _globals
+
 __author__ = 'Kyle Vitautas Lopin'
 
-ADC_VREF = 2048  # mV
-ADC_BITS = 12
-PWM_FREQ = 240000.
-VIRTUAL_GROUND = 2048.
+ADC_VREF = _globals.ADC_VREF  # mV
+ADC_BITS = _globals.ADC_BITS
+PWM_FREQ = _globals.PWM_FREQ
+VIRTUAL_GROUND = _globals.VIRTUAL_GROUND
 
 DEFAULT_CV_SETTINGS = {'start_dac_value': 159, 'start_voltage': -900, 'end_voltage': 900,
                        'sweep_start_type': 'Start', 'end_dac_value': 78,
@@ -25,13 +27,18 @@ SWEEP_START_TYPE_OPTIONS = ['Start', 'Zero']
 
 START_VOLTAGE_CV = -900.
 END_VOLTAGE_CV = 900.
-SWEEP_RATE = 0.1
+SWEEP_RATE = 0.5
 
-CLEAN_VOLTAGE_ASV = 500  # mV
-CLEAN_TIME = 20  # seconds
-PLATING_VOLTAGE = -800  # mV
-PLATING_TIME = 120  # seconds
-END_ASV_VOLTAGE = 800  # mV
+# Amperometry properties
+DEVICE_SAMPLING_RATE = 1000
+DOWN_SAMPLING = 10
+
+# Anode stripping voltammetry properties
+CLEAN_VOLTAGE_ASV = 800  # mV
+CLEAN_TIME = 60  # seconds
+PLATING_VOLTAGE = -1500  # mV
+PLATING_TIME = 600  # seconds
+END_ASV_VOLTAGE = 500  # mV
 
 SAVED_SETTINGS_FILE = "settings.txt"
 
@@ -51,7 +58,7 @@ class DeviceParameters(object):
         # create instances for all the important components of the device
         self.dac = DAC("8-bit DAC", voltage_range=4080)
         self.adc_tia = ADC_TIA()
-        self.cv_settings = CVSettings(self.clk_freq_isr_pwm, self.dac)
+        self.cv_settings = CVSettings(self.dac)
         self.amp_settings = AmpSettings(self.clk_freq_isr_pwm, self.dac)
         self.asv_settings = ASVSettings(self.clk_freq_isr_pwm, self.dac)
 
@@ -84,9 +91,8 @@ class CVSettings(object):
     """ Class to hold the important parameters for running a cyclic voltammetry scan
     """
 
-    def __init__(self, clock_freq, dac):
+    def __init__(self, dac):
         """
-        :param clock_freq: frequency that the DAC is change the voltage
         :param dac: DAC instance
         """
         # try to open settings file
@@ -128,9 +134,9 @@ class CVSettings(object):
     def check_valid_value(attribute, value):
         """ Check if value entered is valid for the attribute it wants to be assigned to.
         Cross reference th DEFAULT_CV_SETTINGS dict to make sure types are consistent
-        :param attribute:
-        :param value:
-        :return:
+        :param attribute: str - class attribute to assign a value to
+        :param value: str - value to convert to the proper type and assign to the attribute
+        :return: properly typed value or False if the data type couldn't be converted
         """
         if attribute in DEFAULT_CV_SETTINGS:
             if isinstance(DEFAULT_CV_SETTINGS[attribute], int):
@@ -212,15 +218,16 @@ class AmpSettings(object):
     """ Class to hold the important parameters for running an amperometry experiment
     Note: this interacts with CVSettings to keep the sample rate / sweep rate connected
     """
-
     def __init__(self, clock_freq, dac):
-        self.voltage = -500  # mV, start with basic parameters
-        self.sampling_rate = 1000  # Hz
+        self.voltage = 500  # mV, start with basic parameters
+        self.raw_sampling_rate = DEVICE_SAMPLING_RATE  # Hz
+        self.down_sample = DOWN_SAMPLING
+        self.sampling_rate = self.raw_sampling_rate / self.down_sample
         self.pwm_period_value = self.calculate_pwm_period(clock_freq)
 
     def calculate_pwm_period(self, clk_freq):
         """ Calculate the PWM period needed to achieve the desired sampling rate
-        :param clk_freq: clock frequecy feeding the timing PWM
+        :param clk_freq: clock frequency feeding the timing PWM
         :return: int, to send to pwm to put as its period
         """
         pwm_period_value = int(round(clk_freq / self.sampling_rate))
@@ -237,7 +244,7 @@ class AmpSettings(object):
 
 class ASVSettings(CVSettings):
     def __init__(self, clock_freq, dac):
-        CVSettings.__init__(self, clock_freq, dac)
+        CVSettings.__init__(self, dac)
         self.sweep_type = "LS"
         self.clean_volt = CLEAN_VOLTAGE_ASV
         self.clean_time = CLEAN_TIME
@@ -247,14 +254,18 @@ class ASVSettings(CVSettings):
         self.low_voltage = self.plate_volt
         self.high_voltage = self.end_voltage
         self.sweep_rate = SWEEP_RATE
-        self.delay_time = 2 * abs(self.end_voltage - self.plate_volt) / self.sweep_rate
+        self.delay_time = 500 + abs(self.end_voltage - self.plate_volt) / self.sweep_rate
 
     def update_settings(self, clean_voltage, clean_time, electroplate_voltage,
                         plating_time, end_voltage, sweep_rate):
         """ Update the CV settings
-        :param start_voltage: mV, voltage the user wants to start at
-        :param end_voltage: mV, voltage the user wants to end the cyclic voltammetry at
-        :param sweep_rate: V/s, rate of change of the cyclic voltammetry
+        :param clean_voltage: int - mV, voltage to hold the working electrode at to remove plated ions
+        :param clean_time: int - seconds, time to use the cleaning voltage
+        :param electroplate_voltage: int - mV, voltage to hold the working electrode
+        at to have the metal ions plate onto the electrode
+        :param plating_time: int - seconds, time to hold the electrode at the plating potential
+        :param end_voltage: int - mV, voltage the user wants to end the cyclic voltammetry at
+        :param sweep_rate: float - V/s, rate of change of the cyclic voltammetry
         """
         self.clean_volt = clean_voltage
         self.clean_time = clean_time
@@ -264,13 +275,12 @@ class ASVSettings(CVSettings):
         self.low_voltage = self.plate_volt
         self.high_voltage = self.end_voltage
         self.sweep_rate = sweep_rate
-        self.delay_time = abs(self.high_voltage - self.low_voltage) / self.sweep_rate
+        self.delay_time = 500 + abs(self.high_voltage - self.low_voltage) / self.sweep_rate
 
 
 class DAC(object):
     """ Class that provides the information of the DAC being used
     """
-
     def __init__(self, _type, voltage_range=4080.0):
         self.source = _type
         if _type == "8-bit DAC":
@@ -332,8 +342,19 @@ class DAC(object):
 class ADC_TIA(object):
     """ Class to represent the ADC and TIA current sensing block
     """
-    def __init__(self, tia_resistor=20, adc_gain=1, bits=ADC_BITS):
-        self.tia_resistor = tia_resistor
+
+    def __init__(self, adc_config=1, tia_resistor=20, adc_gain=1, bits=ADC_BITS):
+        # config 1 sets the Vref to +-2.048 V and config 2 sets the Vref to +-1.024 V
+        self.current_options = _globals.CURRENT_LIMIT_VALUES
+        self.current_option_index = 0
+        self.adc_config = adc_config
+        if self.adc_config == 1:
+            self.adc_vref = 4096  # mV, +-2.048 V
+        elif self.adc_config == 2:
+            self.adc_vref = 2048  # mV, +-1.024 V
+        else:
+            raise NotImplementedError
+        self.tia_resistor = tia_resistor  # kilohms, value of resistor across the TIA opamp
         self.adc_gain = adc_gain
         if adc_gain == 1:
             self.range_index = tia_resistor  # what current range choice to set
@@ -343,6 +364,12 @@ class ADC_TIA(object):
         self.counts_to_current = self.calc_counts_to_current_ua()
         self.shift = 0
         self.adc_channel = 0  # the PSoC has different adc channels that can be read
+        self.current_lims = self.current_options[self.current_option_index]
+
+    def calc_current_lims(self):
+        max_voltage = self.adc_config / 2.0
+        max_current = max_voltage / float(self.tia_resistor)
+        return max_current
 
     def calc_counts_to_current_ua(self):
         """ Calculate the number that you multiple the ADC count by to get the current in micro amps
@@ -353,20 +380,23 @@ class ADC_TIA(object):
         volts_to_current = 1.0 / self.tia_resistor
         return counts_to_volts * volts_to_current
 
-    def set_value(self, new_tia_value, new_adc_gain_value=None):
+    def set_value(self, new_tia_value, new_adc_gain_value, new_adc_config, current_range_index):
         """ The TIA or ADC have changed so update the values
-        :param new_tia_value: new tia resistor value
-        :param new_adc_gain_value: new buffer gain for the adc
-        :return:
+        :param new_tia_value: int - new tia resistor value
+        :param new_adc_gain_value: int - new buffer gain for the adc
+        :param new_adc_config: int - new adc configuration selected
+        :param current_range_index: int - index of the current range from the global.py CURRENT_OPTION_LIST
         """
         self.tia_resistor = new_tia_value
-        if new_adc_gain_value:
-            self.adc_gain = new_adc_gain_value
-        if self.adc_gain == 1:
-            self.range_index = self.tia_resistor  # what current range choice to set
-        else:
-            self.range_index = self.tia_resistor + self.adc_gain / 2
+        self.adc_gain = new_adc_gain_value
+
+        self.adc_config = new_adc_config
+        self.range_index = current_range_index  # what current range choice to set
+
         self.counts_to_current = self.calc_counts_to_current_ua()
+        # self.current_lims = self.calc_current_lims()
+        self.current_option_index = current_range_index
+        self.current_lims = self.current_options[self.current_option_index]
 
     def calibrate(self, data):
         """ Calibrate the TIA ADC with the onboard IDAC and calculate the adc shift gain functions
@@ -380,3 +410,4 @@ class ADC_TIA(object):
         upper_count_to_current = (data[4] / 8.0) / (data[7] - data[9])
         self.counts_to_current = (float(lower_count_to_current) + float(
             upper_count_to_current)) / 2.0
+        logging.info('adc calibrate, counts to current: {0}'.format(self.counts_to_current))

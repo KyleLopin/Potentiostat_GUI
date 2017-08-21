@@ -14,7 +14,7 @@ import usb.backend
 # local files
 import amp_usb_helper as usb_helper
 import change_toplevel as toplevel
-import globals
+import globals as _globals
 
 # import toplevels
 
@@ -35,10 +35,12 @@ TERMINATION_CODE = -16384
 
 # device parameter list
 TIA_RESISTOR_VALUES = [20, 30, 40, 80, 120, 250, 500, 1000]
-CURRENT_OPTION_LIST = globals.CURRENT_OPTION_LIST
+CURRENT_OPTION_LIST = _globals.CURRENT_OPTION_LIST
+MAX_TIA_SETTING = 7
 
-CURRENT_LIMIT_VALUES = [50, 33, 25, 12.5, 8.4, 4, 2, 1, 0.5, 0.25, 0.125]
-
+# CURRENT_LIMIT_VALUES = [50, 33, 25, 12.5, 8.4, 4, 2, 1, 0.5, 0.25, 0.125]
+# CURRENT_LIMIT_VALUES = [100, 66, 50, 25, 16, 8, 4, 2, 1, 0.5, 0.25]
+CURRENT_LIMIT_VALUES = _globals.CURRENT_LIMIT_VALUES
 
 class AmpUsb(object):
     """
@@ -49,8 +51,7 @@ class AmpUsb(object):
     """
 
     def __init__(self, _master, _device_params, vendor_id=None, product_id=None):
-        """
-        Initialize a communication channel to a PSoC with a USBFS module.  Use the default example
+        """ Initialize a communication channel to a PSoC with a USBFS module.  Use the default example
         for the USBFS HID example if no vendor or product id are inputted
 
         :param _master: the master program that is using the usb
@@ -91,14 +92,13 @@ class AmpUsb(object):
             self.find_voltage_source()
             time.sleep(0.5)
             # self.send_cv_parameters()
-            self.usb_write("A0|0|F|2")  # set the TIA resistor to 20k ohm on startup
+            self.usb_write("A|1|0|0|F|2")  # set the TIA resistor to 20k ohm on startup
             self.calibrate()  # calibrate the TIA settings
         else:
             logging.info("not working")
 
     def connection_test(self, fails=0):
-        """
-        The device can be found but still not respond correctly, this is to test the connection
+        """ The device can be found but still not respond correctly, this is to test the connection
         by sending a message and check if the amperometry responses with the proper message
         """
         # clear the IN BUFFER of the device incase it was stopped or the program was restarted
@@ -127,8 +127,7 @@ class AmpUsb(object):
                 self.connection_test(fails)
 
     def connect_usb(self, _vendor_id=0x04B4, _product_id=0xE177):
-        """
-        Attempt to connect to the PSoC device with a USBFS module
+        """ Attempt to connect to the PSoC device with a USBFS module
         If the device is not found return None
 
         This method uses the pyUSB module, see the tutorial example at:
@@ -141,8 +140,12 @@ class AmpUsb(object):
         :return: the device if it is found, None if not
         """
         # attempt to find the PSoC amperometry device
-        amp_device = usb.core.find(idVendor=_vendor_id, idProduct=_product_id)
-
+        try:
+            amp_device = usb.core.find(idVendor=_vendor_id, idProduct=_product_id)
+        except usb.core.NoBackendError:  # for some reason 'no backend available error can arise.
+            logging.info("Device not found")
+            self.found = False
+            return None, None, None
         # if no device is found, print a warning to the output
         if amp_device is None:
             logging.info("Device not found")
@@ -151,7 +154,6 @@ class AmpUsb(object):
         else:  # if a device is found print that it was found
             self.found = True
             logging.info("PSoC amp found")
-
 
         # set the active configuration. the pyUSB module deals with the details
         amp_device.set_configuration()
@@ -220,7 +222,7 @@ class AmpUsb(object):
         """
         logging.info('selecting source: {0}'.format(source))
         # if source == self.device_params.dac.source:
-        # return  # selected source that is already choosen
+        # return  # selected source that is already chosen
         if source == "8-bit DAC":
             # tell the device to set the voltage source as the DVDAC
             self.usb_write("VS1")
@@ -330,6 +332,7 @@ class AmpUsb(object):
             shift = self.device_params.adc_tia.shift  # the measured voltage shift of the adc/tia
             logging.debug("count to current: %4.4f", count_to_current)
             current = [(x - shift) * count_to_current for x in _raw_data]
+
             return current
         elif self.master.data_save_type == "Raw Counts":
             logging.debug("sending raw data back")
@@ -381,6 +384,16 @@ class AmpUsb(object):
         voltage_str = str(formatted_voltage_to_send).zfill(4)
         self.usb_write("D|{0}".format(formatted_voltage_to_send))
 
+    def short_tia_resistor(self):
+        """ Short the TIA resistor so the working electrode can short any current """
+        logging.debug("Shorting TIA resistor")
+        self.usb_write('s')
+
+    def stop_shorting_tia_resistor(self):
+        """ Stop shorting the TIA resistor """
+        logging.debug("Stop shorting tia resistor")
+        self.usb_write('d')
+
     def set_custom_resistor_channel(self, channel):
         """ Incase the currents are too large and a smaller external TIA resistor is needed
         NOTE: NOT TESTED YET
@@ -388,26 +401,25 @@ class AmpUsb(object):
         the virtual ground will cause the working electrode voltage to shift significantly
         :param channel:
         """
-        self.usb_write("A7|0|T|" + channel)
-        # the 7 is to set the TIA resistor to 1M to minimize the change it will have on
-        # the equivalent resistance
+        self.usb_write("A|2|7|0|T|" + channel)
+        # set the adc configuration to 2 for a smaller (1024 mV) Vref,set the TIA resistor to
+        # 1M (with the 7) to minimize the change it will have on the equivalent resistance
 
-    def set_adc_tia(self, tia_position, adc_gain):
+    def set_adc_tia(self, current_range_index):
         """ The user selected a different current range, tell the device to change the
         impedance of the transimpedance amplifier, update the parameters and all the current
         ranges displayed in the frames
-        :param tia_position:
-        :param adc_gain:
-        :return:
+        :param current_range_index: int - index of the current range from the global.py CURRENT_OPTION_LIST
         """
-        logging.debug('setting tia/adc to position: %s, gain: %s', tia_position, adc_gain)
-        self.usb_write("A{0}|{1}|F|0".format(tia_position, adc_gain))  # update device
+        adc_config, tia_position, adc_gain = get_tia_settings(current_range_index)
+        logging.debug('setting tia/adc to position: %s, gain: %s, config: %s', tia_position, adc_gain, adc_config)
+        self.usb_write("A|{0}|{1}|{2}|F|0".format(adc_config, tia_position, adc_gain))  # update device
         self.device_params.adc_tia.set_value(TIA_RESISTOR_VALUES[tia_position],
-                                             adc_gain)  # update params
+                                             adc_gain, adc_config, current_range_index)  # update params
         logging.debug("TIA resistor changed to: %s", self.device_params.adc_tia.tia_resistor)
         # change current range and current range string in all frames
-        current_limit = CURRENT_LIMIT_VALUES[tia_position]
-        self.master.update_current_range(CURRENT_OPTION_LIST[tia_position], current_limit)
+        current_limit = CURRENT_LIMIT_VALUES[current_range_index]
+        self.master.update_current_range(CURRENT_OPTION_LIST[current_range_index], current_limit)
         # run the calibration routine to update the adc counts to current value
         self.calibrate()
 
@@ -446,7 +458,6 @@ class AmpUsb(object):
         :param message: message, in bytes, to send
         :param endpoint: which OUT_ENDPOINT to use to send the message in the case there are more
         than 1 OUT_ENDPOINTS
-        :return:
         """
         if not self.working:
             logging.info("Device not connected")
@@ -515,7 +526,6 @@ class AmpUsb(object):
             logging.error("Failed read: %s", error)
             return None
 
-
     def attempt_reconnection(self):
         """ If the device stops working try to reconnect
         NOTE :  NOT WORKING
@@ -582,3 +592,28 @@ def convert_uint8_to_string(_bytes):
         _string += chr(_bytes[i])
         i += 1
     return _string
+
+
+def get_tia_settings(range_selected):
+    # the current limit 100 uA was selected so set the adc Vref to +-2048 mV, TIA resistor to 20k, and adc gain to 1
+    if range_selected == 0:
+        return 1, 0, 0  # adc_config, TIA resistor value, adc gain
+    adc_config = 2  # only the first settings uses the first adc config
+    range_selected -= 1  # subtract 1 so the it now maps to the tia resistor setting
+    if range_selected > MAX_TIA_SETTING:
+        # the last 3 settings increase the adc gain setting
+        adc_gain_setting = range_selected % MAX_TIA_SETTING
+        # but leaves the TIA setting at the highest setting available
+        tia_position = MAX_TIA_SETTING
+    else:
+        tia_position = range_selected  # the setting to send to the MCU is the same as the index
+        adc_gain_setting = 0  # the gain setting is 0 for no gain on the adc
+    return adc_config, tia_position, adc_gain_setting
+
+
+def check_tia_changed22(old_settings, adc_config, adc_gain, tia_position):
+    if (old_settings.adc_tia.tia_resistor != TIA_RESISTOR_VALUES[tia_position] or
+                old_settings.adc_tia.adc_gain != 2 ** adc_gain or
+                old_settings.adc_tia.adc_config != adc_config):
+        return True
+    return False

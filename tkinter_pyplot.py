@@ -26,7 +26,7 @@ class PyplotEmbed(tk.Frame):
     Class that will make a tkinter frame with a matplotlib plot area embedded in the frame
     """
 
-    def __init__(self, master, toolbox_frame, plt_props, _master_frame, y_lims, x_low, x_high):
+    def __init__(self, toolbox_frame, plt_props, _master_frame, y_lims, x_low, x_high):
         """
         Initialize the class with a parent of tkinter Frame and embed a pyplot graph in it
         The class also will have a list to hold the data series that is displayed
@@ -34,10 +34,6 @@ class PyplotEmbed(tk.Frame):
 
         :param toolbox_frame: tkinter frame that the toolbox can be shown in
         :param plt_props: properties of the pyplot
-        :param _master: the frame that is the master to this frame
-        :param _params: parameters needed for setting up the class
-        :return:
-        TODO: refactor x low and high into a tuple
         """
         tk.Frame.__init__(self, master=_master_frame)  # initialize with the parent class
         self.master = _master_frame
@@ -107,7 +103,7 @@ class PyplotEmbed(tk.Frame):
             self.display_data()
 
     def simple_update_data(self, x_data, y_data):
-        """ Used for the pyplot used to diplay the voltage protocol in the CVSettingChange toplevel
+        """ Used for the pyplot used to display the voltage protocol in the CVSettingChange toplevel
         :param x_data:
         :param y_data:
         :return:
@@ -137,14 +133,10 @@ class PyplotEmbed(tk.Frame):
         :param x_data: list - x-axis data
         :param y_data: list - y-axis data
         """
-        label = self.label_instance
         self.display_data(x_data, y_data, self.data.index-1)
 
     def display_data(self):
         """ Take in a x and y data set and plot them in the self instance of the pyplot
-        :param x_data: x axis data
-        :param y_data: y axis data
-        :return:
         """
         index = self.data.index - 1  # it was incremented at the end of the add_data method
         x_data = self.data.voltage_data[index]
@@ -157,9 +149,14 @@ class PyplotEmbed(tk.Frame):
                                                _box.height])
             self.legend_displayed = True
         # add the data to the plot area and update the legend
+        # print 'len x: ', len(x_data)
+        # print 'len y: ', len(y_data)
+        # print 'types: ', type(x_data), type(y_data)
+
         if len(x_data) > len(y_data):
             x_data = x_data[:len(y_data)]
             logging.error('MISMATCHED DATA LENGTH X DATA IS TOO LONG')
+
         elif len(y_data) > len(x_data):
             y_data = y_data[:len(x_data)]
             logging.error('MISMATCHED DATA LENGTH Y DATA IS TOO LONG')

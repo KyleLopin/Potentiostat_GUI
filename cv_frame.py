@@ -11,6 +11,7 @@ import Tkinter as tk
 import ttk
 # local files
 import change_toplevel as change_top
+import globals as _globals
 import pyplot_data_class as data_class
 import tkinter_pyplot
 
@@ -38,6 +39,7 @@ class CVFrame(ttk.Frame):
         """
         ttk.Frame.__init__(self, parent_notebook)
         self.master = master
+        self.settings = master.device_params.cv_settings
         self.data = data_class.PyplotData()
         self.graph = self.make_graph_area(master, graph_properties)  # make graph
         self.graph.pack(side='left', expand=True, fill=tk.BOTH)
@@ -71,11 +73,11 @@ class CVFrame(ttk.Frame):
         :return: the graph object, currently a PyplotEmbed class from tkinter_pyplot
         """
         if check_display_type() == 'matplotlib':
-            current_lim = 1.2 * 1000. / master.device_params.adc_tia.tia_resistor
-            low_voltage = master.device_params.cv_settings.low_voltage
-            high_voltage = master.device_params.cv_settings.high_voltage
-            graph = tkinter_pyplot.PyplotEmbed(master,
-                                               master.frames[0],
+            # current_lim = 1.2 * 1000. / master.device_params.adc_tia.tia_resistor
+            current_lim = master.device_params.adc_tia.current_lims
+            low_voltage = self.settings.low_voltage
+            high_voltage = self.settings.high_voltage
+            graph = tkinter_pyplot.PyplotEmbed(master.frames[0],
                                                # frame to put the toolbar in NOTE: hack, fix this
                                                graph_props.cv_plot,
                                                self,
@@ -217,7 +219,6 @@ class CVFrame(ttk.Frame):
     class USBHandler(object):
         """ NOTE: self.device is the AMpUSB class and device.device is the pyUSB class
         """
-
         def __init__(self, graph, device, master, data):
             """ Class to handle all the usb calls to perform cyclic voltammetry experiments
             :param graph: tkinter_pyplot - graph the data is displayed in
@@ -320,7 +321,7 @@ class CVFrame(ttk.Frame):
 
                 if not _delay:
                     _delay = int(200 + self.params.cv_settings.delay_time)
-                self.master.after(_delay, lambda: self.run_scan_continue(canvas))  # step 2
+                self.master.after(int(_delay), lambda: self.run_scan_continue(canvas))  # step 2
             else:
                 logging.debug("Couldn't find out endpoint to send message to run")
                 # master.attempt_reconnection()
@@ -465,9 +466,8 @@ class CVFrame(ttk.Frame):
             self.freq_var_str.set('Sweep rate: ' +
                                   str(device_params.cv_settings.sweep_rate) +
                                   ' V/s')
-            self.current_var_str.set(u'Current range: \u00B1' +
-                                     str(1000 / device_params.adc_tia.tia_resistor) +
-                                     u' \u00B5A')
+            self.current_var_str.set(u'Current range: \u00B1 {0:.1f} \u00B5A'
+                                     .format(device_params.adc_tia.current_lims))
 
         def change_cv_settings(self, master, graph):
             """ Make a dialog window to allow the user to change the cyclic voltammetry sweep
