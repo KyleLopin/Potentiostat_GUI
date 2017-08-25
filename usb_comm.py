@@ -73,6 +73,7 @@ class AmpUsb(object):
         self.master = _master
         self.device_type = None
         self.last_experiment = "CV"  # keep track of what type of experiment was run last, CV or ASV
+        self.samples_to_smooth = 1  # TODO: python 3 use properties to limit its value
         logging.info("attempting connection")
         self.device, self.ep_out, self.ep_in = self.connect_usb(vendor_id, product_id)
 
@@ -292,7 +293,8 @@ class AmpUsb(object):
                 logging.debug("end of ENDPOINT")
                 logging.debug(error)
                 running = False
-
+        if self.samples_to_smooth > 1:
+            return rolling_mean(full_array, self.samples_to_smooth)
         return full_array
 
     def get_data_packets(self, endpoint, number_packets=1, allowed_fails=0, timeout=2000):
@@ -609,6 +611,15 @@ def get_tia_settings(range_selected):
         tia_position = range_selected  # the setting to send to the MCU is the same as the index
         adc_gain_setting = 0  # the gain setting is 0 for no gain on the adc
     return adc_config, tia_position, adc_gain_setting
+
+
+def rolling_mean(array, number_points):
+    new_array = []
+    for i in range(number_points - 1):
+        new_array.append(array[i])
+    for i in range(number_points - 1, len(array)):
+        new_array.append(float(sum(array[i - number_points + 1:i + 1])) / number_points)
+    return new_array
 
 
 def check_tia_changed22(old_settings, adc_config, adc_gain, tia_position):

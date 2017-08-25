@@ -4,6 +4,7 @@
 """ Option menu for electrochemical device
 """
 # standard libraries
+import logging
 import Tkinter as tk
 # local files
 import change_toplevel
@@ -96,6 +97,16 @@ def make_option_menu(options_menu, master):
                                         command=lambda: set_voltage_source(master, "DVDAC"))
     options_menu.add_cascade(label="Enter comments into logging file",
                              command=lambda: change_toplevel.EnterLoggingInfo(master))
+    user_set_smoothing_value = tk.Menu(options_menu, tearoff=0)
+    for i in range(1, 6):
+        user_set_smoothing_value.add_cascade(label="{0} values".format(i),
+                                             command=lambda value=i: set_smoothing_value(master, value))
+    options_menu.add_cascade(label="Smooth data", menu=user_set_smoothing_value)
+
+
+def set_smoothing_value(master, value):
+    logging.info("setting smoothing value: {0}".format(value))
+    master.device.samples_to_smooth = value
 
 
 def set_voltage_source(master, value):
