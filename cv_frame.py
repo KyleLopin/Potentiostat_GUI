@@ -308,7 +308,7 @@ class CVFrame(ttk.Frame):
             :return: binds the data to the master instead of returning anything
             """
             if self.device.last_experiment != "CV":  # the look up table is not correct
-
+                self.send_cv_parameters()
                 self.device.set_last_run = "CV"
             self.run_button = run_button  # bind button to self so it can be put active again
             # inactive the button so the user cant hit it twice
