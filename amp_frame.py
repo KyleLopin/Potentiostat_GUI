@@ -125,6 +125,7 @@ class AmpFrame(ttk.Frame):
             self.master = master
             self.settings = master.device_params.amp_settings
             self.running = None
+            self.device_samples_smooth = 1
             sampling_rate = self.settings.sampling_rate
             if sampling_rate >= 1000:
                 # calculate the number of data points in a usb packets from the sampling rate by
@@ -157,6 +158,8 @@ class AmpFrame(ttk.Frame):
             self.data = []
             self.time = []
             self.running = True
+            self.device_samples_smooth = self.device.samples_to_smooth
+            self.device.samples_smooth = 50
             # set the sampling rate if it is not set correctly
             if (self.device.device_params.pwm_period_value !=
                     self.settings.pwm_period_value):
@@ -194,24 +197,31 @@ class AmpFrame(ttk.Frame):
                     return False
 
                 if usb_input:
-                    len_input = len(data)
-                    # down sampling hack
-                    down_sampled_data = []
-                    first_index = 0
-                    len_sampled = len_input / self.settings.down_sample
-                    for i in range(len_sampled):
-                        first_index += self.settings.down_sample
-                        down_sampled_data.append(sum(data[first_index:first_index + 9]) / self.settings.down_sample)
-
-                    self.data.extend(down_sampled_data)
-                    self.time.extend(
-                        [x * self.time_step + self.t_ptr for x in range(1, len_sampled + 1)])
-                    self.t_ptr += len_input * self.time_step
+                    self.data.extend(data)
+                    len_data = len(data)
+                    self.time.extend([x * self.time_step + self.t_ptr for x in range(1, len_data + 1)])
+                    self.t_ptr += len_data * self.time_step
                     return True
+                # if usb_input:
+                #     len_input = len(data)
+                #     # down sampling hack
+                #     down_sampled_data = []
+                #     first_index = 0
+                #     len_sampled = len_input / self.settings.down_sample
+                #     for i in range(len_sampled):
+                #         first_index += self.settings.down_sample
+                #         down_sampled_data.append(sum(data[first_index:first_index + 9]) / self.settings.down_sample)
+                #
+                #     self.data.extend(down_sampled_data)
+                #     self.time.extend(
+                #         [x * self.time_step + self.t_ptr for x in range(1, len_sampled + 1)])
+                #     self.t_ptr += len_input * self.time_step
+                #     return True
 
         def cancel_run(self):
             self.running = False
             self.master.after_cancel(self._reader)
+            self.device.samples_to_smooth = self.device_samples_smooth
             self._reader = None
             self.device.usb_write('X')
             self.device.clear_in_buffer()

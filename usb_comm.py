@@ -12,7 +12,7 @@ import usb.util
 # import usb.backend.libusb0
 import usb.backend
 # local files
-import amp_usb_helper as usb_helper
+import cv_frame
 import change_toplevel as toplevel
 import globals as _globals
 
@@ -548,6 +548,37 @@ class AmpUsb(object):
 
     def set_last_run(self, run_type):
         self.last_experiment = run_type
+
+    def get_and_display_data_from_export_channel(self, canvas, _channel=None):
+        """ For developers to get data from the device.
+        Write to the device to let it know to export the data to the computer then call the method
+        get_data to get the data, then convert the data to current
+        :param canvas: tkinter frame with pyplot canvas to plot to
+        :param _channel: int of the adc channel to get from the device
+        :return:
+        """
+        if not _channel:  # if no channel sent, use the one saved in parameters dict
+            _channel = self.params.adc_channel
+
+        # the correct complete message was received so attempt to collect the data
+        self.usb_write('E'+str(_channel))  # step 4
+
+        # Get the raw data from the ADC
+        raw_data = self.get_data()
+        if not raw_data:  # if something is wrong just return
+            return
+        # call function to convert the raw ADC values into the current that passed
+        #  through the working electrode
+        data = self.process_data(raw_data)
+
+        self.master.current_data = data
+        x_line = cv_frame.make_x_line(self.params.actual_low_volt,
+                                      self.params.actual_high_volt,
+                                      self.params.volt_increment)
+        self.master.voltage_data = x_line
+
+        # Send data to the canvas where it will be saved and displayed
+        canvas.update_data(x_line, data, raw_data)
 
 
 def convert_uint8_uint16(_array):

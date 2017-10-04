@@ -31,7 +31,7 @@ SWEEP_RATE = 0.5
 
 # Amperometry properties
 DEVICE_SAMPLING_RATE = 1000
-DOWN_SAMPLING = 10
+DOWN_SAMPLING = 50
 
 # Anode stripping voltammetry properties
 CLEAN_VOLTAGE_ASV = 800  # mV
@@ -222,7 +222,7 @@ class AmpSettings(object):
         self.voltage = 500  # mV, start with basic parameters
         self.raw_sampling_rate = DEVICE_SAMPLING_RATE  # Hz
         self.down_sample = DOWN_SAMPLING
-        self.sampling_rate = self.raw_sampling_rate / self.down_sample
+        self.sampling_rate = self.raw_sampling_rate
         self.pwm_period_value = self.calculate_pwm_period(clock_freq)
 
     def calculate_pwm_period(self, clk_freq):
