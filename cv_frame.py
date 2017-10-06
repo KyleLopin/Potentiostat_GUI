@@ -11,7 +11,6 @@ import Tkinter as tk
 import ttk
 # local files
 import change_toplevel as change_top
-import globals as _globals
 import pyplot_data_class as data_class
 import tkinter_pyplot
 
@@ -23,6 +22,7 @@ COMPLETE_MESSAGE = "Done"
 USB_IN_BYTE_SIZE = 64
 FAIL_COUNT_THRESHOLD = 2
 FAILURE_DELAY = 500
+
 
 class CVFrame(ttk.Frame):
     """ Frame to hold all the widgets and information to perform cyclic voltammetry experiments
@@ -142,7 +142,8 @@ class CVFrame(ttk.Frame):
         device.run_chrono = True
         self.graph.resize_x(0, 4000)
 
-    def print_usb_message(self, device):
+    @staticmethod
+    def print_usb_message(device):
         """ For developing, check if a message is waiting in the usb
         :param device:  usb device to read
         """
@@ -215,7 +216,6 @@ class CVFrame(ttk.Frame):
         self.cv_settings_frame.set_current_var_str(_value)
         self.graph.resize_y(current_limit)
 
-
     class USBHandler(object):
         """ NOTE: self.device is the AMpUSB class and device.device is the pyUSB class
         """
@@ -247,7 +247,6 @@ class CVFrame(ttk.Frame):
             Note: the values sending to the device have to be padded with 0's so they are the
             proper size for the device to interpret
 
-            :param device: USBHandler class that is being used to communicate with the device
             :return: will update to the device.params the following values
             usb_packet_count which is how many data packets to expect when receiving data
             actual_low_volt the lowest voltage the device will give to the electrode, depending on
@@ -305,6 +304,7 @@ class CVFrame(ttk.Frame):
 
             :param canvas: canvas to display data on
             :param run_button: run button that was pressed to start the scan
+            :param _delay: int
             :return: binds the data to the master instead of returning anything
             """
             if self.device.last_experiment != "CV":  # the look up table is not correct

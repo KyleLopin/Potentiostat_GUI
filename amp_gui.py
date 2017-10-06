@@ -5,7 +5,9 @@
 """
 # standard libraries
 import csv
+import time
 import logging
+import os
 import tkFont
 import Tkinter as tk
 import FileDialog
@@ -29,9 +31,12 @@ class ElectroChemGUI(tk.Tk):
     """ Graphical User Interface to interact with the PSoC electrochemical device
     """
     def __init__(self, parent=None):
-
-        logging.basicConfig(level=logging.DEBUG,
-                            format="%(levelname)s %(module)s %(lineno)d: %(message)s")
+        if not os.path.exists('logging'):  # make a directory to store logging files
+            os.makedirs('logging')
+        date = time.strftime("%Y_%m_%d")
+        print date+"_logging_file.log"
+        logging.basicConfig(level=logging.DEBUG, filename="logging/"+date+"_logging_file.log",
+                            format="%(asctime)-15s %(levelname)s %(module)s %(lineno)d: %(message)s")
         self.data_save_type = "Converted"
         self.device_params = properties.DeviceParameters()
         self.display_type = check_display_type()

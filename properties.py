@@ -108,7 +108,9 @@ class CVSettings(object):
                         setattr(self, attribute, valid_value)
 
         except Exception as e:
-            print "Load error: ", e
+            logging.debug("Load error: ", e)
+            with open("settings.txt", "w") as _file:
+                pass  # make the file if it is not there
         for key in DEFAULT_CV_SETTINGS:
             if not hasattr(self, key):
                 setattr(self, key, DEFAULT_CV_SETTINGS[key])
