@@ -8,6 +8,7 @@ import csv
 import time
 import logging
 import os
+import sys
 import tkFont
 import Tkinter as tk
 import FileDialog
@@ -34,9 +35,9 @@ class ElectroChemGUI(tk.Tk):
         if not os.path.exists('logging'):  # make a directory to store logging files
             os.makedirs('logging')
         date = time.strftime("%Y_%m_%d")
-        print date+"_logging_file.log"
         logging.basicConfig(level=logging.INFO, filename="logging/"+date+"_logging_file.log",
                             format="%(asctime)-15s %(levelname)s %(module)s %(lineno)d: %(message)s")
+
         self.data_save_type = "Converted"
         self.device_params = properties.DeviceParameters()
         self.display_type = check_display_type()
@@ -159,7 +160,8 @@ class ElectroChemGUI(tk.Tk):
 
     def quit(self):
         """  Destroy the master """
-        self.destroy()
+        # self.destroy()
+        destroyer()
 
     def set_adc_channel(self, _channel):
         """ Used to debug the device by storing info in the other adc channels that can be gathered
@@ -214,6 +216,12 @@ class ElectroChemGUI(tk.Tk):
         return bottom_frame
 
 
+def destroyer():
+    # app.quit()
+    app.destroy()
+    sys.exit()
+
+
 def get_data_from_csv_file(_filename):
     with open(_filename, 'rb') as _file:
         _reader = csv.reader(_file)  # create reader from file
@@ -245,6 +253,8 @@ def check_display_type():
 
 if __name__ == '__main__':
     app = ElectroChemGUI()
+    app.protocol("WM_DELETE_WINDOW", destroyer)
     app.title("Amperometry Device")
     app.geometry("850x400")
     app.mainloop()
+
