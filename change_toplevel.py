@@ -905,3 +905,13 @@ class MasterDestroyer(tk.Toplevel):
         master.device.destroy()
         os.execl(sys.executable, sys.executable, *sys.argv)
         tk.Button(self, text="Close", width=40, command=lambda: self.destroy()).pack(side='top')
+
+
+class About(tk.Toplevel):
+    def __init__(self, master):
+        tk.Toplevel.__init__(self, master=master)
+        self.geometry("300x300")
+        self.title("About")
+        tk.Label(self, text="Developed at Naresuan University\nby Kyle Vitautas Lopin\n\n"
+                            "for comments or suggestions\nemail: kylel@nu.ac.th",
+                 font=("Helvetica", 12)).pack()

@@ -28,16 +28,19 @@ class OptionMenu(tk.Menu):
         options_menu = tk.Menu(menubar, tearoff=0)
         data_menu = tk.Menu(menubar, tearoff=0)
         developer_menu = tk.Menu(menubar, tearoff=0)
+        about_menu = tk.Menu(menubar, tearoff=0)
         # Different options the user can change
         make_option_menu(options_menu, master)
         make_file_option_menu(file_menu, master)
         make_data_menu(data_menu, master)
         make_developer_menu(developer_menu, master)
+        make_about_menu(about_menu, master)
 
         menubar.add_cascade(label="File", menu=file_menu)
         menubar.add_cascade(label="Data", menu=data_menu)
         menubar.add_cascade(label="Options", menu=options_menu)
         menubar.add_cascade(label="Developers", menu=developer_menu)
+        menubar.add_cascade(label="About", menu=about_menu)
 
         master.config(menu=menubar)
 
@@ -155,3 +158,7 @@ def make_developer_menu(developer_menu, master):
 
     developer_menu.add_cascade(label="Change timing PWM compare value",
                                command=lambda: change_toplevel.ChangeCompareValue(master))
+
+
+def make_about_menu(about_menu, master):
+    about_menu.add_cascade(label="About", command=lambda: change_toplevel.About(master))
