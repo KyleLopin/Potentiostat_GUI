@@ -35,7 +35,7 @@ class ElectroChemGUI(tk.Tk):
             os.makedirs('logging')
         date = time.strftime("%Y_%m_%d")
         print date+"_logging_file.log"
-        logging.basicConfig(level=logging.DEBUG, filename="logging/"+date+"_logging_file.log",
+        logging.basicConfig(level=logging.INFO, filename="logging/"+date+"_logging_file.log",
                             format="%(asctime)-15s %(levelname)s %(module)s %(lineno)d: %(message)s")
         self.data_save_type = "Converted"
         self.device_params = properties.DeviceParameters()
