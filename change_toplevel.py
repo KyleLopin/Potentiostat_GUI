@@ -914,4 +914,4 @@ class About(tk.Toplevel):
         self.title("About")
         tk.Label(self, text="Developed at Naresuan University\nby Kyle Vitautas Lopin\n\n"
                             "for comments or suggestions\nemail: kylel@nu.ac.th",
-                 font=("Helvetica", 12)).pack()
+                 font=("Raleway", 12)).pack()

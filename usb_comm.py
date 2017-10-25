@@ -33,6 +33,9 @@ FAILURE_DELAY = 500
 COMPLETE_MESSAGE = "Done"
 TERMINATION_CODE = -16384
 
+USB_VENDOR_ID = 0x1D50
+USB_PRODUCT_ID = 0x6128
+
 # device parameter list
 TIA_RESISTOR_VALUES = [20, 30, 40, 80, 120, 250, 500, 1000]
 CURRENT_OPTION_LIST = _globals.CURRENT_OPTION_LIST
@@ -50,7 +53,7 @@ class AmpUsb(object):
     function handles the specifics
     """
 
-    def __init__(self, _master, _device_params, vendor_id=None, product_id=None):
+    def __init__(self, _master, _device_params, vendor_id=USB_VENDOR_ID, product_id=USB_PRODUCT_ID):
         """ Initialize a communication channel to a PSoC with a USBFS module.  Use the default example
         for the USBFS HID example if no vendor or product id are inputted
 
@@ -63,10 +66,6 @@ class AmpUsb(object):
         :return:
         """
         self.found = False
-        if not vendor_id:
-            vendor_id = 0x04B4
-        if not product_id:
-            product_id = 0xE177
 
         # attempt to connect the device
         self.device_params = _device_params
