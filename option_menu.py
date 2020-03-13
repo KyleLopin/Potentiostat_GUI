@@ -5,7 +5,7 @@
 """
 # standard libraries
 import logging
-import Tkinter as tk
+import tkinter as tk
 # local files
 import change_toplevel
 
@@ -119,7 +119,7 @@ def set_voltage_source(master, value):
     :param master: root tk.TK
     :param value: value user selected
     """
-    print 'option menu 112: ', value
+    print('option menu 112: ', value)
     master.device.select_voltage_source(value)
 
 

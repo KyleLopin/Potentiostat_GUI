@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://C:\Users\Kyle\Documents\PyCharm\Potentiostat\Potentiostat_GUI\.idea\Amp_HID.iml" filepath="C:\Users\Kyle\Documents\PyCharm\Potentiostat\Potentiostat_GUI\.idea\Amp_HID.iml" />
+      <module fileurl="file://$USER_HOME$/Documents/PyCharm/Potentiostat/Potentiostat_GUI/.idea/Amp_HID.iml" filepath="$USER_HOME$/Documents/PyCharm/Potentiostat/Potentiostat_GUI/.idea/Amp_HID.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/Potentiostat_GUI.iml" filepath="$PROJECT_DIR$/.idea/Potentiostat_GUI.iml" />
     </modules>
   </component>

@@ -8,9 +8,9 @@ import logging
 import os
 import sys
 import time
-import Tkinter as tk
-import tkFont
-import ttk
+import tkinter as tk
+import tkinter.font
+from tkinter import ttk
 # local files
 import cv_frame
 import globals as _globals
@@ -666,7 +666,7 @@ class UserSelectDataDelete(tk.Toplevel):
         frames = []
         choices = []
         index = 0
-        print master.data.label
+        print(master.data.label)
         for _label in master.data.label:
             frames.append(tk.Frame(self))
             choices.append(tk.IntVar())

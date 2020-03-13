@@ -6,9 +6,11 @@
 # standard libraries
 import logging
 import time
-import tkFileDialog
-import Tkinter as tk
-import ttk
+import tkinter.font
+from tkinter import filedialog
+import tkinter as tk
+from tkinter import ttk
+
 # local files
 import change_toplevel as change_top
 import pyplot_data_class as data_class
@@ -147,7 +149,7 @@ class CVFrame(ttk.Frame):
         """ For developing, check if a message is waiting in the usb
         :param device:  usb device to read
         """
-        print device.usb_read_message()
+        print(device.usb_read_message())
 
     def change_data_labels(self):
         """ Call a toplevel to allow the user to change data labels in the legend
@@ -599,5 +601,5 @@ def check_display_type():
         import matplotlib.pyplot
         from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
         return "matplotlib"
-    except ImportError, _:
+    except ImportError:
         return "canvas"

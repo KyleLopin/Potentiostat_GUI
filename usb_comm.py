@@ -602,7 +602,7 @@ def convert_uint8_to_signed_int16(_bytes):
     """
     new_array = [0] * int((len(_bytes) / 2))
     max_value = 2 ** 16 / 2  # maximum positive value that can be make with signed int16
-    for i in range(len(_bytes) / 2):
+    for i in range(int(len(_bytes) / 2)):
         _hold = _bytes.pop(0) + _bytes.pop(0) * 256  # combind the individual bytes
         if _hold >= max_value:
             _hold -= (2 * max_value)

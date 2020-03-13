@@ -7,9 +7,9 @@ voltammetry experiments
 # standard libraries
 import logging
 import time
-import tkFileDialog
-import Tkinter as tk
-import ttk
+import tkinter as tk
+from tkinter import filedialog
+from tkinter import ttk
 # local files
 import change_toplevel as change_top
 import cv_frame

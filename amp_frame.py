@@ -8,9 +8,9 @@ NOTE: Can make a parent class
 import csv
 import logging
 import time
-import tkFileDialog
-import Tkinter as tk
-import ttk
+from tkinter import filedialog
+import tkinter as tk
+from tkinter import ttk
 # local files
 import change_toplevel
 import tkinter_pyplot
@@ -324,7 +324,7 @@ def check_display_type():
         import matplotlib.pyplot
         from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
         return "matplotlib"
-    except ImportError, _:
+    except ImportError:
         return "canvas"
 
 

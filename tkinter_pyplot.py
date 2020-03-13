@@ -5,20 +5,22 @@
 """
 # standard libraries
 import logging
-import Tkinter as tk
+import tkinter as tk
 # installed libraries
 import matplotlib
 
 matplotlib.use("TkAgg")
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from matplotlib.backends.backend_tkagg import NavigationToolbar2TkAgg as NavToolbar
+from matplotlib.backends.backend_tkagg import NavigationToolbar2Tk as NavToolbar
 # local files
 import change_toplevel as toplevel
 
 __author__ = 'Kyle Vitautas Lopin'
 
 LEGEND_SPACE_RATIO = 0.9
+
+logging.getLogger('matplotlib.font_manager').disabled = True
 
 
 class PyplotEmbed(tk.Frame):
@@ -63,7 +65,7 @@ class PyplotEmbed(tk.Frame):
         self.graph_area.axis.format_coord = lambda x, y: ""  # remove the coordinates in the toolbox
         # go through the plot properties and apply each one that is listed
         if plt_props:
-            for key, value in plt_props.iteritems():
+            for key, value in plt_props.items():
                 eval("plt." + key + "(" + value + ")")
         # get the limits of the x axis from the parameters if they are not in the properties
         if plt_props and "xlim" not in plt_props:
@@ -190,7 +192,7 @@ class PyplotEmbed(tk.Frame):
                                     prop={'size': 10},
                                     fancybox=True)  # not adding all this screws it up
         # up for some reason
-        self.graph_area.canvas.show()  # update the canvas where the data is being shown
+        self.graph_area.canvas.draw()  # update the canvas where the data is being shown
 
     def delete_all_lines(self):
         """ Remove all the lines from the graph
