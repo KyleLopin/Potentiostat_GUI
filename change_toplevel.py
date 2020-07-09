@@ -337,7 +337,7 @@ class ASVSettingChanges(tk.Toplevel):
         self.graph = graph
         self.device = device
         self.entry_delay = None  # variable to bind the after calls to
-        self.geometry("400x300")
+        self.geometry("400x500")
 
         # make all the variables to fill
         self.clean_volt = tk.DoubleVar()
@@ -347,6 +347,8 @@ class ASVSettingChanges(tk.Toplevel):
         self.end_voltage = tk.DoubleVar()
         self.sweep_rate = tk.DoubleVar()
 
+        self.sweep_type = tk.IntVar()
+
         self.settings = master.device_params
         self.clean_volt.set(self.settings.asv_settings.clean_volt)
         self.clean_time.set(self.settings.asv_settings.clean_time)
@@ -354,6 +356,7 @@ class ASVSettingChanges(tk.Toplevel):
         self.plate_time.set(self.settings.asv_settings.plate_time)
         self.end_voltage.set(self.settings.asv_settings.end_voltage)
         self.sweep_rate.set(self.settings.asv_settings.sweep_rate)
+        self.sweep_type.set(0)
 
         self.options_frame = tk.Frame(self)
         self.options_frame.pack()
@@ -380,6 +383,25 @@ class ASVSettingChanges(tk.Toplevel):
 
         tk.OptionMenu(self.options_frame, self.current_options, *CURRENT_OPTION_LIST
                       ).grid(row=7, column=1)
+
+        # MAKE DPV HACK HERE
+        tk.Radiobutton(self.options_frame, text="Linear Sweep",
+                       variable=self.sweep_type, value=0,
+                       ).grid(row=9, column=0)
+        tk.Radiobutton(self.options_frame, text="Differential Pulse",
+                       variable=self.sweep_type, value=1,
+                       ).grid(row=9, column=1)
+
+        self.pulse_height = tk.DoubleVar()
+        self.pulse_inc = tk.DoubleVar()
+        self.pulse_width = tk.DoubleVar()
+
+        label_strs = ["Pulse height:", "Pulse increment:", "Pulse width:"]
+        entries = [self.pulse_height, self.pulse_inc, self.pulse_width]
+        unit_str = ["mV", "mV", "msec"]
+        for i in range(3):
+            self.entry_row(self.options_frame, label_strs[i], entries[i], unit_str[i], i + 10)
+
 
         tk.Button(self, text="Save", width=15, command=self.save
                   ).pack(side='left', expand=True)

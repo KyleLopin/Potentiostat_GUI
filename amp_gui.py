@@ -257,6 +257,6 @@ if __name__ == '__main__':
     app = ElectroChemGUI()
     app.protocol("WM_DELETE_WINDOW", destroyer)
     app.title("Amperometry Device")
-    app.geometry("850x400")
+    app.geometry("950x600")
     app.mainloop()
 

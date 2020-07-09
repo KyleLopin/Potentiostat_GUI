@@ -211,10 +211,12 @@ class ASVFrame(cv_frame.CVFrame):
             self.clean_voltage_var_str = tk.StringVar()
             self.cleaning_time_var_str = tk.StringVar()
             self.plating_voltage_var_str = tk.StringVar()
-            self.plating_time_var_str = tk.StringVar();
+            self.plating_time_var_str = tk.StringVar()
             self.end_voltage_var_str = tk.StringVar()
             self.freq_var_str = tk.StringVar()
             self.current_var_str = tk.StringVar()
+            self.stripping_type = tk.StringVar()
+
             self.device = device
 
             # Make Labels to display the String variables
@@ -225,6 +227,7 @@ class ASVFrame(cv_frame.CVFrame):
             tk.Label(textvariable=self.end_voltage_var_str, master=self).pack(side='top')
             tk.Label(textvariable=self.freq_var_str, master=self).pack(side='top')
             tk.Label(textvariable=self.current_var_str, master=self).pack(side='top')
+            tk.Label(self, textvariable=self.stripping_type).pack(side=tk.TOP)
 
             # make a button to change the cyclic voltammetry setting
             tk.Button(self,
@@ -249,6 +252,7 @@ class ASVFrame(cv_frame.CVFrame):
                                   .format(params.asv_settings.sweep_rate))
             self.current_var_str.set(u'Current range: \u00B1 {0:.1f} \u00B5A'
                                      .format(params.adc_tia.current_lims))
+            self.stripping_type.set("Sweep type: Linear Sweep")
 
         def change_asv_settings(self, master, graph):
             change_top.ASVSettingChanges(self, master, graph, self.device)
