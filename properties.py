@@ -35,10 +35,14 @@ DOWN_SAMPLING = 50
 
 # Anode stripping voltammetry properties
 CLEAN_VOLTAGE_ASV = 800  # mV
-CLEAN_TIME = 60  # seconds
+CLEAN_TIME = 2  # seconds
 PLATING_VOLTAGE = -1500  # mV
-PLATING_TIME = 600  # seconds
+PLATING_TIME = 5  # seconds
 END_ASV_VOLTAGE = 500  # mV
+# DPV in ASV
+PULSE_HEIGHT = 100  # mV
+PULSE_INCREMENT = 10  # mV
+PULSE_WIDTH = 20  # msec
 
 SAVED_SETTINGS_FILE = "settings.txt"
 
@@ -46,6 +50,7 @@ SAVED_SETTINGS_FILE = "settings.txt"
 class DeviceParameters(object):
     """ Class to hold all the properties and parameters of the PSoC amperometry device
     """
+
     def __init__(self):
         # constant parameters
         self.number_in_endpoints = 1  # how many IN ENDPOINTS to connect to
@@ -256,10 +261,15 @@ class ASVSettings(CVSettings):
         self.low_voltage = self.plate_volt
         self.high_voltage = self.end_voltage
         self.sweep_rate = SWEEP_RATE
-        self.delay_time = 500 + abs(self.end_voltage - self.plate_volt) / self.sweep_rate
+        self.delay_time = 500 + abs(self.end_voltage -
+                                    self.plate_volt) / self.sweep_rate
+        self.pulse_height = PULSE_HEIGHT
+        self.pulse_inc = PULSE_INCREMENT
+        self.pulse_width = PULSE_WIDTH
 
     def update_settings(self, clean_voltage, clean_time, electroplate_voltage,
-                        plating_time, end_voltage, sweep_rate):
+                        plating_time, end_voltage, sweep_rate, sweep_type=0,
+                        pulse_height=50, pulse_inc=10, pulse_width=100):
         """ Update the CV settings
         :param clean_voltage: int - mV, voltage to hold the working electrode at to remove plated ions
         :param clean_time: int - seconds, time to use the cleaning voltage
@@ -279,10 +289,22 @@ class ASVSettings(CVSettings):
         self.sweep_rate = sweep_rate
         self.delay_time = 500 + abs(self.high_voltage - self.low_voltage) / self.sweep_rate
 
+        self.pulse_height = pulse_height
+        self.pulse_inc = pulse_inc
+        self.pulse_width = pulse_width
+
+        if sweep_type == 1:
+            self.sweep_type = "DPV"
+            self.delay_time = (500 + self.pulse_width * abs(self.high_voltage - self.low_voltage)
+                               / self.pulse_inc)
+        else:
+            self.sweep_type = "LS"
+
 
 class DAC(object):
     """ Class that provides the information of the DAC being used
     """
+
     def __init__(self, _type, voltage_range=4080.0):
         self.source = _type
         if _type == "8-bit DAC":

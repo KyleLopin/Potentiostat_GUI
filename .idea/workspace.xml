@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="251b6b94-30bd-4672-9fcb-503d3e5ae2ad" name="Default" comment="Converted files to work with Python 3 (3.7 tested so far)">
+    <list default="true" id="251b6b94-30bd-4672-9fcb-503d3e5ae2ad" name="Default" comment="Added option to run differential pulse experiments.  Only front end shows options now, backend is not set up yet.">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/amp_gui.py" beforeDir="false" afterPath="$PROJECT_DIR$/amp_gui.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/asv_frame.py" beforeDir="false" afterPath="$PROJECT_DIR$/asv_frame.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/change_toplevel.py" beforeDir="false" afterPath="$PROJECT_DIR$/change_toplevel.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cv_frame.py" beforeDir="false" afterPath="$PROJECT_DIR$/cv_frame.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/globals.py" beforeDir="false" afterPath="$PROJECT_DIR$/globals.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/properties.py" beforeDir="false" afterPath="$PROJECT_DIR$/properties.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tkinter_pyplot.py" beforeDir="false" afterPath="$PROJECT_DIR$/tkinter_pyplot.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/usb_comm.py" beforeDir="false" afterPath="$PROJECT_DIR$/usb_comm.py" afterDir="false" />
     </list>
-    <ignored path="Amp_simple.iws" />
-    <ignored path=".idea/workspace.xml" />
-    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -19,175 +20,6 @@
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
   </component>
-  <component name="FUSProjectUsageTrigger">
-    <session id="839988065">
-      <usages-collector id="statistics.lifecycle.project">
-        <counts>
-          <entry key="project.closed" value="1" />
-          <entry key="project.open.time.1" value="2" />
-          <entry key="project.open.time.4" value="2" />
-          <entry key="project.opened" value="4" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.extensions.edit">
-        <counts>
-          <entry key="py" value="663" />
-          <entry key="txt" value="64" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.types.edit">
-        <counts>
-          <entry key="PLAIN_TEXT" value="64" />
-          <entry key="Python" value="663" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.extensions.open">
-        <counts>
-          <entry key="py" value="1" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.types.open">
-        <counts>
-          <entry key="Python" value="1" />
-        </counts>
-      </usages-collector>
-    </session>
-  </component>
-  <component name="FavoritesManager">
-    <favorites_list name="Amp_simple" />
-  </component>
-  <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.5276894">
-      <split-first>
-        <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/cv_frame.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="136">
-                  <caret line="8" column="19" selection-start-line="8" selection-start-column="19" selection-end-line="8" selection-end-column="19" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/usb_comm.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="10098">
-                  <caret line="604" column="39" selection-start-line="604" selection-start-column="39" selection-end-line="604" selection-end-column="39" />
-                  <folding>
-                    <element signature="e#262#276#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/asv_frame.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="196">
-                  <caret line="254" column="49" selection-start-line="254" selection-start-column="49" selection-end-line="254" selection-end-column="49" />
-                  <folding>
-                    <element signature="e#294#308#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/change_toplevel.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="1337">
-                  <caret line="409" lean-forward="true" selection-start-line="409" selection-end-line="409" />
-                  <folding>
-                    <element signature="e#263#277#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/amp_frame.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="153">
-                  <caret line="9" column="11" selection-start-line="9" selection-start-column="11" selection-end-line="9" selection-end-column="11" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/amp_gui.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="279">
-                  <caret line="47" column="50" lean-forward="true" selection-start-line="47" selection-start-column="50" selection-end-line="47" selection-end-column="50" />
-                  <folding>
-                    <element signature="e#272#282#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-        </leaf>
-      </split-first>
-      <split-second>
-        <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/cv_frame.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="6307">
-                  <caret line="381" column="74" selection-start-line="381" selection-start-column="74" selection-end-line="381" selection-end-column="74" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/tkinter_pyplot.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="374">
-                  <caret line="22" column="60" selection-start-line="22" selection-start-column="60" selection-end-line="22" selection-end-column="60" />
-                  <folding>
-                    <element signature="e#272#286#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/properties.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="279">
-                  <caret line="260" column="8" selection-start-line="260" selection-start-column="8" selection-end-line="260" selection-end-column="8" />
-                  <folding>
-                    <element signature="e#252#283#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/option_menu.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="119">
-                  <caret line="7" column="8" selection-start-line="7" selection-start-column="8" selection-end-line="7" selection-end-column="8" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/pyplot_data_class.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="323">
-                  <caret line="21" column="26" selection-start-line="21" selection-start-column="26" selection-end-line="21" selection-end-column="26" />
-                  <folding>
-                    <element signature="e#241#251#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-        </leaf>
-      </split-second>
-    </splitter>
-  </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
@@ -195,81 +27,10 @@
       </list>
     </option>
   </component>
-  <component name="FindInProjectRecents">
-    <findStrings>
-      <find>tkFont</find>
-      <find>sweep_rate</find>
-      <find>DEFAULT_CV_SETTIGNS</find>
-      <find>sweep_start</find>
-      <find>Zer</find>
-      <find>Change</find>
-      <find>ll</find>
-      <find>Start A</find>
-      <find>.delay_time</find>
-      <find>update_graph</find>
-      <find>print &quot;valu</find>
-      <find>value:</find>
-      <find>current_lim:</find>
-      <find>current lim:</find>
-      <find>res</find>
-      <find>settign</find>
-      <find>self.settings.down_sample</find>
-      <find>setting.txt</find>
-      <find>self.data_packet_size</find>
-      <find>SAVED_SETTINGS_FILE</find>
-      <find>usb_helper</find>
-      <find>self.time_step</find>
-      <find>samples_to_smooth</find>
-      <find>last_experiment</find>
-      <find>print</find>
-      <find>smooth</find>
-      <find>_globals</find>
-      <find>self.freq_var_str</find>
-      <find>device_params</find>
-      <find>CVSettingDisplay</find>
-    </findStrings>
-  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="IdeDocumentHistory">
-    <option name="CHANGED_PATHS">
-      <list>
-        <option value="$PROJECT_DIR$/.idea/parameters.py" />
-        <option value="$PROJECT_DIR$/data_legend_toplevel.py" />
-        <option value="$PROJECT_DIR$/amp_usb_helper.py" />
-        <option value="$PROJECT_DIR$/.idea/test.py" />
-        <option value="$PROJECT_DIR$/Amp_GUI.py" />
-        <option value="$PROJECT_DIR$/Toplevels.py" />
-        <option value="$PROJECT_DIR$/main_events.py" />
-        <option value="$PROJECT_DIR$/uart_comm.py" />
-        <option value="$PROJECT_DIR$/TODO" />
-        <option value="$PROJECT_DIR$/pyplot_data_class.py" />
-        <option value="$PROJECT_DIR$/toplevels.py" />
-        <option value="$PROJECT_DIR$/graph_properties.py" />
-        <option value="$PROJECT_DIR$/data_frame_superclass.py" />
-        <option value="$PROJECT_DIR$/DataDisplay.py" />
-        <option value="$PROJECT_DIR$/settings.txt" />
-        <option value="$PROJECT_DIR$/test.py" />
-        <option value="$PROJECT_DIR$/globals.py" />
-        <option value="$PROJECT_DIR$/amp_frame.py" />
-        <option value="$PROJECT_DIR$/cv_frame.py" />
-        <option value="$PROJECT_DIR$/option_menu.py" />
-        <option value="$PROJECT_DIR$/usb_comm.py" />
-        <option value="$PROJECT_DIR$/tkinter_pyplot.py" />
-        <option value="$PROJECT_DIR$/asv_frame.py" />
-        <option value="$PROJECT_DIR$/amp_gui.py" />
-        <option value="$PROJECT_DIR$/change_toplevel.py" />
-        <option value="$PROJECT_DIR$/properties.py" />
-      </list>
-    </option>
-  </component>
-  <component name="ProjectFrameBounds">
-    <option name="x" value="30" />
-    <option name="y" value="31" />
-    <option name="width" value="1778" />
-    <option name="height" value="1019" />
-  </component>
+  <component name="ProjectId" id="1evlWBE6itnxZHlJWD4vHvH4uY2" />
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
       <profile-state>
@@ -290,34 +51,17 @@
     </entry>
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
-  <component name="ProjectView">
-    <navigator proportions="" version="1">
-      <foldersAlwaysOnTop value="true" />
-    </navigator>
-    <panes>
-      <pane id="ProjectPane" />
-      <pane id="Scope" />
-    </panes>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/amp_gui.py" />
     <property name="options.lastSelected" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
     <property name="options.splitter.details.proportions" value="0.2" />
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="recentsLimit" value="5" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
-  </component>
-  <component name="RunDashboard">
-    <option name="ruleStates">
-      <list>
-        <RuleState>
-          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
-        </RuleState>
-        <RuleState>
-          <option name="name" value="StatusDashboardGroupingRule" />
-        </RuleState>
-      </list>
-    </option>
   </component>
   <component name="RunManager" selected="Python.amp_gui">
     <configuration default="true" type="tests" factoryName="Attests">
@@ -411,9 +155,9 @@
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="C:\Python37\python.exe" />
+      <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="false" />
+      <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/amp_gui.py" />
@@ -535,6 +279,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="_new_keywords" value="&quot;&quot;" />
+      <option name="_new_parameters" value="&quot;&quot;" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
       <option name="_new_target" value="&quot;.&quot;" />
       <option name="_new_targetType" value="&quot;PATH&quot;" />
@@ -906,7 +651,14 @@
       <option name="project" value="LOCAL" />
       <updated>1584069487386</updated>
     </task>
-    <option name="localTasksCounter" value="49" />
+    <task id="LOCAL-00049" summary="Added option to run differential pulse experiments.  Only front end shows options now, backend is not set up yet.">
+      <created>1594270466500</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1594270466500</updated>
+    </task>
+    <option name="localTasksCounter" value="50" />
     <servers />
   </component>
   <component name="TodoView">
@@ -918,74 +670,17 @@
       <is-autoscroll-to-source value="true" />
     </todo-panel>
   </component>
-  <component name="ToolWindowManager">
-    <frame x="30" y="31" width="1778" height="1019" extended-state="0" />
-    <editor active="true" />
-    <layout>
-      <window_info id="Project" order="0" weight="0.20573828" />
-      <window_info x="-1634" y="33" width="210" height="993" id="Structure" order="1" sideWeight="0.48509935" visible="true" weight="0.09712644" />
-      <window_info id="Favorites" order="2" sideWeight="0.5149007" side_tool="true" weight="0.050543826" />
-      <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" sideWeight="0.4957627" weight="0.2473573" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.46220428" visible="true" weight="0.3039548" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.39929742" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="6" sideWeight="0.47692308" weight="0.3272101" />
-      <window_info anchor="bottom" id="Application Servers" order="7" />
-      <window_info anchor="bottom" id="Version Control" order="8" weight="0.32833958" />
-      <window_info anchor="bottom" id="Changes" order="9" />
-      <window_info anchor="bottom" id="Terminal" order="10" weight="0.32768363" />
-      <window_info anchor="bottom" id="Event Log" order="11" sideWeight="0.5377957" side_tool="true" weight="0.30473047" />
-      <window_info anchor="bottom" id="Messages" order="12" />
-      <window_info anchor="bottom" id="Python Console" order="13" weight="0.3266979" />
-      <window_info anchor="bottom" id="Inspection Results" order="14" weight="0.32945284" />
-      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
-      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="right" id="Data View" order="3" />
-    </layout>
-    <layout-to-restore>
-      <window_info id="Project" order="0" weight="0.24985337" />
-      <window_info id="Structure" order="1" sideWeight="0.49130434" visible="true" weight="0.13352941" />
-      <window_info id="Favorites" order="2" sideWeight="0.50869566" side_tool="true" weight="0.15483871" />
-      <window_info anchor="bottom" id="Inspection Results" order="0" weight="0.32945284" />
-      <window_info anchor="bottom" id="Message" order="1" />
-      <window_info anchor="bottom" id="Find" order="2" sideWeight="0.4957627" weight="0.2774427" />
-      <window_info anchor="bottom" id="Run" order="3" sideWeight="0.45686162" visible="true" weight="0.330617" />
-      <window_info anchor="bottom" id="Debug" order="4" weight="0.4" />
-      <window_info anchor="bottom" id="Cvs" order="5" weight="0.25" />
-      <window_info anchor="bottom" id="Inspection" order="6" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="7" weight="0.32747805" />
-      <window_info anchor="bottom" id="Changes" order="8" />
-      <window_info anchor="bottom" id="Messages" order="9" />
-      <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.5431384" side_tool="true" weight="0.325419" />
-      <window_info anchor="bottom" id="Application Servers" order="11" />
-      <window_info anchor="bottom" id="Version Control" order="12" weight="0.32873276" />
-      <window_info anchor="bottom" id="Python Console" order="13" weight="0.32747805" />
-      <window_info anchor="bottom" id="Terminal" order="14" weight="0.32900432" />
-      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
-      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-    </layout-to-restore>
-  </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
       <map>
         <entry key="MAIN">
           <value>
-            <State>
-              <option name="RECENTLY_FILTERED_USER_GROUPS">
-                <collection />
-              </option>
-              <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
-                <collection />
-              </option>
-            </State>
+            <State />
           </value>
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="Vcs.Log.UiProperties">
     <option name="RECENTLY_FILTERED_USER_GROUPS">
@@ -995,11 +690,7 @@
       <collection />
     </option>
   </component>
-  <component name="VcsContentAnnotationSettings">
-    <option name="myLimit" value="2678400000" />
-  </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Fixed the way the voltages interact with the graph and at start up, but changing them still causes problems.&#10;&#10;Note: last commit changed the way the voltages are stored, instead of having a low and high voltage and it was assumed the voltage would go low at the beginning, now there is a start and end voltage for the protocol (so you can do whatever waveform you want) and a low, high voltage for the graph." />
     <MESSAGE value="Fixed the way the voltages are stored and bugs in changing the voltages" />
     <MESSAGE value="Changed how the voltages for the x-axis is calculated so it works for both types of DAC.&#10;&#10;Fixed some issues with changing the voltage source." />
     <MESSAGE value="Fixed changing the voltage source." />
@@ -1024,161 +715,47 @@
     <MESSAGE value="fix error in amp frame" />
     <MESSAGE value="fix error in changing the current range and updating all the graphs limits&#10;&#10;TODO: remove all debug print statements" />
     <MESSAGE value="Converted files to work with Python 3 (3.7 tested so far)" />
-    <option name="LAST_COMMIT_MESSAGE" value="Converted files to work with Python 3 (3.7 tested so far)" />
+    <MESSAGE value="Added option to run differential pulse experiments.  Only front end shows options now, backend is not set up yet." />
+    <option name="LAST_COMMIT_MESSAGE" value="Added option to run differential pulse experiments.  Only front end shows options now, backend is not set up yet." />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
-  <component name="editorHistoryManager">
-    <entry file="file://C:/Python27/Lib/lib-tk/tkFileDialog.py" />
-    <entry file="file://$PROJECT_DIR$/.idea/parameters.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret line="1" selection-start-line="1" selection-end-line="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://C:/Python27/Lib/site-packages/matplotlib/axes/_axes.py" />
-    <entry file="file://C:/Python27/Lib/site-packages/usb/core.py" />
-    <entry file="file://C:/Python27/Lib/site-packages/usb/backend/libusb1.py" />
-    <entry file="file://$USER_HOME$/baseGUI/Lib/site-packages/matplotlib/axes/_base.py" />
-    <entry file="file://$PROJECT_DIR$/CVScanProps.py" />
-    <entry file="file://$PROJECT_DIR$/.idea/test.py" />
-    <entry file="file://$PROJECT_DIR$/data_legend_toplevel.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-26">
-          <caret line="1" selection-start-line="1" selection-end-line="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://C:/Python27/Lib/site-packages/usb/backend/libusb0.py" />
-    <entry file="file://$PROJECT_DIR$/TODO" />
-    <entry file="file://$PROJECT_DIR$/uart_comm.py" />
-    <entry file="file://$PROJECT_DIR$/main_events.py" />
-    <entry file="file://C:/Python27/Lib/site-packages/matplotlib/axes/_base.py" />
-    <entry file="file://$PROJECT_DIR$/.gitignore">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ascorbate.csv" />
-    <entry file="file://$PROJECT_DIR$/toplevels.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="16" selection-start-line="16" selection-end-line="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://C:/Python27/Lib/lib-tk/tkFont.py" />
-    <entry file="file://C:/Python27/Lib/lib-tk/Tkinter.py" />
-    <entry file="file://$PROJECT_DIR$/test.py" />
-    <entry file="file://$PROJECT_DIR$/graph_properties.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="6" selection-start-line="6" selection-end-line="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/DataDisplay.py" />
-    <entry file="file://C:/Python27/Lib/logging/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="200">
-          <caret line="328" selection-start-line="328" selection-end-line="328" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/settings.txt" />
-    <entry file="file://$PROJECT_DIR$/data_frame_superclass.py" />
-    <entry file="file://$PROJECT_DIR$/amp_usb_helper.py" />
-    <entry file="file://$PROJECT_DIR$/globals.py" />
-    <entry file="file://$PROJECT_DIR$/globals22.py" />
-    <entry file="file://$PROJECT_DIR$/usb_comm.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="10098">
-          <caret line="604" column="39" selection-start-line="604" selection-start-column="39" selection-end-line="604" selection-end-column="39" />
-          <folding>
-            <element signature="e#262#276#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/amp_frame.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="9" column="11" selection-start-line="9" selection-start-column="11" selection-end-line="9" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/cv_frame.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="6307">
-          <caret line="381" column="74" selection-start-line="381" selection-start-column="74" selection-end-line="381" selection-end-column="74" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/option_menu.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="7" column="8" selection-start-line="7" selection-start-column="8" selection-end-line="7" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/pyplot_data_class.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="21" column="26" selection-start-line="21" selection-start-column="26" selection-end-line="21" selection-end-column="26" />
-          <folding>
-            <element signature="e#241#251#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/asv_frame.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="196">
-          <caret line="254" column="49" selection-start-line="254" selection-start-column="49" selection-end-line="254" selection-end-column="49" />
-          <folding>
-            <element signature="e#294#308#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/change_toplevel.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1337">
-          <caret line="409" lean-forward="true" selection-start-line="409" selection-end-line="409" />
-          <folding>
-            <element signature="e#263#277#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tkinter_pyplot.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="22" column="60" selection-start-line="22" selection-start-column="60" selection-end-line="22" selection-end-column="60" />
-          <folding>
-            <element signature="e#272#286#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/properties.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="279">
-          <caret line="260" column="8" selection-start-line="260" selection-start-column="8" selection-end-line="260" selection-end-column="8" />
-          <folding>
-            <element signature="e#252#283#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/amp_gui.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="279">
-          <caret line="47" column="50" lean-forward="true" selection-start-line="47" selection-start-column="50" selection-end-line="47" selection-end-column="50" />
-          <folding>
-            <element signature="e#272#282#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+  <component name="WindowStateProjectService">
+    <state x="456" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1595221248087">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="456" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1595221248087" />
+    <state x="801" y="422" key="FileChooserDialogImpl" timestamp="1595221247185">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="801" y="422" key="FileChooserDialogImpl/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1595221247185" />
+    <state width="1854" height="227" key="GridCell.Tab.0.bottom" timestamp="1595488008541">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1854" height="227" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1595488008541" />
+    <state width="1741" height="244" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1595396806810" />
+    <state width="1595" height="244" key="GridCell.Tab.0.bottom/0.0.640.440/640.0.1920.1040@640.0.1920.1040" timestamp="1595315975017" />
+    <state width="1854" height="227" key="GridCell.Tab.0.center" timestamp="1595488008541">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1854" height="227" key="GridCell.Tab.0.center/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1595488008541" />
+    <state width="1741" height="244" key="GridCell.Tab.0.center/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1595396806810" />
+    <state width="1595" height="244" key="GridCell.Tab.0.center/0.0.640.440/640.0.1920.1040@640.0.1920.1040" timestamp="1595315975017" />
+    <state width="1854" height="227" key="GridCell.Tab.0.left" timestamp="1595488008541">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1854" height="227" key="GridCell.Tab.0.left/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1595488008541" />
+    <state width="1741" height="244" key="GridCell.Tab.0.left/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1595396806810" />
+    <state width="1595" height="244" key="GridCell.Tab.0.left/0.0.640.440/640.0.1920.1040@640.0.1920.1040" timestamp="1595315975017" />
+    <state width="1854" height="227" key="GridCell.Tab.0.right" timestamp="1595488008541">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1854" height="227" key="GridCell.Tab.0.right/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1595488008541" />
+    <state width="1741" height="244" key="GridCell.Tab.0.right/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1595396806810" />
+    <state width="1595" height="244" key="GridCell.Tab.0.right/0.0.640.440/640.0.1920.1040@640.0.1920.1040" timestamp="1595315975017" />
+    <state x="537" y="166" key="SettingsEditor" timestamp="1595221312157">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="537" y="166" key="SettingsEditor/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1595221312157" />
   </component>
   <component name="masterDetails">
     <states>

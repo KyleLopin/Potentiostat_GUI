@@ -370,13 +370,25 @@ class CVFrame(ttk.Frame):
             # call function to convert the raw ADC values into the current that passed
             # through the working electrode
             self.data = self.device.process_data(raw_data)  # bind data to cv_frame master
+            # print("get and display data: ", self.params.cv_settings.sweep_type)
+            # if self.params.cv_settings.sweep_type == "DPV":
+            #     # hack the data
+            #     print(self.data)
+            #     index = 0
+            #     new_data = []
+            #     while index <= len(self.data):
+            #         new_data.append(self.data[index]-self.data[index+1])
+            #         print('new data: ', new_data)
+            #     self.data = new_data
+
             # make the voltages for the x-axis that correspond to the currents read
 
             x_line = make_x_line(self.params.cv_settings.start_voltage,
                                  self.params.cv_settings.end_voltage,
                                  self.params.dac.voltage_step_size,
                                  self.params.cv_settings.sweep_type,
-                                 self.params.cv_settings.sweep_start_type)
+                                 self.params.cv_settings.sweep_start_type,
+                                 self.params.asv_settings.pulse_inc)
             if self.run_chrono:  # HACK to test chronoamp experiments
                 x_line = range(4001)
             # Send data to the canvas where it will be saved and displayed
@@ -483,9 +495,11 @@ class CVFrame(ttk.Frame):
                                         self.device)  # bind toplevel to the root tk.tk
 
 
-def make_x_line(start, end, inc, sweep_type="CV", start_volt_type="Zero"):  # type=("Zero", "CV")):
+def make_x_line(start, end, inc, sweep_type="CV", start_volt_type="Zero",
+                DPV_increment=10):  # type=("Zero", "CV")):
     # if type == ("Zero", "CV"):
-
+    print('make x line, cv_frame line 488')
+    print(sweep_type, start, end, inc, start_volt_type, DPV_increment)
     start = int(float(start) / inc) * inc  # fix any issues with the dac being 16 mV / step
     end = int(float(end) / inc) * inc  # always round towards 0 V
     if sweep_type == "CV" and start_volt_type == "Zero":
@@ -495,6 +509,10 @@ def make_x_line(start, end, inc, sweep_type="CV", start_volt_type="Zero"):  # ty
         return make_x_line_linear(start, end, inc)
     elif sweep_type == "CV" and start_volt_type == "Start":
         return make_x_line_triangle(start, end, inc)
+    elif sweep_type == "DPV":
+        DPV_increment = int((float(DPV_increment)) / inc) * inc
+        return make_x_line_linear(start, end, DPV_increment)
+
     else:
         logging.error("make x line got a bad type: {0}, {1}".format(sweep_type, start_volt_type))
         raise NotImplementedError
@@ -512,6 +530,7 @@ def make_x_line_linear(start, end, inc):
     if start > end:
         inc *= -1
         start_mod = 0
+    print(start + start_mod, end + inc, inc)
     return range(start + start_mod, end + inc, inc)
 
 

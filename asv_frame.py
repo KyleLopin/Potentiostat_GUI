@@ -13,6 +13,7 @@ from tkinter import ttk
 # local files
 import change_toplevel as change_top
 import cv_frame
+import properties  # type hinting
 import pyplot_data_class as data_class
 import tkinter_pyplot
 
@@ -72,7 +73,7 @@ class ASVFrame(cv_frame.CVFrame):
             self.master = master
             self.data = data
             self.params = master.device_params
-            self.settings = master.device_params.asv_settings
+            self.settings = master.device_params.asv_settings  # type: properties.ASVSettings
             self.usb_packet_count = 0  # how many usb reading to make
             # TODO: bind this in the begining
             self.run_button = None  # placeholder, the first run will assign it
@@ -81,6 +82,7 @@ class ASVFrame(cv_frame.CVFrame):
         def send_cv_parameters(self):
             # TODO: send the commands to run a linear sweep at the end of the asv
             logging.debug("sending asv params here")
+            # DEPRICATE THE NEXT 3 STATEMENTS
             formatted_start_volt, start_dac_value = \
                 self.format_voltage(self.settings.low_voltage)
             formatted_end_volt, end_dac_value = \
@@ -90,12 +92,37 @@ class ASVFrame(cv_frame.CVFrame):
 
             self.params.PWM_period = pwm_period
 
-            sweep_type_to_send = "LS"
+            sweep_type_to_send = self.settings.sweep_type
 
-            # send those values to the device in the proper format for the PSoC amperometry device
-            to_amp_device = '|'.join(["S", formatted_start_volt,
-                                      formatted_end_volt, formatted_freq_divider,
-                                      sweep_type_to_send])
+            if sweep_type_to_send == 'LS':
+                print("sending linear sweep")
+                # send those values to the device in the proper format for the PSoC amperometry device
+                to_amp_device = '|'.join(["S", formatted_start_volt,
+                                          formatted_end_volt, formatted_freq_divider,
+                                          sweep_type_to_send])
+            elif sweep_type_to_send == 'DPV':  # DPV
+                print("Sending DPV settings")
+                # The pulse period depends on step width not scan rate
+
+                # self.params.PWM_period = int(self.settings.pulse_width / 2)
+                # how many milliseconds is the pulse times pwm frequency and divide by 1000 as frequency is
+                # per second but width is millisecond
+                self.params.PWM_period = int((self.settings.pulse_width * self.params.clk_freq_isr_pwm
+                                              / 1000) / 2) - 1
+                pwm_period = self.params.PWM_period
+                print("DPV timer: ", self.params.PWM_period)
+                pulse_height = int(self.settings.pulse_height / self.params.dac.voltage_step_size)
+                pulse_increment = int(self.settings.pulse_inc / self.params.dac.voltage_step_size)
+
+                # to_amp_device = '|'.join(["G", formatted_start_volt,
+                #                           formatted_end_volt, formatted_freq_divider,
+                #                           sweep_type_to_send])
+                to_amp_device = "G|{0}|{1}|{2:03d}|{3:03d}|{4:05d}" \
+                                "".format(formatted_start_volt, formatted_end_volt,
+                                          pulse_height, pulse_increment, self.params.PWM_period)
+            else:
+                raise ValueError("Unknown sweep type for ASV: {0}| Use LS or DPV"
+                                 "".format(sweep_type_to_send))
 
             # save how many data packets should be received back from the usb
             packet_count = (2 * (abs(end_dac_value - start_dac_value) + 1)
@@ -109,6 +136,7 @@ class ASVFrame(cv_frame.CVFrame):
             time.sleep(0.01)
             # Write to the timing PWM compare register so the dac adc timing is correct
             compare_value = pwm_period / 2
+
             self.device.write_timer_compare(compare_value)
 
         def set_adc_tia(self, *args):
@@ -128,6 +156,10 @@ class ASVFrame(cv_frame.CVFrame):
 
             # short the tia resistor so the working electrode can sink more current
             self.device.short_tia_resistor()
+
+            # DEBUGGING
+            print(self.params)
+            print(dir(self.params))
 
             # Tell the device to hold the Anode at the cleaning voltage
             self.device.set_anode_voltage(self.params.asv_settings.clean_volt)
@@ -158,12 +190,15 @@ class ASVFrame(cv_frame.CVFrame):
             self.device.usb_write('R')
             if self.device.working:
                 logging.debug("device reading")
+                print('delay: ', int(delay))
                 self.master.after(int(delay), lambda: self.run_scan_continue())
             else:
                 logging.debug("Couldn't find out endpoint to send message to run")
 
         def run_scan_continue(self, fails=0):
+
             check_message = self.device.usb_read_message()  # step 3
+            print('check message: ', check_message)
 
             if check_message == COMPLETE_MESSAGE:
                 self.get_and_display_data()
@@ -183,13 +218,28 @@ class ASVFrame(cv_frame.CVFrame):
             # call function to convert the raw ADC values into the current that passed
             # through the working electrode
             self.data = self.device.process_data(raw_data)  # bind data to cv_frame master
-            # make the voltages for the x-axis that correspond to the currents read
 
+            print("get and display data: ", self.params.asv_settings.sweep_type)
+            if self.params.asv_settings.sweep_type == "DPV":
+                # hack the data
+                print(self.data)
+                index = 0
+                new_data = []
+                while index <= len(self.data) - 2:
+                    new_data.append(self.data[index] - self.data[index + 1])
+                    # print("index = ", index, len(self.data))
+                    index += 2
+                print('new data: ', new_data)
+                self.data = new_data
+
+            # make the voltages for the x-axis that correspond to the currents read
+            print('make x line: ', self.params.asv_settings.pulse_inc)
             x_line = cv_frame.make_x_line(self.params.asv_settings.low_voltage,
                                           self.params.asv_settings.high_voltage,
                                           self.params.dac.voltage_step_size,
                                           self.params.asv_settings.sweep_type,
-                                          self.params.asv_settings.sweep_start_type)
+                                          self.params.asv_settings.sweep_start_type,
+                                          self.params.asv_settings.pulse_inc)
             self.graph.update_data(x_line, self.data, raw_data)  # send raw data for testing purposes
             self.run_button.config(text="Run ASV",
                                    command=lambda: self.asv_run(self.graph, self.run_button),
@@ -252,7 +302,10 @@ class ASVFrame(cv_frame.CVFrame):
                                   .format(params.asv_settings.sweep_rate))
             self.current_var_str.set(u'Current range: \u00B1 {0:.1f} \u00B5A'
                                      .format(params.adc_tia.current_lims))
-            self.stripping_type.set("Sweep type: Linear Sweep")
+            if params.asv_settings.sweep_type == 'LS':
+                self.stripping_type.set("Sweep type: Linear Sweep")
+            elif params.asv_settings.sweep_type == "DPV":
+                self.stripping_type.set("Sweep type: Differential Pulse")
 
         def change_asv_settings(self, master, graph):
             change_top.ASVSettingChanges(self, master, graph, self.device)

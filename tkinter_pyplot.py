@@ -256,11 +256,11 @@ class PyplotEmbed(tk.Frame):
         :param x_high: upper limit on x axis
         """
         self.graph_area.axis.set_xlim([x_low, x_high])
-        self.graph_area.canvas.show()
+        self.graph_area.canvas.draw()
 
     def resize_y(self, _current_limit):
         """ Change the scale of the y axis
         :param _current_limit: most current (positive or negative)
         """
         self.graph_area.axis.set_ylim(-_current_limit * 1.2, _current_limit * 1.2)
-        self.graph_area.canvas.show()
+        self.graph_area.canvas.draw()

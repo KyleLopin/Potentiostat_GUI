@@ -14,6 +14,7 @@ from tkinter import ttk
 # local files
 import cv_frame
 import globals as _globals
+import properties  # for typehinting
 import tkinter_pyplot
 
 __author__ = 'Kyle Vitautas Lopin'
@@ -349,14 +350,13 @@ class ASVSettingChanges(tk.Toplevel):
 
         self.sweep_type = tk.IntVar()
 
-        self.settings = master.device_params
+        self.settings = master.device_params  # type: properties.ASVSettings
         self.clean_volt.set(self.settings.asv_settings.clean_volt)
         self.clean_time.set(self.settings.asv_settings.clean_time)
         self.plate_volt.set(self.settings.asv_settings.plate_volt)
         self.plate_time.set(self.settings.asv_settings.plate_time)
         self.end_voltage.set(self.settings.asv_settings.end_voltage)
         self.sweep_rate.set(self.settings.asv_settings.sweep_rate)
-        self.sweep_type.set(0)
 
         self.options_frame = tk.Frame(self)
         self.options_frame.pack()
@@ -385,6 +385,7 @@ class ASVSettingChanges(tk.Toplevel):
                       ).grid(row=7, column=1)
 
         # MAKE DPV HACK HERE
+        self.sweep_type.set(0)
         tk.Radiobutton(self.options_frame, text="Linear Sweep",
                        variable=self.sweep_type, value=0,
                        ).grid(row=9, column=0)
@@ -396,19 +397,23 @@ class ASVSettingChanges(tk.Toplevel):
         self.pulse_inc = tk.DoubleVar()
         self.pulse_width = tk.DoubleVar()
 
+        self.pulse_height.set(self.settings.asv_settings.pulse_height)
+        self.pulse_inc.set(self.settings.asv_settings.pulse_inc)
+        self.pulse_width.set(self.settings.asv_settings.pulse_width)
+
         label_strs = ["Pulse height:", "Pulse increment:", "Pulse width:"]
         entries = [self.pulse_height, self.pulse_inc, self.pulse_width]
         unit_str = ["mV", "mV", "msec"]
         for i in range(3):
             self.entry_row(self.options_frame, label_strs[i], entries[i], unit_str[i], i + 10)
 
-
         tk.Button(self, text="Save", width=15, command=self.save
                   ).pack(side='left', expand=True)
         tk.Button(self, text="Exit", width=15, command=self.destroy
                   ).pack(side='left', expand=True)
 
-    def entry_row(self, frame, label_str, entry_variable, unit_str, row):
+    @staticmethod
+    def entry_row(frame, label_str, entry_variable, unit_str, row):
         tk.Label(frame, text=label_str, padx=10, pady=10
                  ).grid(row=row, column=0)
         tk.Entry(frame, textvariable=entry_variable).grid(row=row, column=1)
@@ -420,7 +425,11 @@ class ASVSettingChanges(tk.Toplevel):
                                                    self.plate_volt.get(),
                                                    self.plate_time.get(),
                                                    self.end_voltage.get(),
-                                                   self.sweep_rate.get())
+                                                   self.sweep_rate.get(),
+                                                   self.sweep_type.get(),
+                                                   self.pulse_height.get(),
+                                                   self.pulse_inc.get(),
+                                                   self.pulse_width.get())
 
         # resize the graph to the new voltages
         x_lim_low = self.settings.asv_settings.low_voltage

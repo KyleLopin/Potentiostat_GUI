@@ -383,7 +383,7 @@ class AmpUsb(object):
         formatted_voltage_to_send = self.device_params.dac.get_dac_count(voltage,
                                                                          actual=True)
         voltage_str = str(formatted_voltage_to_send).zfill(4)
-        self.usb_write("D|{0}".format(formatted_voltage_to_send))
+        self.usb_write("D|{0:04d}".format(formatted_voltage_to_send))
 
     def short_tia_resistor(self):
         """ Short the TIA resistor so the working electrode can short any current """
@@ -460,6 +460,7 @@ class AmpUsb(object):
         :param endpoint: which OUT_ENDPOINT to use to send the message in the case there are more
         than 1 OUT_ENDPOINTS
         """
+        print("Sending message: ", message)
         if not self.working:
             logging.info("Device not connected")
             self.master.failed_connection()
