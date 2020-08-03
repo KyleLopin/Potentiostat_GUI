@@ -1,16 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="251b6b94-30bd-4672-9fcb-503d3e5ae2ad" name="Default" comment="Added option to run differential pulse experiments.  Only front end shows options now, backend is not set up yet.">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="251b6b94-30bd-4672-9fcb-503d3e5ae2ad" name="Default" comment="DPV is working now, and lowered the virtual ground to 1.5V as the DAC seems to skew in the upper range">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/asv_frame.py" beforeDir="false" afterPath="$PROJECT_DIR$/asv_frame.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/change_toplevel.py" beforeDir="false" afterPath="$PROJECT_DIR$/change_toplevel.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cv_frame.py" beforeDir="false" afterPath="$PROJECT_DIR$/cv_frame.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/globals.py" beforeDir="false" afterPath="$PROJECT_DIR$/globals.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/properties.py" beforeDir="false" afterPath="$PROJECT_DIR$/properties.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tkinter_pyplot.py" beforeDir="false" afterPath="$PROJECT_DIR$/tkinter_pyplot.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/usb_comm.py" beforeDir="false" afterPath="$PROJECT_DIR$/usb_comm.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pyplot_data_class.py" beforeDir="false" afterPath="$PROJECT_DIR$/pyplot_data_class.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -314,13 +326,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1442586340622</updated>
-    </task>
-    <task id="LOCAL-00001" summary="Can save and load data traces.  Added more comments and documentation">
-      <created>1442983753072</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1442983753072</updated>
     </task>
     <task id="LOCAL-00002" summary="Formats data differently now that PSoC sends data differently.  Added and options menu with some debugging and developer options.">
       <created>1444549150485</created>
@@ -658,7 +663,14 @@
       <option name="project" value="LOCAL" />
       <updated>1594270466500</updated>
     </task>
-    <option name="localTasksCounter" value="50" />
+    <task id="LOCAL-00050" summary="DPV is working now, and lowered the virtual ground to 1.5V as the DAC seems to skew in the upper range">
+      <created>1595488307510</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1595488307511</updated>
+    </task>
+    <option name="localTasksCounter" value="51" />
     <servers />
   </component>
   <component name="TodoView">
@@ -691,7 +703,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Fixed the way the voltages are stored and bugs in changing the voltages" />
     <MESSAGE value="Changed how the voltages for the x-axis is calculated so it works for both types of DAC.&#10;&#10;Fixed some issues with changing the voltage source." />
     <MESSAGE value="Fixed changing the voltage source." />
     <MESSAGE value="Fixed some pylint warnings" />
@@ -716,7 +727,8 @@
     <MESSAGE value="fix error in changing the current range and updating all the graphs limits&#10;&#10;TODO: remove all debug print statements" />
     <MESSAGE value="Converted files to work with Python 3 (3.7 tested so far)" />
     <MESSAGE value="Added option to run differential pulse experiments.  Only front end shows options now, backend is not set up yet." />
-    <option name="LAST_COMMIT_MESSAGE" value="Added option to run differential pulse experiments.  Only front end shows options now, backend is not set up yet." />
+    <MESSAGE value="DPV is working now, and lowered the virtual ground to 1.5V as the DAC seems to skew in the upper range" />
+    <option name="LAST_COMMIT_MESSAGE" value="DPV is working now, and lowered the virtual ground to 1.5V as the DAC seems to skew in the upper range" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="WindowStateProjectService">
@@ -724,38 +736,46 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="456" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1595221248087" />
-    <state x="801" y="422" key="FileChooserDialogImpl" timestamp="1595221247185">
+    <state x="801" y="422" key="FileChooserDialogImpl" timestamp="1595986501571">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="801" y="422" key="FileChooserDialogImpl/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1595221247185" />
-    <state width="1854" height="227" key="GridCell.Tab.0.bottom" timestamp="1595488008541">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state x="801" y="422" key="FileChooserDialogImpl/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1595986501571" />
+    <state width="1833" height="202" key="GridCell.Tab.0.bottom" timestamp="1596433620534">
+      <screen x="1920" y="0" width="1920" height="1040" />
     </state>
-    <state width="1854" height="227" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1595488008541" />
-    <state width="1741" height="244" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1595396806810" />
-    <state width="1595" height="244" key="GridCell.Tab.0.bottom/0.0.640.440/640.0.1920.1040@640.0.1920.1040" timestamp="1595315975017" />
-    <state width="1854" height="227" key="GridCell.Tab.0.center" timestamp="1595488008541">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="1854" height="227" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1595555882191" />
+    <state width="1833" height="202" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1596433620534" />
+    <state width="1854" height="227" key="GridCell.Tab.0.bottom/0.0.640.440/640.0.1920.1040@640.0.1920.1040" timestamp="1595576559204" />
+    <state width="1833" height="202" key="GridCell.Tab.0.center" timestamp="1596433620534">
+      <screen x="1920" y="0" width="1920" height="1040" />
     </state>
-    <state width="1854" height="227" key="GridCell.Tab.0.center/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1595488008541" />
-    <state width="1741" height="244" key="GridCell.Tab.0.center/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1595396806810" />
-    <state width="1595" height="244" key="GridCell.Tab.0.center/0.0.640.440/640.0.1920.1040@640.0.1920.1040" timestamp="1595315975017" />
-    <state width="1854" height="227" key="GridCell.Tab.0.left" timestamp="1595488008541">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="1854" height="227" key="GridCell.Tab.0.center/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1595555882191" />
+    <state width="1833" height="202" key="GridCell.Tab.0.center/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1596433620534" />
+    <state width="1854" height="227" key="GridCell.Tab.0.center/0.0.640.440/640.0.1920.1040@640.0.1920.1040" timestamp="1595576559204" />
+    <state width="1833" height="202" key="GridCell.Tab.0.left" timestamp="1596433620534">
+      <screen x="1920" y="0" width="1920" height="1040" />
     </state>
-    <state width="1854" height="227" key="GridCell.Tab.0.left/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1595488008541" />
-    <state width="1741" height="244" key="GridCell.Tab.0.left/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1595396806810" />
-    <state width="1595" height="244" key="GridCell.Tab.0.left/0.0.640.440/640.0.1920.1040@640.0.1920.1040" timestamp="1595315975017" />
-    <state width="1854" height="227" key="GridCell.Tab.0.right" timestamp="1595488008541">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="1854" height="227" key="GridCell.Tab.0.left/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1595555882191" />
+    <state width="1833" height="202" key="GridCell.Tab.0.left/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1596433620534" />
+    <state width="1854" height="227" key="GridCell.Tab.0.left/0.0.640.440/640.0.1920.1040@640.0.1920.1040" timestamp="1595576559204" />
+    <state width="1833" height="202" key="GridCell.Tab.0.right" timestamp="1596433620534">
+      <screen x="1920" y="0" width="1920" height="1040" />
     </state>
-    <state width="1854" height="227" key="GridCell.Tab.0.right/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1595488008541" />
-    <state width="1741" height="244" key="GridCell.Tab.0.right/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1595396806810" />
-    <state width="1595" height="244" key="GridCell.Tab.0.right/0.0.640.440/640.0.1920.1040@640.0.1920.1040" timestamp="1595315975017" />
+    <state width="1854" height="227" key="GridCell.Tab.0.right/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1595555882191" />
+    <state width="1833" height="202" key="GridCell.Tab.0.right/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1596433620534" />
+    <state width="1854" height="227" key="GridCell.Tab.0.right/0.0.640.440/640.0.1920.1040@640.0.1920.1040" timestamp="1595576559204" />
     <state x="537" y="166" key="SettingsEditor" timestamp="1595221312157">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="537" y="166" key="SettingsEditor/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1595221312157" />
+    <state x="1104" y="242" key="Vcs.Push.Dialog.v2" timestamp="1595488327330">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="1104" y="242" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1595488327330" />
+    <state x="2660" y="211" width="672" height="676" key="search.everywhere.popup" timestamp="1596431876801">
+      <screen x="1920" y="0" width="1920" height="1040" />
+    </state>
+    <state x="2660" y="211" width="672" height="676" key="search.everywhere.popup/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1596431876801" />
   </component>
   <component name="masterDetails">
     <states>

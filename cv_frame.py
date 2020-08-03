@@ -593,7 +593,7 @@ def make_x_line_triangle(start, end, inc):
     return [x * inc for x in line]
 
 
-def open_file(_type):
+def open_file(_type, tkFileDialog=None):
     """ Make a method to return an open file or a file name depending on the type asked for
     :param _type: what type of file dialog to use
     :return: the filename
@@ -604,9 +604,9 @@ def open_file(_type):
     options['filetypes'] = [('All files', '*.*'), ("Comma separate values", "*.csv")]
     if _type == 'saveas':
         # Ask the user what name to save the file as
-        _file = tkFileDialog.asksaveasfile(mode='wb', **file_opt)
+        _file = filedialog.asksaveasfile(mode='w', **file_opt)
     elif _type == 'open':
-        _filename = tkFileDialog.askopenfilename(**file_opt)
+        _filename = filedialog.askopenfilename(**file_opt)
         return _filename
     return _file
 

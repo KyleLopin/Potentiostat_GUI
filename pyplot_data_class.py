@@ -78,7 +78,8 @@ class PyplotData(object):
         try:
             # make a csv writer, go through each data point and save the voltage and current at
             # each point, then close the file
-            writer = csv.writer(filename, dialect='excel')
+
+            writer = csv.writer(filename, dialect='excel', lineterminator='\n')
             # make the first line of the file with the data labels
             line = ["voltage"]  # first line will be the voltages
             for i in range(self.index):
@@ -100,12 +101,12 @@ class PyplotData(object):
 
             for i in range(length):
                 # this is only take the voltage of the first run
+                # print(self.voltage_data)
                 line[0] = self.voltage_data[0][i]
                 for j in range(width):
                     line[j + 1] = _data_array[j][i]
+                # print('l', line)
                 writer.writerow(line)
-
-            filename.close()
 
         except Exception as error:
             logging.error("failed saving")
