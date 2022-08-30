@@ -363,6 +363,8 @@ class CVFrame(ttk.Frame):
             if self.run_chrono:
                 self.usb_packet_count = 125
             raw_data = self.device.get_data(self.usb_packet_count)
+            print('raw data')
+            print(raw_data)
             raw_data.pop(0)
             self.run_button.config(state='active')
             if not raw_data:  # if something is wrong just return
@@ -447,13 +449,32 @@ class CVFrame(ttk.Frame):
             self.end_voltage_var_str = tk.StringVar()
             self.freq_var_str = tk.StringVar()
             self.current_var_str = tk.StringVar()
+
+            self.swv_pulse_var_str = tk.StringVar()
+            self.swv_inc_var_str = tk.StringVar()
+            self.swv_period_var_str = tk.StringVar()
+
             self.device = device
 
+            tk.Label(self, text="Cyclic Voltammetry settings:"
+                     ).pack(side='top', pady=5)
             # Make Labels to display the String variables
-            tk.Label(textvariable=self.start_voltage_var_str, master=self).pack(side='top')
-            tk.Label(textvariable=self.end_voltage_var_str, master=self).pack(side='top')
-            tk.Label(textvariable=self.freq_var_str, master=self).pack(side='top')
-            tk.Label(textvariable=self.current_var_str, master=self).pack(side='top')
+            for var_str in [self.start_voltage_var_str, self.end_voltage_var_str,
+                            self.freq_var_str, self.current_var_str]:
+                tk.Label(textvariable=var_str, master=self).pack(side='top')
+
+            ttk.Separator(self, orient=tk.HORIZONTAL).pack(side=tk.TOP, pady=5, fill=tk.X)
+
+            # make dpv frame
+            swv_frame = tk.Frame(self)
+            tk.Label(swv_frame, text="Square Wave\nVoltammetry settings:"
+                     ).pack(side='top', pady=5)
+            for var_str in [self.swv_pulse_var_str, self.swv_inc_var_str,
+                            self.swv_period_var_str]:
+                tk.Label(swv_frame, textvariable=var_str).pack(side='top')
+
+            swv_frame.pack(side=tk.TOP, expand=True, fill=tk.BOTH)
+
             # make a button to change the cyclic voltammetry setting
             tk.Button(self,
                       text="Change Settings",
@@ -469,19 +490,23 @@ class CVFrame(ttk.Frame):
         def cv_label_update(self, device_params):
             """ Update the user's display of what the parameters of the cyclic
             voltammetry scan are set to
-            :param device_params: device settings
+            :param device_params: device settings from properties.DeviceParameters
             """
-            self.start_voltage_var_str.set('Start voltage: ' +
-                                           str(device_params.cv_settings.start_voltage) +
-                                           ' mV')
-            self.end_voltage_var_str.set('End voltage: ' +
-                                         str(device_params.cv_settings.end_voltage) +
-                                         ' mV')
-            self.freq_var_str.set('Sweep rate: ' +
-                                  str(device_params.cv_settings.sweep_rate) +
-                                  ' V/s')
-            self.current_var_str.set(u'Current range: \u00B1 {0:.1f} \u00B5A'
-                                     .format(device_params.adc_tia.current_lims))
+            self.start_voltage_var_str.set(f'Start voltage: '
+                                           f'{device_params.cv_settings.start_voltage} mV')
+            self.end_voltage_var_str.set(f'End voltage: '
+                                         f"{device_params.cv_settings.end_voltage} mV")
+            self.freq_var_str.set(f"Sweep rate: "
+                                  f"{device_params.cv_settings.sweep_rate} V/s")
+            self.current_var_str.set(f'Current range: \u00B1 '
+                                     f'{device_params.adc_tia.current_lims:.1f} \u00B5A')
+
+            self.swv_pulse_var_str.set(f"Pulse height: "
+                                       f"{device_params.cv_settings.swv_height} mv")
+            self.swv_inc_var_str.set(f"Step Increment: "
+                                     f"{device_params.cv_settings.swv_inc} mv")
+            self.swv_period_var_str.set(f"Puulse Period: "
+                                        f"{device_params.cv_settings.swv_period} ms")
 
         def change_cv_settings(self, master, graph):
             """ Make a dialog window to allow the user to change the cyclic voltammetry sweep

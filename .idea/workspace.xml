@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="BranchesTreeState">
     <expand>
       <path>
@@ -19,10 +22,16 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="251b6b94-30bd-4672-9fcb-503d3e5ae2ad" name="Default" comment="DPV is working now, and lowered the virtual ground to 1.5V as the DAC seems to skew in the upper range">
+    <list default="true" id="251b6b94-30bd-4672-9fcb-503d3e5ae2ad" name="Default" comment="fixed the errors when saving data">
+      <change afterPath="$PROJECT_DIR$/.idea/Potentiostat_GUI.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dictionaries/Zanith.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TIA_R_analysis/plot_electrode_recordings.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TIA_R_analysis/plot_errors.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cv_frame.py" beforeDir="false" afterPath="$PROJECT_DIR$/cv_frame.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pyplot_data_class.py" beforeDir="false" afterPath="$PROJECT_DIR$/pyplot_data_class.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/globals.py" beforeDir="false" afterPath="$PROJECT_DIR$/globals.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/properties.py" beforeDir="false" afterPath="$PROJECT_DIR$/properties.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/settings.txt" beforeDir="false" afterPath="$PROJECT_DIR$/settings.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,33 +51,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectId" id="1evlWBE6itnxZHlJWD4vHvH4uY2" />
-  <component name="ProjectInspectionProfilesVisibleTreeState">
-    <entry key="Project Default">
-      <profile-state>
-        <expanded-state>
-          <State>
-            <id />
-          </State>
-          <State>
-            <id>Python</id>
-          </State>
-        </expanded-state>
-        <selected-state>
-          <State>
-            <id>PyPep8NamingInspection</id>
-          </State>
-        </selected-state>
-      </profile-state>
-    </entry>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
   </component>
+  <component name="ProjectId" id="1evlWBE6itnxZHlJWD4vHvH4uY2" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/amp_gui.py" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="last_opened_file_path" value="D:/Users/Kyle/PycharmProjects/Spectrometer_GUI" />
     <property name="options.lastSelected" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
     <property name="options.splitter.details.proportions" value="0.2" />
     <property name="options.splitter.main.proportions" value="0.3" />
@@ -125,13 +119,13 @@
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="C:\Python27\python.exe" />
+      <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="false" />
+      <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="amp_gui.py" />
-      <option name="PARAMETERS" value="-y --name &quot;NU Potentiostat&quot; --noconsole -F" />
+      <option name="PARAMETERS" value="-y --name &quot;NU Potentiostat&quot; --console -F" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -181,6 +175,48 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="plot_electrode_recordings" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="Potentiostat_GUI" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/TIA_R_analysis" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/TIA_R_analysis/plot_electrode_recordings.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="plot_errors" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="Potentiostat_GUI" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/TIA_R_analysis" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/TIA_R_analysis/plot_errors.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="test (1)" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Amp_simple" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -194,27 +230,6 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="test" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="Amp_simple" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/.idea" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/.idea/test.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -300,24 +315,27 @@
     <list>
       <item itemvalue="Python.Pyinstaller" />
       <item itemvalue="Python.Amp_GUI" />
-      <item itemvalue="Python.test" />
-      <item itemvalue="Python.test (1)" />
       <item itemvalue="Python.amp_gui" />
+      <item itemvalue="Python.plot_electrode_recordings" />
+      <item itemvalue="Python.plot_errors" />
+      <item itemvalue="Python.test (1)" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Python.amp_gui" />
+        <item itemvalue="Python.plot_electrode_recordings" />
+        <item itemvalue="Python.plot_errors" />
         <item itemvalue="Python.Amp_GUI" />
         <item itemvalue="Python.test (1)" />
-        <item itemvalue="Python.test" />
       </list>
     </recent_temporary>
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="project-level" UseSingleDictionary="true" transferred="true" />
   <component name="StructureViewFactory">
     <option name="ACTIVE_ACTIONS" value=",SHOW_INHERITED,SHOW_FIELDS" />
   </component>
   <component name="SvnConfiguration">
-    <configuration />
+    <configuration>C:\Users\Zanith\AppData\Roaming\Subversion</configuration>
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -326,13 +344,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1442586340622</updated>
-    </task>
-    <task id="LOCAL-00002" summary="Formats data differently now that PSoC sends data differently.  Added and options menu with some debugging and developer options.">
-      <created>1444549150485</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1444549150485</updated>
     </task>
     <task id="LOCAL-00003" summary="Cyclic voltammetry is complete except for documentation and some lite refactoring">
       <created>1445487341924</created>
@@ -670,7 +681,14 @@
       <option name="project" value="LOCAL" />
       <updated>1595488307511</updated>
     </task>
-    <option name="localTasksCounter" value="51" />
+    <task id="LOCAL-00051" summary="fixed the errors when saving data">
+      <created>1596433906457</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1596433906458</updated>
+    </task>
+    <option name="localTasksCounter" value="52" />
     <servers />
   </component>
   <component name="TodoView">
@@ -692,7 +710,6 @@
         </entry>
       </map>
     </option>
-    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="Vcs.Log.UiProperties">
     <option name="RECENTLY_FILTERED_USER_GROUPS">
@@ -703,7 +720,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Changed how the voltages for the x-axis is calculated so it works for both types of DAC.&#10;&#10;Fixed some issues with changing the voltage source." />
     <MESSAGE value="Fixed changing the voltage source." />
     <MESSAGE value="Fixed some pylint warnings" />
     <MESSAGE value="Added a label to let the user know what electrode configuration is being used, assumes the device starts in 3 electrode mode&#10;&#10;Changed font style for the voltage source label" />
@@ -728,54 +744,9 @@
     <MESSAGE value="Converted files to work with Python 3 (3.7 tested so far)" />
     <MESSAGE value="Added option to run differential pulse experiments.  Only front end shows options now, backend is not set up yet." />
     <MESSAGE value="DPV is working now, and lowered the virtual ground to 1.5V as the DAC seems to skew in the upper range" />
-    <option name="LAST_COMMIT_MESSAGE" value="DPV is working now, and lowered the virtual ground to 1.5V as the DAC seems to skew in the upper range" />
+    <MESSAGE value="fixed the errors when saving data" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed the errors when saving data" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
-  </component>
-  <component name="WindowStateProjectService">
-    <state x="456" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1595221248087">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state x="456" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1595221248087" />
-    <state x="801" y="422" key="FileChooserDialogImpl" timestamp="1595986501571">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state x="801" y="422" key="FileChooserDialogImpl/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1595986501571" />
-    <state width="1833" height="202" key="GridCell.Tab.0.bottom" timestamp="1596433620534">
-      <screen x="1920" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1854" height="227" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1595555882191" />
-    <state width="1833" height="202" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1596433620534" />
-    <state width="1854" height="227" key="GridCell.Tab.0.bottom/0.0.640.440/640.0.1920.1040@640.0.1920.1040" timestamp="1595576559204" />
-    <state width="1833" height="202" key="GridCell.Tab.0.center" timestamp="1596433620534">
-      <screen x="1920" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1854" height="227" key="GridCell.Tab.0.center/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1595555882191" />
-    <state width="1833" height="202" key="GridCell.Tab.0.center/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1596433620534" />
-    <state width="1854" height="227" key="GridCell.Tab.0.center/0.0.640.440/640.0.1920.1040@640.0.1920.1040" timestamp="1595576559204" />
-    <state width="1833" height="202" key="GridCell.Tab.0.left" timestamp="1596433620534">
-      <screen x="1920" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1854" height="227" key="GridCell.Tab.0.left/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1595555882191" />
-    <state width="1833" height="202" key="GridCell.Tab.0.left/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1596433620534" />
-    <state width="1854" height="227" key="GridCell.Tab.0.left/0.0.640.440/640.0.1920.1040@640.0.1920.1040" timestamp="1595576559204" />
-    <state width="1833" height="202" key="GridCell.Tab.0.right" timestamp="1596433620534">
-      <screen x="1920" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1854" height="227" key="GridCell.Tab.0.right/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1595555882191" />
-    <state width="1833" height="202" key="GridCell.Tab.0.right/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1596433620534" />
-    <state width="1854" height="227" key="GridCell.Tab.0.right/0.0.640.440/640.0.1920.1040@640.0.1920.1040" timestamp="1595576559204" />
-    <state x="537" y="166" key="SettingsEditor" timestamp="1595221312157">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state x="537" y="166" key="SettingsEditor/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1595221312157" />
-    <state x="1104" y="242" key="Vcs.Push.Dialog.v2" timestamp="1595488327330">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state x="1104" y="242" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1595488327330" />
-    <state x="2660" y="211" width="672" height="676" key="search.everywhere.popup" timestamp="1596431876801">
-      <screen x="1920" y="0" width="1920" height="1040" />
-    </state>
-    <state x="2660" y="211" width="672" height="676" key="search.everywhere.popup/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1596431876801" />
   </component>
   <component name="masterDetails">
     <states>

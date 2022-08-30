@@ -20,7 +20,8 @@ VIRTUAL_GROUND = _globals.VIRTUAL_GROUND
 DEFAULT_CV_SETTINGS = {'start_dac_value': 159, 'start_voltage': -900, 'end_voltage': 900,
                        'sweep_start_type': 'Start', 'end_dac_value': 78,
                        'sweep_type': 'CV', 'sweep_rate': 0.2,
-                       'delay_time': 1400.0, 'pwm_period_value': 3840}
+                       'delay_time': 1400.0, 'pwm_period_value': 3840,
+                       'swv_height': 100, 'swv_inc': 5, 'swv_period': 100}
 # 'low_voltage': 200, 'high_voltage': 900,
 SWEEP_TYPE_OPTIONS = ['CV', 'LS']
 SWEEP_START_TYPE_OPTIONS = ['Start', 'Zero']
