@@ -30,7 +30,7 @@ CURRENT_OPTION_LIST = _globals.CURRENT_OPTION_LIST
 
 class CVSettingChanges(tk.Toplevel):
     """ A modified tkinter toplevel that allows the user to input new voltage ranges to measure
-    and to set the frequency
+    and to set the frequency,  TODO: put this in a pack manager and a framework
     """
 
     def __init__(self, cv_display, _master, cv_graph, device):
@@ -48,11 +48,16 @@ class CVSettingChanges(tk.Toplevel):
         self.end_volt = tk.DoubleVar()
         self.entry_delay = None  # variable to bind the after calls to
 
+        # SWV options
+        self.swv_pulse = tk.DoubleVar()
+        self.swv_inc = tk.DoubleVar()
+        self.swv_period = tk.DoubleVar()
+
         self.freq = tk.DoubleVar()
         self._current_range = ""
         self.device = device
         self.data = None  # placeholder for voltage protocol to be held in, for tkinter_pyplot
-        self.geometry("300x300")
+        self.geometry("400x500")
 
         self.title("Change Cyclic Voltammetry Settings")
         # make labels and an entry widget for a user to change the starting
@@ -61,13 +66,15 @@ class CVSettingChanges(tk.Toplevel):
         self.options_frame = tk.Frame(self)
         self.options_frame.pack(side='right')
 
+        _settings = _master.device_params.cv_settings
+
         tk.Label(self.options_frame, text="Starting Voltage: ",
                  padx=10, pady=10
                  ).grid(row=0, column=0)
         # entry widget for the user to change the voltage
         tk.Entry(self.options_frame, textvariable=self.start_volt).grid(row=0, column=1)
         # put the current value in the entry widget
-        self.start_volt.set(_master.device_params.cv_settings.start_voltage)
+        self.start_volt.set(_settings.start_voltage)
         tk.Label(self.options_frame, text="mV", padx=10, pady=10).grid(row=0, column=3)
 
         # make labels and an entry widget for a user to change the ending voltage
@@ -78,7 +85,7 @@ class CVSettingChanges(tk.Toplevel):
         # spinbox for the user to change the voltage
         tk.Entry(self.options_frame, textvariable=self.end_volt).grid(row=1, column=1)
         # put the current value in the entry widget
-        self.end_volt.set(_master.device_params.cv_settings.end_voltage)
+        self.end_volt.set(_settings.end_voltage)
         tk.Label(self.options_frame, text="mV", padx=10, pady=10).grid(row=1, column=3)
 
         # make labels and an entry widget for a user to change the sweep rate of the triangle wave
@@ -86,7 +93,7 @@ class CVSettingChanges(tk.Toplevel):
         # entry widget for the user to change the voltage
         tk.Entry(self.options_frame, textvariable=self.freq).grid(row=2, column=1)
         # put the current value in the entry widget
-        self.freq.set(_master.device_params.cv_settings.sweep_rate)
+        self.freq.set(_settings.sweep_rate)
 
         tk.Label(self.options_frame, text="V/s", padx=10, pady=10).grid(row=2, column=3)
 
@@ -96,17 +103,29 @@ class CVSettingChanges(tk.Toplevel):
         # there are sometimes problems with encoding with this
         self.current_option_list = CURRENT_OPTION_LIST
 
-        # if _master.device_params.adc_tia.tia_resistor in TIA_RESISTOR_VALUES:
-        #     current_option_list_index = TIA_RESISTOR_VALUES.index(
-        #         _master.device_params.adc_tia.tia_resistor)
-        #     self.current_options.set(self.current_option_list[current_option_list_index])
-
         self.current_options.set(self.current_option_list[_master.device_params.adc_tia.current_option_index])
         current = tk.OptionMenu(self.options_frame, self.current_options,
                                 *self.current_option_list)
         current.grid(row=3, column=1)
 
         self.make_buttons(self.options_frame)
+
+        ttk.Separator(self.options_frame, orient=tk.HORIZONTAL
+                      ).grid(row=8, column=0, columnspan=2, pady=2, ipadx=140)
+
+        i = 9
+        for _str, var_str, unit, var in zip(["Square wave height: ", "Square wave increment: ", "Square wave period: "],
+                                            [self.swv_pulse, self.swv_inc, self.swv_period], ["mv", "mv", "msec"],
+                                            [_settings.swv_height, _settings.swv_inc, _settings.swv_period]):
+            tk.Label(self.options_frame, text=_str, padx=10, pady=10).grid(row=i, column=0)
+            tk.Entry(self.options_frame, textvariable=var_str).grid(row=i, column=1)
+            tk.Label(self.options_frame, text=unit).grid(row=i, column=2)
+            var_str.set(var)
+            i += 1
+
+        preview_option = tk.Checkbutton(self.options_frame, text="Preview voltage protocol",
+                                        var=self.preview_var, command=self.preview)
+        preview_option.grid(row=14, column=0, columnspan=2)
 
         # make a button that will take the entry values and call a function to properly convert
         # them and send the correct values to the amperometry microcontroller
@@ -115,12 +134,12 @@ class CVSettingChanges(tk.Toplevel):
                   command=lambda: self.save_cv_changes(self.current_options.get(),
                                                        _master, cv_graph,
                                                        cv_display)
-                  ).grid(row=9, column=0)
+                  ).grid(row=15, column=0)
 
         # make a button to exit the toplevel by destroying it
         tk.Button(self.options_frame,
                   text='Exit',
-                  command=self.destroy).grid(row=9, column=1)
+                  command=self.destroy).grid(row=15, column=1)
 
         # set varaible traces
         self.end_volt.trace("w", self.trace_delay)
@@ -153,10 +172,6 @@ class CVSettingChanges(tk.Toplevel):
         tk.Radiobutton(frame, text="Start Voltage", variable=self.start_voltage_type,
                        value="Start", command=self.set_sweep_type
                        ).grid(row=7, column=1, sticky='w')
-
-        preview_option = tk.Checkbutton(frame, text="Preview voltage protocol",
-                                        var=self.preview_var, command=self.preview)
-        preview_option.grid(row=8, column=0, columnspan=2)
 
     def trace_delay(self, *args):
         """ Trace callback, add a small delay to changing the voltage line so the user can finish

@@ -22,16 +22,9 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="251b6b94-30bd-4672-9fcb-503d3e5ae2ad" name="Default" comment="fixed the errors when saving data">
-      <change afterPath="$PROJECT_DIR$/.idea/Potentiostat_GUI.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dictionaries/Zanith.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/TIA_R_analysis/plot_electrode_recordings.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/TIA_R_analysis/plot_errors.py" afterDir="false" />
+    <list default="true" id="251b6b94-30bd-4672-9fcb-503d3e5ae2ad" name="Default" comment="Added SWV var strings to CV frame">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cv_frame.py" beforeDir="false" afterPath="$PROJECT_DIR$/cv_frame.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/globals.py" beforeDir="false" afterPath="$PROJECT_DIR$/globals.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/properties.py" beforeDir="false" afterPath="$PROJECT_DIR$/properties.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/settings.txt" beforeDir="false" afterPath="$PROJECT_DIR$/settings.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/change_toplevel.py" beforeDir="false" afterPath="$PROJECT_DIR$/change_toplevel.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -344,13 +337,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1442586340622</updated>
-    </task>
-    <task id="LOCAL-00003" summary="Cyclic voltammetry is complete except for documentation and some lite refactoring">
-      <created>1445487341924</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1445487341924</updated>
     </task>
     <task id="LOCAL-00004" summary="CV works, changes made to work with PSoC changes, need to work on getting data lengths correct with how the PSoC sends the data">
       <created>1473822082754</created>
@@ -688,7 +674,14 @@
       <option name="project" value="LOCAL" />
       <updated>1596433906458</updated>
     </task>
-    <option name="localTasksCounter" value="52" />
+    <task id="LOCAL-00052" summary="Added SWV var strings to CV frame">
+      <created>1661832583915</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1661832583915</updated>
+    </task>
+    <option name="localTasksCounter" value="53" />
     <servers />
   </component>
   <component name="TodoView">
@@ -720,7 +713,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Fixed changing the voltage source." />
     <MESSAGE value="Fixed some pylint warnings" />
     <MESSAGE value="Added a label to let the user know what electrode configuration is being used, assumes the device starts in 3 electrode mode&#10;&#10;Changed font style for the voltage source label" />
     <MESSAGE value="Suppressed the error from the x and y data being different lengths and just displays a error.&#10;&#10;Started to make it so that the user is displayed the voltage protocol in the toplevel the user selects the CV settings." />
@@ -745,7 +737,8 @@
     <MESSAGE value="Added option to run differential pulse experiments.  Only front end shows options now, backend is not set up yet." />
     <MESSAGE value="DPV is working now, and lowered the virtual ground to 1.5V as the DAC seems to skew in the upper range" />
     <MESSAGE value="fixed the errors when saving data" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixed the errors when saving data" />
+    <MESSAGE value="Added SWV var strings to CV frame" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added SWV var strings to CV frame" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="masterDetails">
