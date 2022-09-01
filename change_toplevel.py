@@ -49,6 +49,7 @@ class CVSettingChanges(tk.Toplevel):
         self.entry_delay = None  # variable to bind the after calls to
 
         # SWV options
+        self.use_swv = tk.BooleanVar()
         self.swv_pulse = tk.DoubleVar()
         self.swv_inc = tk.DoubleVar()
         self.swv_period = tk.DoubleVar()
@@ -113,7 +114,10 @@ class CVSettingChanges(tk.Toplevel):
         ttk.Separator(self.options_frame, orient=tk.HORIZONTAL
                       ).grid(row=8, column=0, columnspan=2, pady=2, ipadx=140)
 
-        i = 9
+        tk.Checkbutton(self.options_frame, text="Use square waves",
+                       var=self.use_swv).grid(row=9, column=0)
+
+        i = 10
         for _str, var_str, unit, var in zip(["Square wave height: ", "Square wave increment: ", "Square wave period: "],
                                             [self.swv_pulse, self.swv_inc, self.swv_period], ["mv", "mv", "msec"],
                                             [_settings.swv_height, _settings.swv_inc, _settings.swv_period]):
@@ -193,17 +197,20 @@ class CVSettingChanges(tk.Toplevel):
         if self.preview_var.get():
             sweep_type = self.sweep_type.get()
             start_place = self.start_voltage_type.get()
-            type = (start_place, sweep_type)
+            print(f"makeing preview of type: {sweep_type}, dpv: {self.use_swv.get()}")
+            if self.use_swv.get():
+                sweep_type = "SWV"
             self.make_graph(sweep_type, start_place)
         else:
-            self.geometry("300x300")
+            # TODO: get rid of the graph
+            self.geometry("400x500")
 
     def make_graph(self, sweep_type, start_volt_type):
         """ Make a graph of what the voltage versus time protocol looks like
         :param sweep_type: str - 'LS' or 'CV' for a linear sweep or cyclic voltammetry
         :param start_volt_type: str - 'Zero' or 'Start' for starting the protocol at zero volts or the starting voltage
         """
-        self.geometry("700x300")
+        self.geometry("800x500")
         blank_frame = tk.Frame()  # holder for toolbar that is not needed
         try:
             start_volt = int(float(self.start_volt.get()))
@@ -217,9 +224,10 @@ class CVSettingChanges(tk.Toplevel):
         ylims = [low_voltage, high_volt]
 
         # make the voltage protocol, use the functions used by the cv_frame
-        self.data = cv_frame.make_x_line(start_volt,
-                                         end_volt, voltage_step, sweep_type, start_volt_type)
+        self.data = cv_frame.make_x_line(start_volt, end_volt, voltage_step,
+                                         sweep_type, start_volt_type)
         steps_per_second = rate * float(voltage_step)
+        print(self.data)
         total_time = len(self.data) * steps_per_second
         time = [x * steps_per_second for x in range(len(self.data))]
 

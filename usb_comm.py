@@ -143,7 +143,7 @@ class AmpUsb(object):
         try:
             amp_device = usb.core.find(idVendor=_vendor_id, idProduct=_product_id)
         except usb.core.NoBackendError:  # for some reason 'no backend available error can arise.
-            logging.info("Device not found")
+            logging.info("No backend found")
             self.found = False
             return None, None, None
         # if no device is found, print a warning to the output

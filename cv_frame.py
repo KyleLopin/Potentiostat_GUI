@@ -521,10 +521,10 @@ class CVFrame(ttk.Frame):
 
 
 def make_x_line(start, end, inc, sweep_type="CV", start_volt_type="Zero",
-                DPV_increment=10):  # type=("Zero", "CV")):
+                swv_height=100):  # type=("Zero", "CV")):
     # if type == ("Zero", "CV"):
     print('make x line, cv_frame line 488')
-    print(sweep_type, start, end, inc, start_volt_type, DPV_increment)
+    print(sweep_type, start, end, inc, start_volt_type, swv_height)
     start = int(float(start) / inc) * inc  # fix any issues with the dac being 16 mV / step
     end = int(float(end) / inc) * inc  # always round towards 0 V
     if sweep_type == "CV" and start_volt_type == "Zero":
@@ -534,13 +534,32 @@ def make_x_line(start, end, inc, sweep_type="CV", start_volt_type="Zero",
         return make_x_line_linear(start, end, inc)
     elif sweep_type == "CV" and start_volt_type == "Start":
         return make_x_line_triangle(start, end, inc)
-    elif sweep_type == "DPV":
-        DPV_increment = int((float(DPV_increment)) / inc) * inc
-        return make_x_line_linear(start, end, DPV_increment)
+    elif sweep_type == "SWV":
+        # dpv_height = int((float(dpv_height)) / inc) * inc
+        # return make_x_line_linear(start, end, dpv_height)
+        return make_x_swv_line(start, end, inc, swv_height)
 
     else:
         logging.error("make x line got a bad type: {0}, {1}".format(sweep_type, start_volt_type))
         raise NotImplementedError
+
+
+def make_x_swv_line(start, end, inc, pulse_height):
+    x = []
+
+    if inc > 0:  # start low and go high
+        if start > end:
+            raise Exception("Increment is positive, but starting voltage is higher than the end voltage")
+        x_current = start
+        while x_current < end:
+            x.append(x_current)
+            x_current += pulse_height
+            x.append(x_current)
+            x.append(x_current)
+            x_current -= (pulse_height - inc)
+            x.append(x_current)
+    print(f"returning swv line: {x}")
+    return x
 
 
 def make_x_line_linear(start, end, inc):
