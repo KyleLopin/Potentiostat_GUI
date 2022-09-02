@@ -366,7 +366,7 @@ class AmpUsb(object):
         :param channel: int, channel number to get, the device may have multiple adc buffer arrays
 
         """
-        canvas = self.master.graph
+        canvas = self.master.preview_graph
         usb_helper.get_and_display_data_from_export_channel(self, canvas, channel)
 
     def set_electrode_config(self, num_electrodes):

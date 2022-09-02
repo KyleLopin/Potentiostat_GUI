@@ -230,7 +230,7 @@ class PyplotEmbed(tk.Frame):
     def update_graph(self):
         """ Redraw the graoh
         """
-        self.graph_area.canvas.show()
+        self.graph_area.canvas.draw()
 
     def toolbar_toggle(self):
         """ Display or remove the toolbar from the GUI

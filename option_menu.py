@@ -128,7 +128,7 @@ def set_user_label_option(master, value):
     :param master: root master
     :param value: value user entered
     """
-    master.graph.user_sets_labels_after_run = value
+    master.preview_graph.user_sets_labels_after_run = value
 
 
 def make_developer_menu(developer_menu, master):

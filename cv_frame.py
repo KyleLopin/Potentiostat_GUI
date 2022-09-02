@@ -520,8 +520,8 @@ class CVFrame(ttk.Frame):
                                         self.device)  # bind toplevel to the root tk.tk
 
 
-def make_x_line(start, end, inc, sweep_type="CV", start_volt_type="Zero",
-                swv_height=100):  # type=("Zero", "CV")):
+def make_x_line_depr(start, end, inc, sweep_type="CV", start_volt_type="Zero",
+                     swv_height=100):  # type=("Zero", "CV")):
     # if type == ("Zero", "CV"):
     print('make x line, cv_frame line 488')
     print(sweep_type, start, end, inc, start_volt_type, swv_height)
@@ -544,7 +544,7 @@ def make_x_line(start, end, inc, sweep_type="CV", start_volt_type="Zero",
         raise NotImplementedError
 
 
-def make_x_swv_line(start, end, inc, pulse_height):
+def make_x_swv_line_depr(start, end, inc, pulse_height):
     x = []
 
     if inc > 0:  # start low and go high
@@ -562,7 +562,7 @@ def make_x_swv_line(start, end, inc, pulse_height):
     return x
 
 
-def make_x_line_linear(start, end, inc):
+def make_x_line_linear_depr(start, end, inc):
     """ Make the voltages to associate with the current data from a cyclic voltammetry experiments
     Makes a linear sweep that goes from start to end
     :param start:  starting voltage of the protocol
@@ -578,7 +578,7 @@ def make_x_line_linear(start, end, inc):
     return range(start + start_mod, end + inc, inc)
 
 
-def make_x_line_zero_cv(start, end, inc):
+def make_x_line_zero_cv_depr(start, end, inc):
     """ Make the voltages to associate with the current data from a cyclic voltammetry experiments
     This will start the protocol at 0 V, go to the start voltage, then the end voltage, and then to
     0 V
@@ -598,7 +598,7 @@ def make_x_line_zero_cv(start, end, inc):
     return [x * inc for x in line]
 
 
-def make_side(start, end, inc):
+def make_side_depr(start, end, inc):
     """ Helper function to make the voltages for the x-data in a CV experiments
     :param start: value to start at
     :param end: value to end

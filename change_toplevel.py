@@ -14,6 +14,7 @@ from tkinter import ttk
 # local files
 import cv_frame
 import globals as _globals
+import make_voltage_lines
 import properties  # for typehinting
 import tkinter_pyplot
 
@@ -43,7 +44,8 @@ class CVSettingChanges(tk.Toplevel):
         tk.Toplevel.__init__(self, master=_master)
         # Initialize values needed later
         self.master = _master
-        self.graph = cv_graph
+        # self.graph = cv_graph
+        self.preview_graph = None
         self.start_volt = tk.DoubleVar()
         self.end_volt = tk.DoubleVar()
         self.entry_delay = None  # variable to bind the after calls to
@@ -149,6 +151,7 @@ class CVSettingChanges(tk.Toplevel):
         self.end_volt.trace("w", self.trace_delay)
         self.start_volt.trace("w", self.trace_delay)
         self.freq.trace("w", self.trace_delay)
+        self.use_swv.trace("w", self.set_sweep_type)
 
     def make_buttons(self, frame):
         # TODO: think these can be removed
@@ -189,43 +192,55 @@ class CVSettingChanges(tk.Toplevel):
             self.after_cancel(self.entry_delay)  # if user types multiple numbers,
             # trace will be called multiple times, just update the graph once
             self.entry_delay = None
-        if self.sweep_type.get() == 'LS':
-            pass
-        self.update_graph(self.start_voltage_type.get(), self.sweep_type.get())
+        self.update_graph(self.start_voltage_type.get(), self.sweep_type.get(),
+                          self.use_swv.get())
 
     def preview(self):
         if self.preview_var.get():
             sweep_type = self.sweep_type.get()
             start_place = self.start_voltage_type.get()
             print(f"makeing preview of type: {sweep_type}, dpv: {self.use_swv.get()}")
-            if self.use_swv.get():
-                sweep_type = "SWV"
-            self.make_graph(sweep_type, start_place)
+            self.make_graph(sweep_type, start_place, self.use_swv.get())
         else:
             # TODO: get rid of the graph
+            if self.preview_graph:
+                self.preview_graph.pack_forget()
+                self.preview_graph.destroy()
             self.geometry("400x500")
 
-    def make_graph(self, sweep_type, start_volt_type):
+    def make_graph(self, sweep_type, start_volt_type, use_swv):
         """ Make a graph of what the voltage versus time protocol looks like
         :param sweep_type: str - 'LS' or 'CV' for a linear sweep or cyclic voltammetry
         :param start_volt_type: str - 'Zero' or 'Start' for starting the protocol at zero volts or the starting voltage
         """
         self.geometry("800x500")
+        print("making graph 1a")
         blank_frame = tk.Frame()  # holder for toolbar that is not needed
         try:
             start_volt = int(float(self.start_volt.get()))
             end_volt = int(float(self.end_volt.get()))
             rate = float(self.freq.get())
-        except:
+            swv_inc = int(float(self.swv_inc.get()))
+            swv_pulse = int(float(self.swv_pulse.get()))
+        except Exception as _error:
+            print(f"Error converting numbers in make_graph: {_error}")
             return -1
         low_voltage = min([start_volt, end_volt])
         high_volt = max([start_volt, end_volt])
         voltage_step = self.master.device_params.dac.voltage_step_size
         ylims = [low_voltage, high_volt]
-
+        print("making graph 1b")
         # make the voltage protocol, use the functions used by the cv_frame
-        self.data = cv_frame.make_x_line(start_volt, end_volt, voltage_step,
-                                         sweep_type, start_volt_type)
+        if use_swv:
+            print("making graph 1c")
+            self.data = make_voltage_lines.make_x_line(start_volt, end_volt, swv_inc,
+                                                       sweep_type, start_volt_type,
+                                                       swv_pulse, use_swv=True)
+        else:
+            print("making graph 1d")
+            self.data = make_voltage_lines.make_x_line(start_volt, end_volt,
+                                                       voltage_step, sweep_type,
+                                                       start_volt_type, use_swv=False)
         steps_per_second = rate * float(voltage_step)
         print(self.data)
         total_time = len(self.data) * steps_per_second
@@ -235,12 +250,12 @@ class CVSettingChanges(tk.Toplevel):
                      'ylabel': "'voltage (mV)'",
                      'title': "'Voltage profile'",
                      'subplots_adjust': "bottom=0.15, left=0.12"}
-        self.graph = tkinter_pyplot.PyplotEmbed(blank_frame, plt_props, self, ylims, 0,
-                                                total_time)
-        self.graph.pack(side='left')
-        self.graph.simple_update_data(time, self.data)
+        self.preview_graph = tkinter_pyplot.PyplotEmbed(blank_frame, plt_props, self, ylims, 0,
+                                                        total_time)
+        self.preview_graph.pack(side='left')
+        self.preview_graph.simple_update_data(time, self.data)
 
-    def update_graph(self, start_voltage_type, sweep_type):
+    def update_graph(self, start_voltage_type, sweep_type, use_swv=False):
         """ Update the graph displaying the voltage protocol
         :param start_voltage_type: str - 'LS' or 'CV' for a linear sweep or cyclic voltammetry
         :param sweep_type: str - 'Zero' or 'Start' for starting the protocol at zero volts or the starting voltage
@@ -258,7 +273,7 @@ class CVSettingChanges(tk.Toplevel):
 
         ylims = [low_voltage, high_volt]
         # resize the y axis
-        self.graph.graph_area.axis.set_ylim(ylims)  # TODO: horrible for encapsulation
+        self.preview_graph.graph_area.axis.set_ylim(ylims)  # TODO: horrible for encapsulation
         # remake the voltage protocol
         voltage_step = self.master.device_params.dac.voltage_step_size
         self.data = cv_frame.make_x_line(start_volt, end_volt, voltage_step,
@@ -272,10 +287,10 @@ class CVSettingChanges(tk.Toplevel):
         time = [x / steps_per_second for x in range(len(self.data))]
         xlims = [0, total_time]
         # resize the x axis
-        self.graph.graph_area.axis.set_xlim(xlims)  # TODO: horrible for encapsulation
+        self.preview_graph.graph_area.axis.set_xlim(xlims)  # TODO: horrible for encapsulation
 
-        self.graph.voltage_line.set_data(time, self.data)
-        self.graph.update_graph()
+        self.preview_graph.voltage_line.set_data(time, self.data)
+        self.preview_graph.update_graph()
 
     def save_cv_changes(self, _range, _master, cv_graph, cv_display):
         """ Commit all changes the user entered
@@ -902,7 +917,7 @@ class EnterCustomTIAResistor(tk.Toplevel):
         master.device_params.adc_tia.set_value(resistor_value)
         master.device.set_custom_resistor_channel('0')
         current_limit = 1200.0 / resistor_value
-        master.cv.graph.resize_y(current_limit)
+        master.cv.preview_graph.resize_y(current_limit)
         self.destroy()
 
 
