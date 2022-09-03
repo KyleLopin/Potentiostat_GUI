@@ -13,7 +13,7 @@ import logging
 def make_x_line(start, end, inc, sweep_type="CV", start_volt_type="Zero",
                 swv_height=100, use_swv=False):
     # if type == ("Zero", "CV"):
-    print('make x line, cv_frame line 488')
+    print('make x line, make_voltage_lines')
     print(sweep_type, start, end, inc, start_volt_type, swv_height)
     start = int(float(start) / inc) * inc  # fix any issues with the dac being 16 mV / step
     end = int(float(end) / inc) * inc  # always round towards 0 V

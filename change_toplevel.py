@@ -192,8 +192,8 @@ class CVSettingChanges(tk.Toplevel):
             self.after_cancel(self.entry_delay)  # if user types multiple numbers,
             # trace will be called multiple times, just update the graph once
             self.entry_delay = None
-        self.update_graph(self.start_voltage_type.get(), self.sweep_type.get(),
-                          self.use_swv.get())
+        self.make_graph(self.sweep_type.get(), self.start_voltage_type.get(),
+                        self.use_swv.get())
 
     def preview(self):
         if self.preview_var.get():
@@ -206,6 +206,7 @@ class CVSettingChanges(tk.Toplevel):
             if self.preview_graph:
                 self.preview_graph.pack_forget()
                 self.preview_graph.destroy()
+                self.preview_graph = None
             self.geometry("400x500")
 
     def make_graph(self, sweep_type, start_volt_type, use_swv):
@@ -245,52 +246,23 @@ class CVSettingChanges(tk.Toplevel):
         print(self.data)
         total_time = len(self.data) * steps_per_second
         time = [x * steps_per_second for x in range(len(self.data))]
+        xlims = [0, total_time]
 
         plt_props = {'xlabel': "'time (msec)'",
                      'ylabel': "'voltage (mV)'",
                      'title': "'Voltage profile'",
                      'subplots_adjust': "bottom=0.15, left=0.12"}
-        self.preview_graph = tkinter_pyplot.PyplotEmbed(blank_frame, plt_props, self, ylims, 0,
-                                                        total_time)
-        self.preview_graph.pack(side='left')
-        self.preview_graph.simple_update_data(time, self.data)
-
-    def update_graph(self, start_voltage_type, sweep_type, use_swv=False):
-        """ Update the graph displaying the voltage protocol
-        :param start_voltage_type: str - 'LS' or 'CV' for a linear sweep or cyclic voltammetry
-        :param sweep_type: str - 'Zero' or 'Start' for starting the protocol at zero volts or the starting voltage
-        :return:
-        """
-        try:
-            start_volt = int(float(self.start_volt.get()))
-            end_volt = int(float(self.end_volt.get()))
-            rate = float(self.freq.get())
-        except:  # if crap input just leave
-            return -1
-
-        low_voltage = min([start_volt, end_volt])
-        high_volt = max([start_volt, end_volt])
-
-        ylims = [low_voltage, high_volt]
-        # resize the y axis
-        self.preview_graph.graph_area.axis.set_ylim(ylims)  # TODO: horrible for encapsulation
-        # remake the voltage protocol
-        voltage_step = self.master.device_params.dac.voltage_step_size
-        self.data = cv_frame.make_x_line(start_volt, end_volt, voltage_step,
-                                         sweep_type, start_voltage_type)
-        # make a new t-axis data
-        steps_per_second = rate / float(voltage_step)
-        if steps_per_second <= 0:
-            return  # user is not done typing in the varible yet
-        total_time = len(self.data) / steps_per_second
-
-        time = [x / steps_per_second for x in range(len(self.data))]
-        xlims = [0, total_time]
-        # resize the x axis
-        self.preview_graph.graph_area.axis.set_xlim(xlims)  # TODO: horrible for encapsulation
-
-        self.preview_graph.voltage_line.set_data(time, self.data)
-        self.preview_graph.update_graph()
+        if self.preview_graph:
+            # set the data of an existing graph
+            self.preview_graph.graph_area.axis.set_xlim(xlims)  # TODO: horrible for encapsulation
+            self.preview_graph.graph_area.axis.set_ylim(ylims)
+            self.preview_graph.voltage_line.set_data(time, self.data)
+            self.preview_graph.update_graph()
+        else:  # make the preview graph
+            self.preview_graph = tkinter_pyplot.PyplotEmbed(blank_frame, plt_props, self, ylims, 0,
+                                                            total_time)
+            self.preview_graph.pack(side='left', fill=tk.BOTH, expand=True)
+            self.preview_graph.simple_update_data(time, self.data)
 
     def save_cv_changes(self, _range, _master, cv_graph, cv_display):
         """ Commit all changes the user entered

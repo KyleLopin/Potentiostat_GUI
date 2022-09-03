@@ -5,6 +5,7 @@
 """
 # standard libraries
 import csv
+import ctypes
 import time
 import logging
 import os
@@ -27,10 +28,17 @@ __author__ = 'Kyle Vitautas Lopin'
 
 OPTIONS_BACKGROUND = 'LightCyan4'
 
+try:  # works for windows 8.1 and newer
+    ctypes.windll.shcore.SetProcessDpiAwareness(2)
+    print("Set DPI awareness")
+except:
+    pass
+
 
 class ElectroChemGUI(tk.Tk):
     """ Graphical User Interface to interact with the PSoC electrochemical device
     """
+
     def __init__(self, parent=None):
         if not os.path.exists('logging'):  # make a directory to store logging files
             os.makedirs('logging')
