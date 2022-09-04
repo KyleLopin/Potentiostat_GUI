@@ -234,14 +234,15 @@ class CVSettingChanges(tk.Toplevel):
         # make the voltage protocol, use the functions used by the cv_frame
         if use_swv:
             print("making graph 1c")
-            self.data = make_voltage_lines.make_x_line(start_volt, end_volt, swv_inc,
-                                                       sweep_type, start_volt_type,
-                                                       swv_pulse, use_swv=True)
+            print(f"makine swv graph: {start_volt}, {end_volt}, {swv_inc}")
+            self.data = make_voltage_lines.make_voltage_profile(start_volt, end_volt, swv_inc,
+                                                                sweep_type, start_volt_type,
+                                                                swv_pulse, use_swv=True)
         else:
             print("making graph 1d")
-            self.data = make_voltage_lines.make_x_line(start_volt, end_volt,
-                                                       voltage_step, sweep_type,
-                                                       start_volt_type, use_swv=False)
+            self.data = make_voltage_lines.make_voltage_profile(start_volt, end_volt,
+                                                                voltage_step, sweep_type,
+                                                                start_volt_type, use_swv=False)
         steps_per_second = rate * float(voltage_step)
         print(self.data)
         total_time = len(self.data) * steps_per_second
