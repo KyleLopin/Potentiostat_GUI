@@ -151,7 +151,10 @@ class CVSettingChanges(tk.Toplevel):
         self.end_volt.trace("w", self.trace_delay)
         self.start_volt.trace("w", self.trace_delay)
         self.freq.trace("w", self.trace_delay)
-        self.use_swv.trace("w", self.set_sweep_type)
+        self.swv_pulse.trace("w", self.trace_delay)
+        self.swv_inc.trace("w", self.trace_delay)
+        self.swv_period.trace("w", self.trace_delay)
+        self.use_swv.trace("w", self.set_sweep_type)  # check box doesn't need a delay
 
     def make_buttons(self, frame):
         # TODO: think these can be removed
@@ -223,6 +226,7 @@ class CVSettingChanges(tk.Toplevel):
             rate = float(self.freq.get())
             swv_inc = int(float(self.swv_inc.get()))
             swv_pulse = int(float(self.swv_pulse.get()))
+            swv_period = float(self.swv_period.get())
         except Exception as _error:
             print(f"Error converting numbers in make_graph: {_error}")
             return -1
@@ -232,21 +236,32 @@ class CVSettingChanges(tk.Toplevel):
         ylims = [low_voltage, high_volt]
         print("making graph 1b")
         # make the voltage protocol, use the functions used by the cv_frame
-        if use_swv:
+        if use_swv:  # TODO: add another line of the underling protocol
             print("making graph 1c")
             print(f"makine swv graph: {start_volt}, {end_volt}, {swv_inc}")
             self.data = make_voltage_lines.make_voltage_profile(start_volt, end_volt, swv_inc,
                                                                 sweep_type, start_volt_type,
-                                                                swv_pulse, use_swv=True)
+                                                                swv_pulse)
+            ylims = [low_voltage-swv_pulse, high_volt+swv_pulse]
+            total_time = swv_period * len(self.data) / 4
+            time = []
+            time_runner = 0
+            for i in range(int(len(self.data)/2)):
+                time.append(time_runner)
+                time_runner += swv_period / 2
+                time.append(time_runner)
         else:
             print("making graph 1d")
             self.data = make_voltage_lines.make_voltage_profile(start_volt, end_volt,
                                                                 voltage_step, sweep_type,
-                                                                start_volt_type, use_swv=False)
-        steps_per_second = rate * float(voltage_step)
-        print(self.data)
-        total_time = len(self.data) * steps_per_second
-        time = [x * steps_per_second for x in range(len(self.data))]
+                                                                start_volt_type)
+            steps_per_second = rate * float(voltage_step)
+            print(self.data)
+            total_time = len(self.data) * steps_per_second
+            time = [x * steps_per_second for x in range(len(self.data))]
+        print(f"time: {time}")
+        print(f"len time: {len(time)}")
+        print(f"data: {self.data}")
         xlims = [0, total_time]
 
         plt_props = {'xlabel': "'time (msec)'",
