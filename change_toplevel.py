@@ -218,7 +218,6 @@ class CVSettingChanges(tk.Toplevel):
         :param start_volt_type: str - 'Zero' or 'Start' for starting the protocol at zero volts or the starting voltage
         """
         self.geometry("800x500")
-        print("making graph 1a")
         blank_frame = tk.Frame()  # holder for toolbar that is not needed
         try:
             start_volt = int(float(self.start_volt.get()))
@@ -234,11 +233,8 @@ class CVSettingChanges(tk.Toplevel):
         high_volt = max([start_volt, end_volt])
         voltage_step = self.master.device_params.dac.voltage_step_size
         ylims = [low_voltage, high_volt]
-        print("making graph 1b")
         # make the voltage protocol, use the functions used by the cv_frame
         if use_swv:  # TODO: add another line of the underling protocol
-            print("making graph 1c")
-            print(f"makine swv graph: {start_volt}, {end_volt}, {swv_inc}")
             self.data = make_voltage_lines.make_voltage_profile(start_volt, end_volt, swv_inc,
                                                                 sweep_type, start_volt_type,
                                                                 swv_pulse)
@@ -251,17 +247,12 @@ class CVSettingChanges(tk.Toplevel):
                 time_runner += swv_period / 2
                 time.append(time_runner)
         else:
-            print("making graph 1d")
             self.data = make_voltage_lines.make_voltage_profile(start_volt, end_volt,
                                                                 voltage_step, sweep_type,
                                                                 start_volt_type)
             steps_per_second = rate * float(voltage_step)
-            print(self.data)
             total_time = len(self.data) * steps_per_second
             time = [x * steps_per_second for x in range(len(self.data))]
-        print(f"time: {time}")
-        print(f"len time: {len(time)}")
-        print(f"data: {self.data}")
         xlims = [0, total_time]
 
         plt_props = {'xlabel': "'time (msec)'",
@@ -297,6 +288,7 @@ class CVSettingChanges(tk.Toplevel):
             self._start_volt = int(float(self.start_volt.get()))  # first voltage of the protocol
             self._end_volt = int(float(self.end_volt.get()))  # second voltage the protocol goes to
             self._freq = float(self.freq.get())
+
             # don't have to check current range cause it was chosen from an option menu
         except ValueError as error:  # user input values failed
             logging.info("Error in data input format: %s", error)

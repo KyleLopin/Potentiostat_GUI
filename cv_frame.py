@@ -64,11 +64,18 @@ class CVFrame(ttk.Frame):
             master.device.usb_write("L|3")
             time.sleep(0.1)
         # make the buttons the user can use in the CV experiments
-        self.make_cv_buttons(buttons_frame, self.graph, self.device)
+        # make a button to run a cyclic voltammetry scan
+        self.run_button = tk.Button(buttons_frame, text="Run CV Scan",
+                                    command=lambda: self.device.run_scan(cv_graph,
+                                                                    self.run_button))
+        self.run_button.pack(side='bottom', fill=tk.BOTH)
+        # use a seperate function to make the generic buttons
+        # that don't need to be bound to self
+        self.make_cv_buttons(buttons_frame, self.graph)
 
     def make_graph_area(self, master, graph_props):
-        """ Make the graph area to display the cyclic voltammetry data.  Use matplotlib if it is
-        available or else plot in a tk Canvas
+        """ Make the graph area to display the cyclic voltammetry data.
+        Use matplotlib if it is available or else plot in a tk Canvas
         TODO: add canvas option
         :param master: tk.Tk overall master of the program
         :param graph_props: dictionary fo properties on how the graph looks
@@ -85,11 +92,11 @@ class CVFrame(ttk.Frame):
                                                self,
                                                current_lim, low_voltage, high_voltage)
         else:
-            graph = None  # TODO: implement for canvas
+            # TODO: implement for canvas
             raise NotImplementedError
         return graph
 
-    def make_cv_buttons(self, _frame, cv_graph, device):
+    def make_cv_buttons(self, _frame, cv_graph):
         """ Make and pack all the buttons needed to perform cyclic voltammetry.  These are
         all the options the user can use, except for what the waveform looks like
         (which is made in the make_cv_settings_display)
@@ -98,12 +105,6 @@ class CVFrame(ttk.Frame):
         (needed to put in the button function calls)
         :param device: USBHandler class in this file
         """
-        # make a button to run a cyclic voltammetry scan
-        self.run_button = tk.Button(_frame, text="Run CV Scan",
-                                    command=lambda: device.run_scan(cv_graph,
-                                                                    self.run_button))
-        self.run_button.pack(side='bottom', fill=tk.BOTH)
-
         # Make a button to allow the user to export the data
         tk.Button(_frame,
                   text="Save data",
@@ -309,11 +310,11 @@ class CVFrame(ttk.Frame):
             :param _delay: int
             :return: binds the data to the master instead of returning anything
             """
-            if self.device.last_experiment != "CV":  # the look up table is not correct
+            if self.device.last_experiment != "CV":  # the look-up table is not correct
                 self.send_cv_parameters()
                 self.device.set_last_run = "CV"
-            self.run_button = run_button  # bind button to self so it can be put active again
-            # inactive the button so the user cant hit it twice
+            self.run_button = run_button  # bind button to self, so it can be put active again
+            # inactive the button so the user can't hit it twice
             self.run_button.config(state='disabled')
             self.device.usb_write('R')  # step 1
             if self.device.working:
