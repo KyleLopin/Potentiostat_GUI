@@ -21,7 +21,8 @@ DEFAULT_CV_SETTINGS = {'start_dac_value': 159, 'start_voltage': -900, 'end_volta
                        'sweep_start_type': 'Start', 'end_dac_value': 78,
                        'sweep_type': 'CV', 'sweep_rate': 0.2,
                        'delay_time': 1400.0, 'pwm_period_value': 3840,
-                       'swv_height': 100, 'swv_inc': 5, 'swv_period': 100}
+                       'swv_height': 100, 'swv_inc': 5, 'swv_period': 100,
+                       'use_swv': False}
 # 'low_voltage': 200, 'high_voltage': 900,
 SWEEP_TYPE_OPTIONS = ['CV', 'LS']
 SWEEP_START_TYPE_OPTIONS = ['Start', 'Zero']
@@ -122,18 +123,8 @@ class CVSettings(object):
                 setattr(self, key, DEFAULT_CV_SETTINGS[key])
 
         self.delay_time = 2 * abs(self.start_voltage - self.end_voltage) / self.sweep_rate
-        # self.start_voltage = START_VOLTAGE_CV  # mV, start with basic parameters
-        # self.end_voltage = END_VOLTAGE_CV  # mV
         self.low_voltage = min([self.start_voltage, self.end_voltage])
         self.high_voltage = max([self.start_voltage, self.end_voltage])
-        # self.sweep_rate = SWEEP_RATE  # V/s
-        # self.pwm_period_value = self.calculate_pwm_period(clock_freq, dac)
-        # self.delay_time = 2 * abs(self.start_voltage - self.end_voltage) / self.sweep_rate
-        # self.sweep_type = "CV"  # "CV" for Cyclic Voltammetry or "LS" for linear Sweep
-        # # variable to store if the voltage protocol starts and 0 V and
-        # # then to go start volts or if the protocol starts at the start_voltage immediately
-        # self.sweep_start_type = "Start"  # "Zero" or "Start" for what voltage to start at
-        # TODO: are these still needed??
         self.start_dac_value = None  # init holder
         self.end_dac_value = None  # init holder
         self.calc_dac_values(dac)
@@ -156,6 +147,12 @@ class CVSettings(object):
             elif isinstance(DEFAULT_CV_SETTINGS[attribute], float):
                 try:
                     return float(value)
+                except:
+                    return False
+
+            elif isinstance(DEFAULT_CV_SETTINGS[attribute], bool):
+                try:
+                    return bool(value)
                 except:
                     return False
 
@@ -189,7 +186,10 @@ class CVSettings(object):
         pwm_period_value = int(round(clk_freq / (self.sweep_rate * 1000 / dac.voltage_step_size)))
         return pwm_period_value
 
-    def update_settings(self, start_voltage, end_voltage, sweep_rate, sweep_type, start_type):
+    def update_settings(self, start_voltage, end_voltage,
+                        sweep_rate,  sweep_type, start_type,
+                        swv_height, swv_inc, swv_period,
+                        use_swv):
         """ Update the CV settings
         :param start_voltage: mV, voltage the user wants to start at
         :param end_voltage: mV, voltage the user wants to end the cyclic voltammetry at
@@ -203,6 +203,10 @@ class CVSettings(object):
         self.delay_time = 2 * abs(self.start_voltage - self.end_voltage) / self.sweep_rate
         self.sweep_type = sweep_type
         self.sweep_start_type = start_type
+        self.swv_height = swv_height
+        self.swv_inc = swv_inc
+        self.swv_period = swv_period
+        self.use_swv = use_swv
 
         try:
             with open(SAVED_SETTINGS_FILE, 'r') as _file:
@@ -213,6 +217,7 @@ class CVSettings(object):
             pass  # there is no file so skip
 
         try:
+            print(vars(self))
             with open(SAVED_SETTINGS_FILE, 'w') as _file:
                 for item in vars(self):
                     _file.write("{0} = {1}\n".format(item, eval("self.{0}".format(item))))

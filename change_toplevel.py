@@ -118,6 +118,7 @@ class CVSettingChanges(tk.Toplevel):
 
         tk.Checkbutton(self.options_frame, text="Use square waves",
                        var=self.use_swv).grid(row=9, column=0)
+        self.use_swv.set(self.master.device_params.cv_settings.use_swv)
 
         i = 10
         for _str, var_str, unit, var in zip(["Square wave height: ", "Square wave increment: ", "Square wave period: "],
@@ -280,7 +281,7 @@ class CVSettingChanges(tk.Toplevel):
         :param cv_display: display frame of the cyclic voltammetry parameters
         :return: the parameters are updated in the main windows operational_params dictionary
         """
-        cv_settings = _master.device_params.cv_settings
+        old_cv_settings = _master.device_params.cv_settings
         # try to convert the voltages to integers and sweep rate to a float and save the voltage
         # and frequency parameters to the current instance so they don't
         # have to passed all the time to the functions
@@ -288,6 +289,10 @@ class CVSettingChanges(tk.Toplevel):
             self._start_volt = int(float(self.start_volt.get()))  # first voltage of the protocol
             self._end_volt = int(float(self.end_volt.get()))  # second voltage the protocol goes to
             self._freq = float(self.freq.get())
+            self._swv_inc = int(float(self.swv_inc.get()))
+            self._swv_pulse = int(float(self.swv_pulse.get()))
+            self._swv_period = int(float(self.swv_period.get()))
+            self._use_swv = self.use_swv.get()
 
             # don't have to check current range cause it was chosen from an option menu
         except ValueError as error:  # user input values failed
@@ -298,17 +303,19 @@ class CVSettingChanges(tk.Toplevel):
             # that the program will not try to send bad data to the MCU
 
             return
-        # Update all of the main programs operations_params settings so the User's choices
+        # Update all the main programs operations_params settings so the User's choices
         # will be remembered and send all the parameters to the MCU
         if self.sweep_param_is_changed(_master.device_params):
-            cv_settings.update_settings(self._start_volt, self._end_volt, self._freq,
-                                        self.sweep_type.get(), self.start_voltage_type.get())
+            old_cv_settings.update_settings(self._start_volt, self._end_volt, self._freq,
+                                            self.sweep_type.get(), self.start_voltage_type.get(),
+                                            self._swv_pulse, self._swv_inc, self._swv_period,
+                                            self._use_swv)
             cv_display.cv_label_update(_master.device_params)
             self.device.send_cv_parameters()
 
             # resize the graph to the new voltages
-            x_lim_low = cv_settings.low_voltage
-            x_lim_high = cv_settings.high_voltage
+            x_lim_low = old_cv_settings.low_voltage
+            x_lim_high = old_cv_settings.high_voltage
             cv_graph.resize_x(x_lim_low, x_lim_high)
 
         # figure out if the current range has changed and update the device if it has
@@ -329,7 +336,11 @@ class CVSettingChanges(tk.Toplevel):
         """
         if (self._start_volt != _old_params.cv_settings.low_voltage
             or self._end_volt != _old_params.cv_settings.high_voltage
-            or self._freq != _old_params.cv_settings.sweep_rate):
+                or self._freq != _old_params.cv_settings.sweep_rate
+                or self._swv_period != _old_params.cv_settings.swv_period
+                or self._swv_inc != _old_params.cv_settings.swv_inc
+                or self._swv_pulse != _old_params.cv_settings.swv_height
+                or self._use_swv != _old_params.cv_settings.use_swv):
 
             logging.debug("sweep_param is changed")
             return True

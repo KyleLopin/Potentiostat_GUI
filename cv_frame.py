@@ -253,7 +253,7 @@ class CVFrame(ttk.Frame):
             :return: will update to the device.params the following values
             usb_packet_count which is how many data packets to expect when receiving data
             actual_low_volt the lowest voltage the device will give to the electrode, depending on
-            the DAC used can be different than the user value
+            the DAC used can be different from the user value
             actual_high_volt the highest voltage the device will give to the electrode
             """
             logging.debug("sending cv params here")
