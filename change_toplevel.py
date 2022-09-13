@@ -11,6 +11,8 @@ import time
 import tkinter as tk
 import tkinter.font
 from tkinter import ttk
+import unittest
+from unittest import mock
 # local files
 import cv_frame
 import globals as _globals
@@ -36,7 +38,7 @@ class CVSettingChanges(tk.Toplevel):
 
     def __init__(self, cv_display, _master, cv_graph, device):
         """ Initialize the window
-        :paran cv_display: cv_frame.CVSettingDisplay: tk.Frame that displays the cyclic voltammertry info
+        :param cv_display: cv_frame.CVSettingDisplay: tk.Frame that displays the cyclic voltammertry info
         :param _master: tk.Frame, the main window
         :param cv_graph: tkinter_pyplot.PyplotEmbed: embedded graph that needs to be updated if limits change
         :param device: usb.comm.AmpUsb: USB device being communicated with
@@ -975,3 +977,26 @@ class About(tk.Toplevel):
         tk.Label(self, text="Developed at Naresuan University\nby Kyle Vitautas Lopin\n\n"
                             "for comments or suggestions\nemail: kylel@nu.ac.th",
                  font=("Raleway", 12)).pack()
+
+
+class TestCVSettingsTopLevel(unittest.TestCase):
+    """ Test how the CVSettingChanges Toplevel sends data to the master program
+    TODO: add more general tests and move to correct location
+    """
+    def buildup(self):
+        # with mock.patch("tkinter.Tk", return_value=True) as mocked_gui:
+        mocked_gui = tk.Tk()
+        print("test1")
+        mocked_gui.device_params = properties.DeviceParameters()
+        print("test2")
+        _toplevel = CVSettingChanges(None, mocked_gui, None, None)
+        return _toplevel
+
+    def test_cv_sends_swv_period(self):
+        cv_top = self.buildup()
+        print("test10")
+        cv_top.destroy()
+
+
+if __name__ == "__main__":
+    unittest.main()

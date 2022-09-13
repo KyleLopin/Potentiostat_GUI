@@ -27,6 +27,7 @@ import usb_comm
 __author__ = 'Kyle Vitautas Lopin'
 
 OPTIONS_BACKGROUND = 'LightCyan4'
+logging.getLogger('PIL').setLevel(logging.WARNING)
 
 try:  # works for windows 8.1 and newer
     ctypes.windll.shcore.SetProcessDpiAwareness(2)

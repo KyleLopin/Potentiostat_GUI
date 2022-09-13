@@ -106,6 +106,7 @@ class CVSettings(object):
         try:
             with open("settings.txt", 'r') as _file:
                 for line in _file.readlines():
+                    # print(line)
                     attribute, value = line.split('=')
                     attribute = attribute.strip(' ')
                     value = value.strip()
@@ -116,8 +117,8 @@ class CVSettings(object):
 
         except Exception as e:
             logging.debug("Load error: ", e)
-            with open("settings.txt", "w") as _file:
-                pass  # make the file if it is not there
+            # with open("settings.txt", "w") as _file:
+            #     pass  # make the file if it is not there
         for key in DEFAULT_CV_SETTINGS:
             if not hasattr(self, key):
                 setattr(self, key, DEFAULT_CV_SETTINGS[key])
@@ -132,13 +133,20 @@ class CVSettings(object):
     @staticmethod
     def check_valid_value(attribute, value):
         """ Check if value entered is valid for the attribute it wants to be assigned to.
-        Cross reference th DEFAULT_CV_SETTINGS dict to make sure types are consistent
+        Cross-reference the DEFAULT_CV_SETTINGS dict to make sure types are consistent
         :param attribute: str - class attribute to assign a value to
         :param value: str - value to convert to the proper type and assign to the attribute
         :return: properly typed value or False if the data type couldn't be converted
         """
         if attribute in DEFAULT_CV_SETTINGS:
-            if isinstance(DEFAULT_CV_SETTINGS[attribute], int):
+            # YOU HAVE TO CHECK BOOL FIRST, THEY ARE ALSO INTS
+            if isinstance(DEFAULT_CV_SETTINGS[attribute], bool):
+                try:
+                    return bool(value)
+                except:
+                    return False
+
+            elif isinstance(DEFAULT_CV_SETTINGS[attribute], int):
                 # try to convert the string to int
                 try:
                     return int(value)
@@ -147,12 +155,6 @@ class CVSettings(object):
             elif isinstance(DEFAULT_CV_SETTINGS[attribute], float):
                 try:
                     return float(value)
-                except:
-                    return False
-
-            elif isinstance(DEFAULT_CV_SETTINGS[attribute], bool):
-                try:
-                    return bool(value)
                 except:
                     return False
 

@@ -209,10 +209,9 @@ def check_inc_corrrect(start: int, end: int, increment: int) -> int:
 
 class TestProfiles(unittest.TestCase):
     """
-
+    Test if the voltage profiles are being made correctly
+    TODO: move this to testing folder and files
     """
-
-    # TODO: put this in the correct place later
     def test_make_swv_side1(self):
         """
         Test if going from 0 to -50 in increments of 20 and a swv height of 50 works

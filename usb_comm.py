@@ -460,7 +460,7 @@ class AmpUsb(object):
         :param endpoint: which OUT_ENDPOINT to use to send the message in the case there are more
         than 1 OUT_ENDPOINTS
         """
-        print("Sending message: ", message)
+        print(f"Sending message: {message}")
         if not self.working:
             logging.info("Device not connected")
             self.master.failed_connection()

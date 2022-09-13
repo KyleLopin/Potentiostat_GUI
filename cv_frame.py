@@ -10,9 +10,11 @@ import tkinter.font
 from tkinter import filedialog
 import tkinter as tk
 from tkinter import ttk
-
+import unittest
+from unittest import mock
 # local files
 import change_toplevel as change_top
+import properties
 import pyplot_data_class as data_class
 import tkinter_pyplot
 
@@ -66,7 +68,7 @@ class CVFrame(ttk.Frame):
         # make the buttons the user can use in the CV experiments
         # make a button to run a cyclic voltammetry scan
         self.run_button = tk.Button(buttons_frame, text="Run CV Scan",
-                                    command=lambda: self.device.run_scan(cv_graph,
+                                    command=lambda: self.device.run_scan(self.graph,
                                                                     self.run_button))
         self.run_button.pack(side='bottom', fill=tk.BOTH)
         # use a seperate function to make the generic buttons
@@ -264,20 +266,31 @@ class CVFrame(ttk.Frame):
             formatted_end_volt, end_dac_value = \
                 self.format_voltage(self.settings.end_voltage)
             formatted_freq_divider, pwm_period = \
-                self.format_divider(self.settings.sweep_rate)
+                    self.format_divider(self.settings.sweep_rate)
 
             self.params.PWM_period = pwm_period
 
             # figure out what voltage protocol to give the device
             sweep_type_to_send = self.settings.sweep_type[0] + self.settings.sweep_start_type[0]
 
-            # send those values to the device in the proper format for the PSoC amperometry device
-            to_amp_device = '|'.join(["S", formatted_start_volt,
-                                      formatted_end_volt, formatted_freq_divider,
-                                      sweep_type_to_send])
+            if self.settings.use_swv:
+                formatted_inc, increment = self.format_voltage(self.settings.swv_inc)
+                formatted_swv_height, swv_height = \
+                    self.format_voltage(self.settings.swv_height)
+                #TODO: put all the different letter commands in seperate file
+                to_amp_device = '|'.join(["G", formatted_start_volt, formatted_end_volt,
+                                          formatted_swv_height, formatted_inc,
+                                          formatted_freq_divider, sweep_type_to_send])
+            else:
+                # send those values to the device in the proper format for the PSoC amperometry device
+                to_amp_device = '|'.join(["S", formatted_start_volt,
+                                          formatted_end_volt, formatted_freq_divider,
+                                          sweep_type_to_send])
+                increment = 1
             # save how many data packets should be received back from the usb
-            packet_count = (2 * (abs(end_dac_value - start_dac_value) + 1)
+            packet_count = ((2 * abs(end_dac_value - start_dac_value + 1) / increment)
                             / (float(USB_IN_BYTE_SIZE) / 2.0))  # data is 2 bytes long
+
             # round up the packet count
             self.usb_packet_count = int(packet_count) + (packet_count % USB_IN_BYTE_SIZE > 0)
             # calculate what the actual voltage the device will make.  This might be slightly
@@ -290,7 +303,9 @@ class CVFrame(ttk.Frame):
             time.sleep(0.01)
             # Write to the timing PWM compare register so the dac adc timing is correct
             compare_value = pwm_period / 2
+            print("test2")
             self.device.write_timer_compare(compare_value)
+            return 1
 
         def update_adc_setting(self):
             pass
@@ -406,10 +421,16 @@ class CVFrame(ttk.Frame):
             zeros to be 5 integers long to properly send it to the device
             """
             clk_freq = self.params.clk_freq_isr_pwm
-            # take the clock frequency that is driving the PWM and divide it by the number of
-            # voltage steps per second: this is how many clk ticks between each interrupt
-            raw_divider = int(round(clk_freq /
-                                    (_sweep_rate * 1000 / self.params.dac.voltage_step_size)) - 1)
+            cv_params = self.params.cv_settings
+            if cv_params.use_swv:
+                # use 2000 in denominator to convert from ms to secs and change the
+                # dac twice during each step for the square wave
+                raw_divider = int(clk_freq / (2000 / cv_params.swv_period)) - 1
+            else:
+                # take the clock frequency that is driving the PWM and divide it by the number of
+                # voltage steps per second: this is how many clk ticks between each interrupt
+                raw_divider = int(round(clk_freq /
+                                        (_sweep_rate * 1000 / self.params.dac.voltage_step_size)) - 1)
             return '{0:05d}'.format(raw_divider), raw_divider
 
         def format_voltage(self, _in_volts):
