@@ -47,8 +47,8 @@ def send_cv_parameters(device):
     """
     # convert the values for the params dictionary into the values the device needs;
     # this part is done on the computer side to save MCU code length
-    formatted_low_volt, low_dac_value = device.format_voltage(device.device_params.low_cv_voltage)
-    formatted_high_volt, high_dac_value = device.format_voltage(device.device_params.high_cv_voltage)
+    formatted_low_volt, low_dac_value = device.format_voltage_with_gnd(device.device_params.low_cv_voltage)
+    formatted_high_volt, high_dac_value = device.format_voltage_with_gnd(device.device_params.high_cv_voltage)
     formatted_freq_divider, pwm_period = device.format_divider(device.device_params.sweep_rate)
 
     device.device_params.PWM_period = pwm_period

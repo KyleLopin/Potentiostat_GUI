@@ -84,9 +84,9 @@ class ASVFrame(cv_frame.CVFrame):
             logging.debug("sending asv params here")
             # DEPRICATE THE NEXT 3 STATEMENTS
             formatted_start_volt, start_dac_value = \
-                self.format_voltage(self.settings.low_voltage)
+                self.format_voltage_with_gnd(self.settings.low_voltage)
             formatted_end_volt, end_dac_value = \
-                self.format_voltage(self.settings.high_voltage)
+                self.format_voltage_with_gnd(self.settings.high_voltage)
             formatted_freq_divider, pwm_period = \
                 self.format_divider(self.settings.sweep_rate)
 

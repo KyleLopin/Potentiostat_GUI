@@ -262,9 +262,9 @@ class CVFrame(ttk.Frame):
             # convert the values into the values the device needs
             # this part is done on the computer side to save MCU code length
             formatted_start_volt, start_dac_value = \
-                self.format_voltage(self.settings.start_voltage)
+                self.format_voltage_with_gnd(self.settings.start_voltage)
             formatted_end_volt, end_dac_value = \
-                self.format_voltage(self.settings.end_voltage)
+                self.format_voltage_with_gnd(self.settings.end_voltage)
             formatted_freq_divider, pwm_period = \
                     self.format_divider(self.settings.sweep_rate)
 
@@ -287,6 +287,7 @@ class CVFrame(ttk.Frame):
                                           formatted_end_volt, formatted_freq_divider,
                                           sweep_type_to_send])
                 increment = 1
+            print(end_dac_value, start_dac_value, increment)
             # save how many data packets should be received back from the usb
             packet_count = ((2 * abs(end_dac_value - start_dac_value + 1) / increment)
                             / (float(USB_IN_BYTE_SIZE) / 2.0))  # data is 2 bytes long
@@ -434,6 +435,21 @@ class CVFrame(ttk.Frame):
             return '{0:05d}'.format(raw_divider), raw_divider
 
         def format_voltage(self, _in_volts):
+            """ Takes in the voltage (in milli volts) the user wants to apply to step the electrode
+            for the pulse voltammetry techniques
+
+            :param _in_volts: user desired electrode voltage **step** value in milli volts
+            :return: integer that is the dac is to be stepped with, padded with zeros to be 4
+            values long to be transmitted to the device
+            """
+            dac_value = self.params.dac.get_dac_count(_in_volts)
+
+            if dac_value == 0:
+                dac_value = 1
+            print(f"formated dac to {dac_value}, from {_in_volts}")
+            return '{0:04d}'.format(dac_value), dac_value
+
+        def format_voltage_with_gnd(self, _in_volts):
             """ Takes in the voltage (in millivolts) the user wants to apply to the electrode and
             convert it to the integer that represent the value to be put into the dac
             :param _in_volts: user desired electrode voltage value in millivolts

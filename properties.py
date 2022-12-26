@@ -63,7 +63,8 @@ class DeviceParameters(object):
         self.virtual_ground_shift = VIRTUAL_GROUND  # mv shift in ground the device uses
 
         # create instances for all the important components of the device
-        self.dac = DAC("8-bit DAC", voltage_range=4080)
+        # self.dac = DAC("8-bit DAC", voltage_range=4080)
+        self.dac = DAC("DVDAC", voltage_range=4080)
         self.adc_tia = ADC_TIA()
         self.cv_settings = CVSettings(self.dac)
         self.amp_settings = AmpSettings(self.clk_freq_isr_pwm, self.dac)
