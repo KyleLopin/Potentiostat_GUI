@@ -1,5 +1,6 @@
 # Copyright (c) 2015-2016 Kyle Lopin (Naresuan University) <kylel@nu.ac.th>
-# Licensed under the Creative Commons Attribution-ShareAlike  3.0 (CC BY-SA 3.0 US) License
+# Licensed under the Creative Commons Attribution-ShareAlike
+# 3.0 (CC BY-SA 3.0 US) License
 
 """ tkinter frame to hold all buttons and plotting area for cyclic voltammetry experiments
 """
@@ -29,13 +30,15 @@ FAILURE_DELAY = 500
 
 
 class CVFrame(ttk.Frame):
-    """ Frame to hold all the widgets and information to perform cyclic voltammetry experiments
+    """
+    Frame to hold all the widgets and information to perform
+    cyclic voltammetry experiments
     """
 
     def __init__(self, master, parent_notebook, graph_properties, bg=OPTIONS_BACKGROUND,
                  initialize=True):
-        """ Make a ttk frame to hold all the info for cyclic voltammetry, frame is split in 2,
-        one for graph area and another for the buttons
+        """ Make a ttk frame to hold all the info for cyclic voltammetry, frame
+        is split in 2, one for graph area and another for the buttons
         :param master: tk.Tk overall master program
         :param parent_notebook: ttk.Notebook that this frame is embedded in
         :param graph_properties: properties for the graph
@@ -67,9 +70,10 @@ class CVFrame(ttk.Frame):
             time.sleep(0.1)
         # make the buttons the user can use in the CV experiments
         # make a button to run a cyclic voltammetry scan
-        self.run_button = tk.Button(buttons_frame, text="Run CV Scan",
-                                    command=lambda: self.device.run_scan(self.graph,
-                                                                    self.run_button))
+        self.run_button = tk.Button(
+            buttons_frame, text="Run CV Scan",
+            command=lambda: self.device.run_scan(self.graph,
+                                                 self.run_button))
         self.run_button.pack(side='bottom', fill=tk.BOTH)
         # use a seperate function to make the generic buttons
         # that don't need to be bound to self
@@ -117,7 +121,7 @@ class CVFrame(ttk.Frame):
                   text="Change data style",
                   command=self.change_data_labels).pack(side='bottom', fill=tk.BOTH)
 
-        # make a button to delete some of the data
+        # make a button to delete some data
         tk.Button(_frame,
                   text="Delete Data",
                   command=self.user_select_delete_some_data).pack(side='bottom',
@@ -139,7 +143,8 @@ class CVFrame(ttk.Frame):
         #                                                          fill=tk.BOTH)
 
     def chrono_hack(self, device):
-        """ Hack to get a chronoamperometry experiment to run, inactive the button when released
+        """ Hack to get a chronoamperometry experiment to run, inactivate the
+        button when released
         :param device: USBHandler to handle device communications
         """
         self.master.device.usb_write("Q|1024|1524|02399")
@@ -160,7 +165,7 @@ class CVFrame(ttk.Frame):
         change_top.ChangeDataLegend(self, self.graph)
 
     def delete_some_data(self, list_of_index_to_delete):
-        """ The user wants to delete some of the data traces
+        """ The user wants to delete some data traces
         :param list_of_index_to_delete: index of the data to delete
         """
         for index in reversed(list_of_index_to_delete):
@@ -189,13 +194,13 @@ class CVFrame(ttk.Frame):
         self.data = data_class.PyplotData()
 
     def user_select_delete_some_data(self):
-        """ The user wants to delete some of the data, call a top level to handle this
+        """ The user wants to delete some data, call a top level to handle this
         """
         change_top.UserSelectDataDelete(self)
 
     def open_data(self, csv_reader_file, first_line):
-        """ Open a csv file that has the data saved in it, in the same format as this program
-        saves the data.
+        """ Open a csv file that has the data saved in it, in the same
+        format as this program saves the data.
         NOTE:
         _data_hold - holds the data as its being pulled from the file with the structure
         _data_hold = [ [x-data-array], [y1-data-array], [y2-data-array], .., [yn-data] ]
@@ -213,8 +218,8 @@ class CVFrame(ttk.Frame):
         for row in csv_reader_file:
             for i, data in enumerate(row):
                 _data_hold[i].append(float(data))
-
-        for i in range(1, len(first_line)):  # go through each data line and add it to self.data
+        # go through each data line and add it to self.data
+        for i in range(1, len(first_line)):
             self.graph.update_data(_data_hold[0], _data_hold[i], label=first_line[i])
 
     def set_tia_current_lim(self, _value, current_limit):
@@ -247,31 +252,33 @@ class CVFrame(ttk.Frame):
             the data needed to calculate the values are
             device.params.low_cv_voltage which is the lowest voltage (in mV)
             device.params.high_cv_voltage which is the highest voltage (in mV)
-            device.params.sweep_rate - the speed (in V/s) that the voltage should be changed
+            device.params.sweep_rate - the speed (in V/s) that the voltage should be
+            changed
 
-            Note: the values sending to the device have to be padded with 0's so they are the
-            proper size for the device to interpret
+            Note: the values sending to the device have to be padded with 0's,
+            so they are the proper size for the device to interpret
 
             :return: will update to the device.params the following values
-            usb_packet_count which is how many data packets to expect when receiving data
-            actual_low_volt the lowest voltage the device will give to the electrode, depending on
-            the DAC used can be different from the user value
+            usb_packet_count; which is how many data packets to expect
+            actual_low_volt the lowest voltage the device will give to the electrode,
+            depending on the DAC used can be different from the user value
             actual_high_volt the highest voltage the device will give to the electrode
             """
             logging.debug("sending cv params here")
             # convert the values into the values the device needs
             # this part is done on the computer side to save MCU code length
             formatted_start_volt, start_dac_value = \
-                self.format_voltage(self.settings.start_voltage)
+                self.format_voltage_with_gnd(self.settings.start_voltage)
             formatted_end_volt, end_dac_value = \
-                self.format_voltage(self.settings.end_voltage)
+                self.format_voltage_with_gnd(self.settings.end_voltage)
             formatted_freq_divider, pwm_period = \
                     self.format_divider(self.settings.sweep_rate)
 
             self.params.PWM_period = pwm_period
 
             # figure out what voltage protocol to give the device
-            sweep_type_to_send = self.settings.sweep_type[0] + self.settings.sweep_start_type[0]
+            sweep_type_to_send = self.settings.sweep_type[0] + \
+                                 self.settings.sweep_start_type[0]
 
             if self.settings.use_swv:
                 formatted_inc, increment = self.format_voltage(self.settings.swv_inc)
@@ -279,22 +286,25 @@ class CVFrame(ttk.Frame):
                     self.format_voltage(self.settings.swv_height)
                 #TODO: put all the different letter commands in seperate file
                 to_amp_device = '|'.join(["G", formatted_start_volt, formatted_end_volt,
-                                          formatted_swv_height, formatted_inc,
+                                          formatted_inc, formatted_swv_height,
                                           formatted_freq_divider, sweep_type_to_send])
             else:
-                # send those values to the device in the proper format for the PSoC amperometry device
+                # send those values to the device in the proper format for the PSoC
                 to_amp_device = '|'.join(["S", formatted_start_volt,
                                           formatted_end_volt, formatted_freq_divider,
                                           sweep_type_to_send])
                 increment = 1
+            print(end_dac_value, start_dac_value, increment)
             # save how many data packets should be received back from the usb
             packet_count = ((2 * abs(end_dac_value - start_dac_value + 1) / increment)
                             / (float(USB_IN_BYTE_SIZE) / 2.0))  # data is 2 bytes long
 
             # round up the packet count
-            self.usb_packet_count = int(packet_count) + (packet_count % USB_IN_BYTE_SIZE > 0)
-            # calculate what the actual voltage the device will make.  This might be slightly
-            # different from the user input because of the VDAC's resolution
+            self.usb_packet_count = int(packet_count) + \
+                                    (packet_count % USB_IN_BYTE_SIZE > 0)
+            # calculate what the actual voltage the device will make.
+            # This might be slightly different from the user input because of the
+            # VDAC's resolution
             # TODO: figure out if this is working
             self.params.actual_low_volt = (- start_dac_value + start_dac_value
                                            % self.params.dac.voltage_step_size)
@@ -313,12 +323,14 @@ class CVFrame(ttk.Frame):
         def run_scan(self, canvas, run_button, _delay=None):
             """ This will run a cyclic voltammetry scan. To do this it follows the steps
             1) sent 'R' to the microcontroller to run the scan and collect the data
-            2) wait for the scan to run and poll the amperometry device to see if its ready for data
+            2) wait for the scan to run and poll the amperometry device to see
+            if its ready for data
             3) Check if the device is done by receiving the correct message back
-            4) sent 'EX' to the device, this make the amperometry device export the data in chunks
-            (size defined in USB_IN_BYTE_SIZE (IN, as in 'in' the computer) from the channel number
-            described use in X.  NOTE: the X is a string of an int so '0', '1', '2', or '3' works
-            5) read the IN_ENDPOINT until all the data is send to the this program
+            4) sent 'EX' to the device, this make the amperometry device export
+            the data in chunks (size defined in USB_IN_BYTE_SIZE (IN, as 'in' the
+            computer) from the channel number described use in X.
+            NOTE: the X is a string of an int so '0', '1', '2', or '3' works
+            5) read the IN_ENDPOINT until all the data is sent to this program
 
             :param canvas: canvas to display data on
             :param run_button: run button that was pressed to start the scan
@@ -328,7 +340,8 @@ class CVFrame(ttk.Frame):
             if self.device.last_experiment != "CV":  # the look-up table is not correct
                 self.send_cv_parameters()
                 self.device.set_last_run = "CV"
-            self.run_button = run_button  # bind button to self, so it can be put active again
+            # bind button to self, so it can be put active again
+            self.run_button = run_button
             # inactive the button so the user can't hit it twice
             self.run_button.config(state='disabled')
             self.device.usb_write('R')  # step 1
@@ -339,27 +352,30 @@ class CVFrame(ttk.Frame):
 
                 if not _delay:
                     _delay = int(200 + self.params.cv_settings.delay_time)
-                self.master.after(int(_delay), lambda: self.run_scan_continue(canvas))  # step 2
+                # step 2
+                self.master.after(int(_delay), lambda: self.run_scan_continue(canvas))
             else:
                 logging.debug("Couldn't find out endpoint to send message to run")
                 # master.attempt_reconnection()
 
         def run_scan_continue(self, canvas, fail_count=0):
-            """ The callback for run_scan.  This is called after the device should be done with the
-            scan and is ready to export the data.   The parts of the run cyclic voltammetry scan
-            this functions run is part 3-5 listed in run_scan.
-            :param canvas: the widget that is called to display the data
-            :param fail_count: int, running count of how many attempts have been tried
+            """ The callback for run_scan.  This is called after the device
+            should be done with the scan and is ready to export the data.
+            The parts of the run cyclic voltammetry scan this functions run
+            is part 3-5 listed in run_scan.
+            param canvas: the widget that is called to display the data
+            param fail_count: int, running count of how many attempts have been tried
             """
             check_message = self.device.usb_read_message()  # step 3
 
             if check_message == COMPLETE_MESSAGE:
                 self.get_and_display_data(canvas)
             else:
-                # wait a little longer and retry, after a certain amount of time, timeout
+                # wait a little longer and retry
                 if fail_count < FAIL_COUNT_THRESHOLD:  # retry step 2
                     self.master.after(FAILURE_DELAY,
-                                      lambda: self.run_scan_continue(canvas, fail_count + 1))
+                                      lambda: self.run_scan_continue(canvas,
+                                                                     fail_count + 1))
                 logging.error("Failed to run the scan")
 
         def get_and_display_data(self, canvas, _channel=None):
@@ -434,6 +450,21 @@ class CVFrame(ttk.Frame):
             return '{0:05d}'.format(raw_divider), raw_divider
 
         def format_voltage(self, _in_volts):
+            """ Takes in the voltage (in milli volts) the user wants to apply to step the electrode
+            for the pulse voltammetry techniques
+
+            :param _in_volts: user desired electrode voltage **step** value in milli volts
+            :return: integer that is the dac is to be stepped with, padded with zeros to be 4
+            values long to be transmitted to the device
+            """
+            dac_value = self.params.dac.get_dac_count(_in_volts)
+
+            if dac_value == 0:
+                dac_value = 1
+            print(f"formated dac to {dac_value}, from {_in_volts}")
+            return '{0:04d}'.format(dac_value), dac_value
+
+        def format_voltage_with_gnd(self, _in_volts):
             """ Takes in the voltage (in millivolts) the user wants to apply to the electrode and
             convert it to the integer that represent the value to be put into the dac
             :param _in_volts: user desired electrode voltage value in millivolts
