@@ -41,8 +41,8 @@ class ElectroChemGUI(tk.Tk):
     """
 
     def __init__(self, parent=None):
-        if not os.path.exists('logging'):  # make a directory to store logging files
-            os.makedirs('logging')
+        if not os.path.exists('../logging'):  # make a directory to store logging files
+            os.makedirs('../logging')
         date = time.strftime("%Y_%m_%d")
         for handler in logging.root.handlers[:]:
             logging.root.removeHandler(handler)

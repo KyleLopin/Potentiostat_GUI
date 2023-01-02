@@ -1,11 +1,11 @@
 
 # standard libraries
-import logging
 import unittest
 from unittest import mock
 from unittest.mock import patch
 # local files
-import amp_gui
+from app import amp_gui
+
 
 class TestUSBHandler(unittest.TestCase):
     @patch('builtins.print')
