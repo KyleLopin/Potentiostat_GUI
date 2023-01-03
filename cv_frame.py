@@ -15,6 +15,7 @@ import unittest
 from unittest import mock
 # local files
 import change_toplevel as change_top
+import make_voltage_lines
 import properties
 import pyplot_data_class as data_class
 import tkinter_pyplot
@@ -41,7 +42,7 @@ class CVFrame(ttk.Frame):
         is split in 2, one for graph area and another for the buttons
         :param master: tk.Tk overall master program
         :param parent_notebook: ttk.Notebook that this frame is embedded in
-        :param graph_properties: properties for the graph
+        :param graph_properties (graph_properties.GraphProps): properties for the graph
         :param bg: color to make the background frame
         """
         ttk.Frame.__init__(self, parent_notebook)
@@ -417,12 +418,10 @@ class CVFrame(ttk.Frame):
 
             # make the voltages for the x-axis that correspond to the currents read
 
-            x_line = make_x_line(self.params.cv_settings.start_voltage,
-                                 self.params.cv_settings.end_voltage,
-                                 self.params.dac.voltage_step_size,
-                                 self.params.cv_settings.sweep_type,
-                                 self.params.cv_settings.sweep_start_type,
-                                 self.params.asv_settings.pulse_inc)
+            x_line = make_voltage_lines.make_voltage_profile(
+                self.params.cv_settings.start_voltage, self.params.cv_settings.end_voltage,
+                self.params.dac.voltage_step_size, self.params.cv_settings.sweep_type,
+                self.params.cv_settings.sweep_start_type, self.params.asv_settings.pulse_inc)
             if self.run_chrono:  # HACK to test chronoamp experiments
                 x_line = range(4001)
             # Send data to the canvas where it will be saved and displayed
