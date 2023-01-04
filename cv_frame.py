@@ -47,7 +47,9 @@ class CVFrame(ttk.Frame):
         """
         ttk.Frame.__init__(self, parent_notebook)
         self.master = master
+        # TODO: put device_params and graph params all in 1 place
         self.settings = master.device_params.cv_settings
+        print(f"settings: {self.settings}")
         self.data = data_class.PyplotData()
         self.graph = self.make_graph_area(master, graph_properties)  # make graph
         self.graph.pack(side='left', expand=True, fill=tk.BOTH)

@@ -220,7 +220,8 @@ class AmpFrame(ttk.Frame):
 
         def cancel_run(self):
             self.running = False
-            self.master.after_cancel(self._reader)
+            if self._reader:
+                self.master.after_cancel(self._reader)
             self.device.samples_to_smooth = self.device_samples_smooth
             self._reader = None
             self.device.usb_write('X')
