@@ -8,7 +8,10 @@ NOTE: Can make a parent class
 import csv
 import logging
 import time
-from tkinter import filedialog
+try:
+    from tkinter import tkFileDialog as fd
+except:
+    from tkinter import filedialog as fd
 import tkinter as tk
 from tkinter import ttk
 # local files
@@ -340,8 +343,8 @@ def open_file(_type):
     options['filetypes'] = [('All files', '*.*'), ("Comma separate values", "*.csv")]
     if _type == 'saveas':
         # Ask the user what name to save the file as
-        _file = tkFileDialog.asksaveasfile(mode='wb', **file_opt)
+        _file = fd.asksaveasfile(mode='wb', **file_opt)
     elif _type == 'open':
-        _filename = tkFileDialog.askopenfilename(**file_opt)
+        _filename = fd.askopenfilename(**file_opt)
         return _filename
     return _file
