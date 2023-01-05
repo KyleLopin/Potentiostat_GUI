@@ -1,4 +1,4 @@
-# Copyright (c) 2015-2016 Kyle Lopin (Naresuan University) <kylel@nu.ac.th>
+# Copyright (c) 2015-2023 Kyle Lopin (Naresuan University) <kylel@nu.ac.th>
 # Licensed under the Creative Commons Attribution-ShareAlike  3.0 (CC BY-SA 3.0 US) License
 
 """ tkinter frame to hold all information, widgets and plotting area for amperometry experiments
@@ -97,13 +97,16 @@ class AmpFrame(ttk.Frame):
             return
 
         _file = open_file('saveas')
-
+        print(_file)
         if _file:
-            writer = csv.writer(_file, dialect='excel')
-            writer.writerow(["time", "current"])
-            for i in range(len(device.data)):
-                writer.writerow([device.time[i], device.data[i]])
-            _file.close()
+            with open(_file, 'w', newline='') as csv_file:
+
+                writer = csv.writer(csv_file, dialect='excel')
+                writer.writerow(["time", "current"])
+                for i in range(len(device.data)):
+                    print(device.time[i], device.data[i])
+                    writer.writerow([device.time[i], device.data[i]])
+            # _file.close()
 
     def set_tia_current_lim(self, _value, current_limit):
         """ The TIA setting has been changed so update the value shown to the user in the
@@ -340,11 +343,15 @@ def open_file(_type):
     # Make the options for the save file dialog box for the user
     file_opt = options = {}
     options['defaultextension'] = ".csv"
-    options['filetypes'] = [('All files', '*.*'), ("Comma separate values", "*.csv")]
+    options['filetypes'] = [("Comma separate values", "*.csv"), ('All files', '*.*')]
     if _type == 'saveas':
         # Ask the user what name to save the file as
-        _file = fd.asksaveasfile(mode='wb', **file_opt)
+        _file = fd.asksaveasfilename(**file_opt)
     elif _type == 'open':
         _filename = fd.askopenfilename(**file_opt)
         return _filename
     return _file
+
+
+if __name__ == '__main__':
+    amp_frame = AmpFrame(tk.Tk(), None, None)
