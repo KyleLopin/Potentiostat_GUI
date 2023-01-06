@@ -264,6 +264,7 @@ class AmpUsb(object):
         Get the proper amount of data packets from the device
         :return: a list of adc counts
         """
+        print("getting data")
         logging.debug("getting data")
         end_pt = self.device[0][(0, 0)][0]
         full_array = []
@@ -280,6 +281,7 @@ class AmpUsb(object):
         while number_packets + 1 > count and running:
             try:
                 usb_input = self.device.read(end_pt.bEndpointAddress, USB_IN_BYTE_SIZE, 1000)
+                print(f"got usb input: {usb_input}")
                 _hold = convert_uint8_to_signed_int16(usb_input.tolist())
                 full_array.extend(_hold)
                 if TERMINATION_CODE in _hold:
@@ -289,6 +291,7 @@ class AmpUsb(object):
                     break
                 count += 1
             except Exception as error:
+                print(f"reading error {error}")
                 logging.debug("end of ENDPOINT")
                 logging.debug(error)
                 running = False
@@ -368,6 +371,12 @@ class AmpUsb(object):
         """
         canvas = self.master.preview_graph
         usb_helper.get_and_display_data_from_export_channel(self, canvas, channel)
+
+    def get_look_up_table(self):
+        self.usb_write('l|1000')
+        look_up_table = self.usb_read_data(1000, encoding='signed int16')
+        print(f"look up table: {look_up_table}")
+        return look_up_table
 
     def set_electrode_config(self, num_electrodes):
         """ The PSoC can perform either 2 electrode or 3 electrode measurements, send the device the

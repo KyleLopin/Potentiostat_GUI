@@ -1,8 +1,8 @@
-start_dac_value = 125
+start_dac_value = 1998
 start_voltage = -50
 end_voltage = 50
 sweep_start_type = Start
-end_dac_value = 159
+end_dac_value = 2098
 sweep_type = CV
 sweep_rate = 0.2
 delay_time = 1000.0

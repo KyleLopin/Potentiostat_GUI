@@ -156,6 +156,9 @@ def make_developer_menu(developer_menu, master):
                                           command=lambda channel=i: \
                                               master.device.get_export_channel(channel))
 
+    developer_menu.add_cascade(label="Export the look up table",
+                               command=master.device.get_look_up_table)
+
     developer_menu.add_cascade(label="Change timing PWM compare value",
                                command=lambda: change_toplevel.ChangeCompareValue(master))
 

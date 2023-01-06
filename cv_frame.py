@@ -78,7 +78,7 @@ class CVFrame(ttk.Frame):
             command=lambda: self.device.run_scan(self.graph,
                                                  self.run_button))
         self.run_button.pack(side='bottom', fill=tk.BOTH)
-        # use a seperate function to make the generic buttons
+        # use a separate function to make the generic buttons
         # that don't need to be bound to self
         self.make_cv_buttons(buttons_frame, self.graph)
 
@@ -370,7 +370,7 @@ class CVFrame(ttk.Frame):
             param fail_count: int, running count of how many attempts have been tried
             """
             check_message = self.device.usb_read_message()  # step 3
-
+            print(f"got check message: {check_message}")
             if check_message == COMPLETE_MESSAGE:
                 self.get_and_display_data(canvas)
             else:
@@ -398,7 +398,7 @@ class CVFrame(ttk.Frame):
             if self.run_chrono:
                 self.usb_packet_count = 125
             raw_data = self.device.get_data(self.usb_packet_count)
-            print('raw data')
+            print(f'raw data got {self.usb_packet_count} packets')
             print(raw_data)
             raw_data.pop(0)
             self.run_button.config(state='active')
