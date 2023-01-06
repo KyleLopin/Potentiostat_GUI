@@ -97,15 +97,15 @@ class AmpFrame(ttk.Frame):
             return
 
         _file = open_file('saveas')
-        print(_file)
+        # print(_file)
         if _file:
             with open(_file, 'w', newline='') as csv_file:
 
                 writer = csv.writer(csv_file, dialect='excel')
                 writer.writerow(["time", "current"])
                 for i in range(len(device.data)):
-                    print(device.time[i], device.data[i])
-                    writer.writerow([device.time[i], device.data[i]])
+                    # print(device.time[i], device.data[i])
+                    writer.writerow([device.time[i], f" {device.data[i]}"])
             # _file.close()
 
     def set_tia_current_lim(self, _value, current_limit):
