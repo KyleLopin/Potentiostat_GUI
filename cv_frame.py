@@ -399,7 +399,7 @@ class CVFrame(ttk.Frame):
                 self.usb_packet_count = 125
             raw_data = self.device.get_data(self.usb_packet_count)
             print(f'raw data got {self.usb_packet_count} packets')
-            print(raw_data)
+            print(f"raw data: {raw_data}")
             raw_data.pop(0)
             self.run_button.config(state='active')
             if not raw_data:  # if something is wrong just return

@@ -36,3 +36,5 @@ class TestCVFrameUSB(unittest.TestCase):
         mocked_canvas = mock.Mock()
         _cv_frame.device.get_and_display_data(mocked_canvas)
         print(f"calls: {mocked_canvas.update_data.call_args}")
+
+

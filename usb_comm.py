@@ -7,6 +7,8 @@
 import logging
 import time
 # installed libraries
+import serial
+import serial.tools.list_ports
 import usb.core
 import usb.util
 # import usb.backend.libusb0
@@ -26,7 +28,8 @@ USB_OUT_BYTE_SIZE = 32
 TEST_MESSAGE = "USB Test"
 TEST_MESSAGES = {"USB Test": "base",
                  "USB Test - 059": "kit-059",
-                 "USB Test - v04": "v04"}
+                 "USB Test - v04": "v04",
+                 b"Naresuan Potentiostat": "v1.5"}
 RUNNING_DELAY = 3000
 FAIL_COUNT_THRESHOLD = 2
 FAILURE_DELAY = 500
@@ -35,6 +38,7 @@ TERMINATION_CODE = -16384
 
 USB_VENDOR_ID = 0x1D50
 USB_PRODUCT_ID = 0x6128
+BAUD_RATE = 115200
 
 # device parameter list
 TIA_RESISTOR_VALUES = [20, 30, 40, 80, 120, 250, 500, 1000]
@@ -44,6 +48,8 @@ MAX_TIA_SETTING = 7
 # CURRENT_LIMIT_VALUES = [50, 33, 25, 12.5, 8.4, 4, 2, 1, 0.5, 0.25, 0.125]
 # CURRENT_LIMIT_VALUES = [100, 66, 50, 25, 16, 8, 4, 2, 1, 0.5, 0.25]
 CURRENT_LIMIT_VALUES = _globals.CURRENT_LIMIT_VALUES
+USE_SERIAL = True
+
 
 class AmpUsb(object):
     """
@@ -77,16 +83,20 @@ class AmpUsb(object):
         self.device, self.ep_out, self.ep_in = self.connect_usb(vendor_id, product_id)
 
         # test the device if it was found to see if it is working properly
-        if self.found:
-            self.working = self.connection_test()
+        if USE_SERIAL and self.device:
+            self.working = True  # serial needs response anyway
+            self.connected = True
         else:
-            logging.info("not found")
-            self.working = False
-            return None
+            if self.found:
+                self.working = self.connection_test()
+            else:
+                logging.info("not found")
+                self.working = False
+                return None
 
         # If it was found to be working properly initialize the device
         if self.working:
-            self.connected = False
+            # self.connected = False
             logging.info("Initializing run parameters")
 
             self.find_voltage_source()
@@ -126,6 +136,15 @@ class AmpUsb(object):
             else:
                 self.connection_test(fails)
 
+    def serial_connect(self):
+        device = SerialComm()
+        if device:
+            self.found = True
+            self.working = True  # it did respond after all
+            return device, None, None
+        else:
+            return None, None, None
+
     def connect_usb(self, _vendor_id=0x04B4, _product_id=0xE177):
         """ Attempt to connect to the PSoC device with a USBFS module
         If the device is not found return None
@@ -139,6 +158,8 @@ class AmpUsb(object):
         :param _product_id: the USB product id
         :return: the device if it is found, None if not
         """
+        if USE_SERIAL:
+            return self.serial_connect()
         # attempt to find the PSoC amperometry device
         try:
             amp_device = usb.core.find(idVendor=_vendor_id, idProduct=_product_id)
@@ -284,6 +305,7 @@ class AmpUsb(object):
                 print(f"got usb input: {usb_input}")
                 _hold = convert_uint8_to_signed_int16(usb_input.tolist())
                 full_array.extend(_hold)
+                print(f"hold: {_hold}")
                 if TERMINATION_CODE in _hold:
                     full_array = full_array[:full_array.index(TERMINATION_CODE)]
                     logging.debug(
@@ -499,6 +521,7 @@ class AmpUsb(object):
         try:
             # logging.debug("getting data in usb_read_data")
             usb_input = self.device.read(endpoint.bEndpointAddress, _size)
+            print(f"got usb input: {usb_input}")
         except Exception as error:
             logging.error("Failed read")
             logging.error("No IN ENDPOINT: %s", error)
@@ -588,6 +611,28 @@ class AmpUsb(object):
 
         # Send data to the canvas where it will be saved and displayed
         canvas.update_data(x_line, data, raw_data)
+
+
+class SerialComm:
+    def __init__(self):
+        self.found = False
+        self.working = False
+        self.device = self.auto_find_com_port()
+
+    def auto_find_com_port(self):
+        available_ports = serial.tools.list_ports
+        for port in available_ports.comports():  # type: serial.Serial
+            device = serial.Serial(port.device, BAUD_RATE, timeout=1)
+            device.write(b"I")
+            for i in range(3):
+                input = device.readline()
+                print(f"input: {input}")
+                if b"Naresuan Potentiostat" in input:
+                    # this is the port
+                    self.found = True
+                    self.working = True
+                    return device, None, None
+        return None, None, None
 
 
 def convert_uint8_uint16(_array):

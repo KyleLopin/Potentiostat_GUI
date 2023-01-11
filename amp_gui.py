@@ -105,6 +105,7 @@ class ElectroChemGUI(tk.Tk):
             return
 
         if hasattr(self.device, "found"):
+            print(f" connect button states: {self.device.found}, {self.device.working}")
             if self.device.found and self.device.working:
                 self.connect_button.config(text="Connected", bg='green')
             elif self.device.found:  # device i
