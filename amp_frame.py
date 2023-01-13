@@ -192,7 +192,7 @@ class AmpFrame(ttk.Frame):
         def data_try(self):
             while True:
                 try:
-                    usb_input = self.device.get_data_packets(self.endpoint, self.number_packets)
+                    usb_input = self.device.get_data()
                     data = self.device.process_data(usb_input)
                 except Exception as error:
                     logging.error("missed data read: %s", error)

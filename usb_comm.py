@@ -5,14 +5,14 @@
 """
 # standard libraries
 import logging
+import os
+import struct
 import time
+
 # installed libraries
 import serial
 import serial.tools.list_ports
-import usb.core
-import usb.util
-# import usb.backend.libusb0
-import usb.backend
+
 # local files
 import cv_frame
 import change_toplevel as toplevel
@@ -60,8 +60,7 @@ class AmpUsb(object):
     """
 
     def __init__(self, _master, _device_params, vendor_id=USB_VENDOR_ID, product_id=USB_PRODUCT_ID):
-        """ Initialize a communication channel to a PSoC with a USBFS module.  Use the default example
-        for the USBFS HID example if no vendor or product id are inputted
+        """ Initialize a communication channel to a PSoC with a USBUART module.
 
         :param _master: the master program that is using the usb
         :param _device_params: parameters needed for the device to work properly, from the
@@ -80,10 +79,11 @@ class AmpUsb(object):
         self.last_experiment = "CV"  # keep track of what type of experiment was run last, CV or ASV
         self.samples_to_smooth = 1  # TODO: python 3 use properties to limit its value
         logging.info("attempting connection")
-        self.device, self.ep_out, self.ep_in = self.connect_usb(vendor_id, product_id)
+        self.device, self.ep_out, self.ep_in = self.serial_connect()
 
+        print(f"device: {self.device}, device.device: {self.device.device}")
         # test the device if it was found to see if it is working properly
-        if USE_SERIAL and self.device:
+        if USE_SERIAL and self.device.working:
             self.working = True  # serial needs response anyway
             self.connected = True
         else:
@@ -97,6 +97,7 @@ class AmpUsb(object):
         # If it was found to be working properly initialize the device
         if self.working:
             # self.connected = False
+            print("Initializing run parameters")
             logging.info("Initializing run parameters")
 
             self.find_voltage_source()
@@ -104,6 +105,7 @@ class AmpUsb(object):
             # self.send_cv_parameters()
             self.usb_write("A|1|0|0|F|2")  # set the TIA resistor to 20k ohm on startup
             self.calibrate()  # calibrate the TIA settings
+            print(f"test working: {self.working}")
         else:
             logging.info("not working")
 
@@ -137,6 +139,11 @@ class AmpUsb(object):
                 self.connection_test(fails)
 
     def serial_connect(self):
+        """ Attempt to connect to the PSoC device with a USBUART module
+        If the device is not found return None
+
+        :return: the device if it is found, None if not
+        """
         device = SerialComm()
         if device:
             self.found = True
@@ -144,66 +151,6 @@ class AmpUsb(object):
             return device, None, None
         else:
             return None, None, None
-
-    def connect_usb(self, _vendor_id=0x04B4, _product_id=0xE177):
-        """ Attempt to connect to the PSoC device with a USBFS module
-        If the device is not found return None
-
-        This method uses the pyUSB module, see the tutorial example at:
-        https://github.com/walac/pyusb/blob/master/docs/tutorial.rst
-        for more details
-
-        :param _vendor_id: the USB vendor id, used to identify the proper device connected to
-        sthe computer
-        :param _product_id: the USB product id
-        :return: the device if it is found, None if not
-        """
-        if USE_SERIAL:
-            return self.serial_connect()
-        # attempt to find the PSoC amperometry device
-        try:
-            amp_device = usb.core.find(idVendor=_vendor_id, idProduct=_product_id)
-        except usb.core.NoBackendError:  # for some reason 'no backend available error can arise.
-            logging.info("No backend found")
-            self.found = False
-            return None, None, None
-        # if no device is found, print a warning to the output
-        if amp_device is None:
-            logging.info("Device not found")
-            self.found = False
-            return None, None, None
-        else:  # if a device is found print that it was found
-            self.found = True
-            logging.info("PSoC amp found")
-
-        # set the active configuration. the pyUSB module deals with the details
-        amp_device.set_configuration()
-
-        # with the device active, get the endpoints.
-        # See Cypress's document AN57294 - USB 101: An Introduction to Universal Serial Bus 2.0
-        # for details about general USB protocols
-        cfg = amp_device.get_active_configuration()
-
-        interface = cfg[(0, 0)]
-        # make a list of out and in ENDPOINTS and fill it with the number specified
-        # in the params dict
-        ep_out = []
-        ep_in = []
-        for _ in range(self.device_params.number_out_endpoints):
-            ep_out.append(usb.util.find_descriptor(interface,
-                                                   custom_match=lambda e:
-                                                   usb.util.endpoint_direction(
-                                                       e.bEndpointAddress) ==
-                                                   usb.util.ENDPOINT_OUT))
-
-        for _ in range(self.device_params.number_in_endpoints):
-            ep_in.append(usb.util.find_descriptor(interface,
-                                                  custom_match=lambda e:
-                                                  usb.util.endpoint_direction(e.bEndpointAddress) ==
-                                                  usb.util.ENDPOINT_IN))
-
-        # return the device and endpoints if the exist or None if no device is found
-        return amp_device, ep_out, ep_in
 
     def set_device_type(self, _device_type):
         """
@@ -219,6 +166,7 @@ class AmpUsb(object):
         self.usb_write("VR")
         time.sleep(0.2)
         source_input = self.usb_read_data(2)
+        print(f"source input: {source_input}")
         if not source_input:
             return
         if source_input[1] == 0:
@@ -279,68 +227,19 @@ class AmpUsb(object):
         _formatted_value = '{0:05d}'.format(int(value))
         self.usb_write('C|' + _formatted_value)
 
-    def get_data(self, number_packets=None):
+    def get_data(self):
         """ Get the raw adc counts from the device
-        TODO: combine with get_Data_packets
-        Get the proper amount of data packets from the device
+
         :return: a list of adc counts
         """
-        print("getting data")
-        logging.debug("getting data")
-        end_pt = self.device[0][(0, 0)][0]
-        full_array = []
-        # calculate how many packets of data to get from the amp device the usb_count param is
-        # how many data points there are (+1 us for the 0xC000 sent at the end)
-        # packet_size / 2 is because the data is converted to uint8 and minus 1 for 0 indexing
-        # from the uint16 it is acquired in """
-        if not number_packets:
-            number_packets = ((self.device_params.usb_count + 1) / (USB_IN_BYTE_SIZE / 2) - 1)
-
-        logging.debug("get %d number of packets", number_packets)
-        count = 0
-        running = True
-        while number_packets + 1 > count and running:
-            try:
-                usb_input = self.device.read(end_pt.bEndpointAddress, USB_IN_BYTE_SIZE, 1000)
-                print(f"got usb input: {usb_input}")
-                _hold = convert_uint8_to_signed_int16(usb_input.tolist())
-                full_array.extend(_hold)
-                print(f"hold: {_hold}")
-                if TERMINATION_CODE in _hold:
-                    full_array = full_array[:full_array.index(TERMINATION_CODE)]
-                    logging.debug(
-                        "got termination code at count: {0}, {1}".format(count, len(full_array)))
-                    break
-                count += 1
-            except Exception as error:
-                print(f"reading error {error}")
-                logging.debug("end of ENDPOINT")
-                logging.debug(error)
-                running = False
+        try:
+            data_array = self.device.read_data(USB_IN_BYTE_SIZE, 'int16')
+            print(f"got usb data: {data_array}, asked for size: {USB_IN_BYTE_SIZE}")
+        except Exception as _error:
+            print(f"Got error reading data: {_error}")
         if self.samples_to_smooth > 1:
-            return rolling_mean(full_array, self.samples_to_smooth)
-        return full_array
-
-    def get_data_packets(self, endpoint, number_packets=1, allowed_fails=0, timeout=2000):
-        # TODO: combine with the above function
-        full_array = []
-        count = 0
-        fails = -1
-        while number_packets + 1 > count and fails < allowed_fails:
-            try:
-                # get byte array in usb IN
-                usb_input = self.device.read(endpoint, USB_IN_BYTE_SIZE, timeout=1000)
-                # append the new data into the full array list by converting it to a list and then
-                # from bytes to unsigned int16s
-                full_array.extend(convert_uint8_to_signed_int16(usb_input.tolist()))
-                if full_array[-1] == TERMINATION_CODE:
-                    full_array.pop()  # remove ther termination code from the data
-                    break
-                count += 1
-            except:
-                fails += 1
-        return full_array
-        # return self.process_data(full_array)
+            return rolling_mean(data_array, self.samples_to_smooth)
+        return data_array
 
     def process_data(self, _raw_data):
         """ Take in the raw adc counts and output the corresponding current values
@@ -381,8 +280,10 @@ class AmpUsb(object):
         """ To be used after the command for the device to measure the calibration data has been
         sent.  Gets the data from the device and sends it to the adc_tia module to be processed
         """
-        raw_data = self.usb_read_data(20, encoding='signed int16')
+        raw_data = self.usb_read_data(20, encoding='int16')
+        print(f"raw data: {raw_data}")
         logging.debug("Calibration data: {0}".format(raw_data))
+        print("Calibration data: {0}".format(raw_data))
         self.device_params.adc_tia.calibrate(raw_data)
 
     def get_export_channel(self, channel=None):
@@ -392,11 +293,12 @@ class AmpUsb(object):
 
         """
         canvas = self.master.preview_graph
-        usb_helper.get_and_display_data_from_export_channel(self, canvas, channel)
+        #TODO fix this
+        print("TODO update this")
 
     def get_look_up_table(self):
         self.usb_write('l|1000')
-        look_up_table = self.usb_read_data(1000, encoding='signed int16')
+        look_up_table = self.usb_read_data(1000, encoding='int16')
         print(f"look up table: {look_up_table}")
         return look_up_table
 
@@ -413,7 +315,7 @@ class AmpUsb(object):
         logging.debug("setting anode voltage to {0} mV".format(voltage))
         formatted_voltage_to_send = self.device_params.dac.get_dac_count(voltage,
                                                                          actual=True)
-        voltage_str = str(formatted_voltage_to_send).zfill(4)
+        # voltage_str = str(formatted_voltage_to_send).zfill(4)
         self.usb_write("D|{0:04d}".format(formatted_voltage_to_send))
 
     def short_tia_resistor(self):
@@ -485,80 +387,46 @@ class AmpUsb(object):
         dac_value = self.device_params.dac.get_dac_count(input_voltage)
         return '{0:04d}'.format(dac_value), dac_value
 
-    def usb_write(self, message, endpoint=0):
+    def usb_write(self, message):
         """ Write the message to the device
         :param message: message, in bytes, to send
-        :param endpoint: which OUT_ENDPOINT to use to send the message in the case there are more
-        than 1 OUT_ENDPOINTS
         """
         print(f"Sending message: {message}")
         if not self.working:
             logging.info("Device not connected")
             self.master.failed_connection()
-        elif len(message) > 32:
-            logging.error("Message is too long")
         else:
             logging.debug("writing message: %s", message)
             try:
-                self.ep_out[endpoint].write(message)
+                self.device.write_data(message)
                 self.connected = True
             except Exception as error:
-                logging.error("No OUT ENDPOINT: %s", error)
                 self.working = False
-                logging.debug("setting device.working to false")
+                print(f"Error in writing to device: {error}")
+                logging.debug(f"Error in writing to device: {error}")
 
-    def usb_read_data(self, _size=USB_IN_BYTE_SIZE, endpoint=None, encoding=None):
+    def usb_read_data(self, _size=USB_IN_BYTE_SIZE, encoding=None):
         """ Read data from the usb and return it
         :param _size: number of bytes to read
-        :param endpoint: the IN ENPOINT numner
         :return: array of the bytes read
         """
         if not self.working:
             logging.info("not working")
             return None
-        if not endpoint:
-            endpoint = self.device[0][(0, 0)][0]
         try:
-            # logging.debug("getting data in usb_read_data")
-            usb_input = self.device.read(endpoint.bEndpointAddress, _size)
-            print(f"got usb input: {usb_input}")
+            return self.device.read_data(_size, encoding=encoding)
         except Exception as error:
             logging.error("Failed read")
-            logging.error("No IN ENDPOINT: %s", error)
             return None
-        if encoding == 'uint16':
-            return convert_uint8_uint16(usb_input)
-        elif encoding == "signed int16":
 
-            _hold = convert_uint8_to_signed_int16(usb_input)
-            return _hold
-        else:  # no encoding so just return raw data
-            return usb_input
-
-    def usb_read_message(self, _size=USB_IN_BYTE_SIZE, config=0, interface=(0, 0), endpoint=0):
-        """ Read any data from the device
-        TODO: just pass to read_data and encode it correctly
-        :param _size: int, the size of the packet, in bytes, to receive
-        :param config: int, the inteface of the usb you want to read from
-        :param interface: tuple, the number of the interface of the usb to read from
-        :param endpoint: endpoint number of the IN channel
+    def usb_read_message(self, _size=USB_IN_BYTE_SIZE):
+        """ Alias of usb_read_data for now
+        TODO: remove this
         :return: data from the device
         """
-        if not self.working:
-            logging.info("not working")
-            self.master.failed_connection()
-            return None
-        end_pt = self.device[config][interface][endpoint]
-        try:
-            logging.debug("getting message in usb_read_message")
-            usb_input = self.device.read(end_pt.bEndpointAddress, _size, timeout=1000)
-            _hold = usb_input.tolist()
-            str_message = convert_uint8_to_string(_hold)
-            logging.info("message received: %s", str_message)
-            return str_message
-        except Exception as error:
-            logging.error("Failed read: %s", error)
-            return None
+        message = self.usb_read_data(_size, encoding='str')
+        print(f"usb read message: {message}")
+        return message
 
     def attempt_reconnection(self):
         """ If the device stops working try to reconnect
@@ -567,16 +435,10 @@ class AmpUsb(object):
         """
         logging.debug("usb_comm reconnection protocol")
         self.usb_read_data()  # try to clear the data that might be in the queue
-        self.connect_usb()
+        self.serial_connect()
 
     def clear_in_buffer(self):
-        usb_in_buffer = 1
-        while usb_in_buffer:
-            try:
-                usb_in_buffer = self.device.read(self.device[0][(0, 0)][0].bEndpointAddress,
-                                                 USB_IN_BYTE_SIZE)
-            except:
-                usb_in_buffer = None
+        self.device.device.reset_input_buffer()
 
     def set_last_run(self, run_type):
         self.last_experiment = run_type
@@ -617,11 +479,19 @@ class SerialComm:
     def __init__(self):
         self.found = False
         self.working = False
-        self.device = self.auto_find_com_port()
+        print(os.name)
+        if os.name == 'nt':
+            self.device = self.auto_find_com_port_windows()
+        elif os.name == 'posix':
+            self.device = self.auto_find_com_port_mac()
+        print("Done initializing SerialComm")
 
-    def auto_find_com_port(self):
+    def auto_find_com_port_windows(self):
         available_ports = serial.tools.list_ports
+        device = None
+
         for port in available_ports.comports():  # type: serial.Serial
+            print(port.device)
             device = serial.Serial(port.device, BAUD_RATE, timeout=1)
             device.write(b"I")
             for i in range(3):
@@ -631,54 +501,97 @@ class SerialComm:
                     # this is the port
                     self.found = True
                     self.working = True
-                    return device, None, None
-        return None, None, None
+                    return device
+        return None
+
+    def auto_find_com_port_mac(self):
+        available_ports = serial.tools.list_ports
+        device = None
+        print("auto find")
+        for port in available_ports.comports():
+            print(f"port name: {port.name}")
+            if 'usbmodem' in port.name:
+                device = serial.Serial(port.device, BAUD_RATE, timeout=1.0)
+                device.write(b"I")
+                for i in range(3):
+                    input = device.readline()
+                    print(f"input: {input}")
+                    if b"Naresuan Potentiostat" in input:
+                        # this is the port
+                        print("got device")
+                        self.found = True
+                        self.working = True
+                        return device
+        return None
+
+    def read_data(self, data_length, encoding=None):
+        data = self.device.read(data_length)  # type: bytes
+        print(f"read byte data: {data}, lenght asked for: {data_length}")
+        if encoding == 'int16':
+            size = int(len(data)/2)  # may not be data_length ?
+            converted_data = struct.unpack(f"{size}h", data)
+            return list(converted_data)
+        elif encoding == 'str':
+            return data.decode("utf-8")
+        elif encoding:  # exclude None
+            raise Exception(f"Encoding: '{encoding}' not supported")
+        return data
+
+    def write_data(self, message):
+        if type(message) is str:
+            message = message.encode('utf-8')
+        print(f"writing data: {message}")
+        self.device.write(message)
+
+    def poll_for_data(self):
+        if self.device.in_waiting:
+            return self.device.read_all()
 
 
-def convert_uint8_uint16(_array):
-    """ Convert an array of uint8 to uint16
-    :param _array: list of uint8 array of data to convert
-    :return: list of uint16 converted data
-    """
-    new_array = [0]*(len(_array)/2)
-    for i in range(len(_array)/2):
-        _hold = _array.pop(0) + _array.pop(0) * 256
-        if _hold == USB_TERMINATION_SIGNAL:
-            new_array[i] = _hold
-            break
-        new_array[i] = _hold
-    return new_array
-
-
-def convert_uint8_to_signed_int16(_bytes):
-    """ Convert an array of bytes into an array of signed int16
-    :param _bytes: array of uint8
-    :return: aray of signed int16
-    """
-    new_array = [0] * int((len(_bytes) / 2))
-    max_value = 2 ** 16 / 2  # maximum positive value that can be make with signed int16
-    for i in range(int(len(_bytes) / 2)):
-        _hold = _bytes.pop(0) + _bytes.pop(0) * 256  # combind the individual bytes
-        if _hold >= max_value:
-            _hold -= (2 * max_value)
-        if _hold == USB_TERMINATION_SIGNAL:
-            new_array[i] = _hold
-            break
-        new_array[i] = _hold
-    return new_array
-
-
-def convert_uint8_to_string(_bytes):
-    """ Convert bytes to a string
-    :param _bytes: list of bytes
-    :return: string
-    """
-    i = 0
-    _string = ""
-    while _bytes[i] != 0:
-        _string += chr(_bytes[i])
-        i += 1
-    return _string
+# def convert_uint8_uint16(_array):
+#     """ Convert an array of uint8 to uint16
+#     :param _array: list of uint8 array of data to convert
+#     :return: list of uint16 converted data
+#     """
+#     new_array = [0]*(len(_array)/2)
+#     for i in range(len(_array)/2):
+#         _hold = _array.pop(0) + _array.pop(0) * 256
+#         if _hold == USB_TERMINATION_SIGNAL:
+#             new_array[i] = _hold
+#             break
+#         new_array[i] = _hold
+#     return new_array
+#
+#
+# def convert_uint8_to_signed_int16(_bytes):
+#     """ Convert an array of bytes into an array of signed int16
+#     :param _bytes: array of uint8
+#     :return: aray of signed int16
+#     """
+#     new_array = [0] * int((len(_bytes) / 2))
+#     max_value = 2 ** 16 / 2  # maximum positive value that can be make with signed int16
+#     for i in range(int(len(_bytes) / 2)):
+#         _hold = _bytes.pop(0) + _bytes.pop(0) * 256  # combind the individual bytes
+#         if _hold >= max_value:
+#             _hold -= (2 * max_value)
+#         if _hold == USB_TERMINATION_SIGNAL:
+#             new_array[i] = _hold
+#             break
+#         new_array[i] = _hold
+#     return new_array
+#
+#
+# def convert_uint8_to_string(_bytes):
+#     """ Convert bytes to a string
+#     :param _bytes: list of bytes
+#     :return: string
+#     """
+#     i = 0
+#     _string = ""
+#     while _bytes[i] != 0:
+#         _string += chr(_bytes[i])
+#         i += 1
+#     return _string
 
 
 def get_tia_settings(range_selected):

@@ -327,7 +327,7 @@ class CVFrame(ttk.Frame):
             """ This will run a cyclic voltammetry scan. To do this it follows the steps
             1) sent 'R' to the microcontroller to run the scan and collect the data
             2) wait for the scan to run and poll the amperometry device to see
-            if its ready for data
+            if it's ready for data
             3) Check if the device is done by receiving the correct message back
             4) sent 'EX' to the device, this make the amperometry device export
             the data in chunks (size defined in USB_IN_BYTE_SIZE (IN, as 'in' the
@@ -371,7 +371,7 @@ class CVFrame(ttk.Frame):
             """
             check_message = self.device.usb_read_message()  # step 3
             print(f"got check message: {check_message}")
-            if check_message == COMPLETE_MESSAGE:
+            if COMPLETE_MESSAGE in check_message:
                 self.get_and_display_data(canvas)
             else:
                 # wait a little longer and retry
@@ -397,7 +397,7 @@ class CVFrame(ttk.Frame):
             # this has to be modified to get the actual current values
             if self.run_chrono:
                 self.usb_packet_count = 125
-            raw_data = self.device.get_data(self.usb_packet_count)
+            raw_data = self.device.get_data()
             print(f'raw data got {self.usb_packet_count} packets')
             print(f"raw data: {raw_data}")
             raw_data.pop(0)
