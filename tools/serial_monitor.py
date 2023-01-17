@@ -21,17 +21,18 @@ class Monitor(tk.Tk):
         self.device = usb_comm.SerialComm()
         self.entry = tk.Entry(self)
         self.entry.pack()
-        tk.Button(self, text="Send message").pack()
+        tk.Button(self, text="Send message", command=self.send_message).pack()
         self.poll_for_input()
 
     def send_message(self):
         self.device.write_data(self.entry.get())
 
     def poll_for_input(self):
-        self.after(1000, self.poll_for_input)
+        self.after(10, self.poll_for_input)
         data = self.device.poll_for_data()
         if data:
-            print(data)
+            print(f"Got data: {data}")
+            print(f"len data: {len(data)}")
 
 
 if __name__ == '__main__':

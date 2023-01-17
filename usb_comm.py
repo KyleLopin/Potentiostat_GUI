@@ -79,7 +79,7 @@ class AmpUsb(object):
         self.last_experiment = "CV"  # keep track of what type of experiment was run last, CV or ASV
         self.samples_to_smooth = 1  # TODO: python 3 use properties to limit its value
         logging.info("attempting connection")
-        self.device, self.ep_out, self.ep_in = self.serial_connect()
+        self.device = self.serial_connect()
 
         print(f"device: {self.device}, device.device: {self.device.device}")
         # test the device if it was found to see if it is working properly
@@ -148,9 +148,9 @@ class AmpUsb(object):
         if device:
             self.found = True
             self.working = True  # it did respond after all
-            return device, None, None
+            return device
         else:
-            return None, None, None
+            return None
 
     def set_device_type(self, _device_type):
         """
@@ -297,8 +297,8 @@ class AmpUsb(object):
         print("TODO update this")
 
     def get_look_up_table(self):
-        self.usb_write('l|1000')
-        look_up_table = self.usb_read_data(1000, encoding='int16')
+        self.usb_write('l|0064')
+        look_up_table = self.usb_read_data(2, encoding='int16')
         print(f"look up table: {look_up_table}")
         return look_up_table
 
