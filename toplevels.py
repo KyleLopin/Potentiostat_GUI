@@ -1,11 +1,11 @@
-# Copyright (c) 2015-2016 Kyle Lopin (Naresuan University) <kylel@nu.ac.th>
+# Copyright (c) 2015-2023 Kyle Lopin (Naresuan University) <kylel@nu.ac.th>
 # Licensed under the Creative Commons Attribution-ShareAlike  3.0 (CC BY-SA 3.0 US) License
 
 """Toplevels for the electrochemical device
 """
 
 # standard libraries
-import Tkinter as tk
+import tkinter as tk
 
 __author__ = 'Kyle Vitautas Lopin'
 
@@ -20,7 +20,7 @@ class VoltageSourceSelect(tk.Toplevel):
         self.geometry("300x200")
         self.source_selected = None
         self.master = master
-        print 'current value: ', current_value
+        print('current value: ', current_value)
         if current_value == 0:  # no choice has been made yet
             _label = "No voltage selected yet"
         else:
@@ -38,7 +38,7 @@ class VoltageSourceSelect(tk.Toplevel):
         self.attributes("-topmost", True)
 
     def send_selection(self, source_selected):
-        print 'source: ', source_selected
+        print('source: ', source_selected)
 
         if source_selected == 'VDAC':
             self.master.device.usb_write('VS1')
