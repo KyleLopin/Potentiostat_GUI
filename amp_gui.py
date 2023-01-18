@@ -80,7 +80,9 @@ class ElectroChemGUI(tk.Tk):
         tk.Label(self.frames[2], textvariable=self.electrode_config_label, font=("Bookman", 10)
                  ).pack(side='top')
         # make a button to display connection settings and allow user to try to reconnect
-        self.make_connect_button(self.frames[1])
+        self.connect_button = tk.Button(self.frames[1], command=self.connect)
+        self.update_connect_button()
+        self.connect_button.pack(side='bottom')
         option_menu.OptionMenu(self)
 
     def set_data_type(self, _type):
@@ -91,30 +93,17 @@ class ElectroChemGUI(tk.Tk):
         logging.info("Developer option to save raw adc counts selected")
         self.data_save_type = _type
 
-    def make_connect_button(self, _frame):
-        """ Make a button that will allow the user to connect to the amperometry device if it is
-        available. This checks if a device is already connected (in which case it does nothing) and
-         attempts to connect if a device is not already attached [see method connect for more
-        details].
-        The button will be red if no device is connected and green if it is connected, except on
-        mac devices as there tcl (or something) does not allow the buttons to be colored
-        :param _frame: tk frame to put the button in
+    def update_connect_button(self):
+        """ Update the connect button to red if no device is connected yellow if found but not
+        connected and green if it is connected, except on Mac devices as there tcl (or something)
+        does not allow the buttons to be colored
         """
-        self.connect_button = tk.Button(_frame, command=lambda: self.connect(self.connect_button))
-        if not hasattr(self, "device"):  # if the device is not there just pass
-            return
-
-        if hasattr(self.device, "found"):
-            print(f" connect button states: {self.device.found}, {self.device.working}")
-            if self.device.found and self.device.working:
-                self.connect_button.config(text="Connected", bg='green')
-            elif self.device.found:  # device i
-                self.connect_button.config(text="Not Connected", bg='red')
-            else:
-                self.connect_button.config(text="Device Not Found", bg='red')
+        if self.device.connected:
+            self.connect_button.config(text="Connected", bg='green')
+        elif self.device.device.found:
+            self.connect_button.config(text="Found but not connected", bg='yellow')
         else:
-            self.connect_button.config(text="No Device", bg='red')
-        self.connect_button.pack(side='bottom')
+            self.connect_button.config(text="Device Not Found", bg='red')
 
     def change_data_labels(self):
         """ Call a toplevel to allow the user to change data labels in the legend
@@ -182,7 +171,7 @@ class ElectroChemGUI(tk.Tk):
         self.device_params.adc_tia.adc_channel = _channel
 
     def connect(self, button=None):
-        """ Function the connect button is attached to, to try to connect a amperometry PSoC device
+        """ Function the connect button is attached to, to try to connect an amperometry PSoC device
         and display if the device is connected or not
         :param button: button the user clicks to try to connect the device
         """
@@ -194,13 +183,7 @@ class ElectroChemGUI(tk.Tk):
             logging.debug("attempting to connect")
             self.device = usb_comm.AmpUsb(self, self.device_params)
             # If no device then try to connect
-            if self.device.working:
-                # If a device was just found then change the button's appearance
-                if button:
-                    button["text"] = 'Connected'
-                    button.config(bg='green')
-            else:
-                logging.info("No Device detected")  # If still no device detected, warn the user
+            self.update_connect_button()
 
     def failed_connection(self):  # this is not working now
         logging.info("failed connection")

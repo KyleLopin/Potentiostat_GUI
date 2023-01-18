@@ -36,7 +36,7 @@ class CVSettingChanges(tk.Toplevel):
     and to set the frequency,  TODO: put this in a pack manager and a framework
     """
 
-    def __init__(self, cv_display, _master, cv_graph, device):
+    def __init__(self, cv_display, _master: tk.Tk, cv_graph, device):
         """ Initialize the window
         :param cv_display: cv_frame.CVSettingDisplay: tk.Frame that displays the cyclic voltammertry info
         :param _master: tk.Frame, the main window
@@ -120,6 +120,7 @@ class CVSettingChanges(tk.Toplevel):
 
         tk.Checkbutton(self.options_frame, text="Use square waves",
                        var=self.use_swv).grid(row=9, column=0)
+
         self.use_swv.set(self.master.device_params.cv_settings.use_swv)
 
         i = 10
@@ -157,7 +158,7 @@ class CVSettingChanges(tk.Toplevel):
         self.swv_pulse.trace("w", self.trace_delay)
         self.swv_inc.trace("w", self.trace_delay)
         self.swv_period.trace("w", self.trace_delay)
-        self.use_swv.trace("w", self.set_sweep_type)  # check box doesn't need a delay
+        self.use_swv.trace("w", self.trace_delay)  # check box doesn't need a delay
 
     def make_buttons(self, frame):
         # TODO: think these can be removed

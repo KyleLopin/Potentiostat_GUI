@@ -304,7 +304,7 @@ class CVFrame(ttk.Frame):
 
             # round up the packet count
             self.usb_packet_count = int(packet_count) + \
-                                    (packet_count % USB_IN_BYTE_SIZE > 0)
+                                       (packet_count % USB_IN_BYTE_SIZE > 0)
             # calculate what the actual voltage the device will make.
             # This might be slightly different from the user input because of the
             # VDAC's resolution
@@ -397,7 +397,7 @@ class CVFrame(ttk.Frame):
             # this has to be modified to get the actual current values
             if self.run_chrono:
                 self.usb_packet_count = 125
-            raw_data = self.device.get_data()
+            raw_data = self.device.get_data(self.usb_packet_count)
             print(f'raw data got {self.usb_packet_count} packets')
             print(f"raw data: {raw_data}")
             raw_data.pop(0)

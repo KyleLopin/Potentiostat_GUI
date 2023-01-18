@@ -107,7 +107,7 @@ class CVSettings(object):
         try:
             with open("settings.txt", 'r') as _file:
                 for line in _file.readlines():
-                    # print(line)
+                    print(line)
                     attribute, value = line.split('=')
                     attribute = attribute.strip(' ')
                     value = value.strip()
