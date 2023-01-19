@@ -22,8 +22,8 @@ class TestCVSettingChanges(unittest.TestCase):
         self.gui = tk.Tk()
         self.gui.device_params = properties.DeviceParameters()
         self.top_level = change_toplevel.CVSettingChanges(None, self.gui, None, None)
+        self.initial_state = self.gui.device_params.cv_settings.use_swv
 
     def test_load_correctly(self):
-        print(self.top_level.use_swv.get())
-        self.gui.mainloop()
-
+        print(f"test_load_correctly use_swv top_level: {self.top_level.use_swv.get()}")
+        self.assertEqual(self.initial_state, self.top_level.use_swv.get())

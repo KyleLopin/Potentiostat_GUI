@@ -343,7 +343,7 @@ class CVSettingChanges(tk.Toplevel):
                 or self._swv_period != _old_params.cv_settings.swv_period
                 or self._swv_inc != _old_params.cv_settings.swv_inc
                 or self._swv_pulse != _old_params.cv_settings.swv_height
-                or self._use_swv != _old_params.cv_settings.use_swv):
+                or self._use_swv != _old_params.cv_settings.use_swv_var_str):
 
             logging.debug("sweep_param is changed")
             return True

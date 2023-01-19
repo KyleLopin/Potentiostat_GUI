@@ -19,6 +19,7 @@ import make_voltage_lines
 import properties
 import pyplot_data_class as data_class
 import tkinter_pyplot
+import usb_comm  # typehinting
 
 __author__ = 'Kyle Vitautas Lopin'
 
@@ -348,7 +349,7 @@ class CVFrame(ttk.Frame):
             # inactive the button so the user can't hit it twice
             self.run_button.config(state='disabled')
             self.device.usb_write('R')  # step 1
-            if self.device.working:
+            if self.device.connected:
                 logging.debug("device reading")
                 # amount of time to wait for the data to be collected before getting it
                 # give a 200 ms buffer to the calculated delay time
@@ -369,7 +370,7 @@ class CVFrame(ttk.Frame):
             param canvas: the widget that is called to display the data
             param fail_count: int, running count of how many attempts have been tried
             """
-            check_message = self.device.usb_read_message()  # step 3
+            check_message = self.device.usb_read_data(encoding='str')  # step 3
             print(f"got check message: {check_message}")
             if COMPLETE_MESSAGE in check_message:
                 self.get_and_display_data(canvas)
@@ -424,6 +425,8 @@ class CVFrame(ttk.Frame):
                 self.params.cv_settings.start_voltage, self.params.cv_settings.end_voltage,
                 self.params.dac.voltage_step_size, self.params.cv_settings.sweep_type,
                 self.params.cv_settings.sweep_start_type, self.params.asv_settings.pulse_inc)
+
+            print(f"xline: {x_line}")
             if self.run_chrono:  # HACK to test chronoamp experiments
                 x_line = range(4001)
             # Send data to the canvas where it will be saved and displayed
@@ -489,7 +492,7 @@ class CVFrame(ttk.Frame):
     class CVSettingDisplay(tk.Frame):
         """ Class that makes a frame displaying the settings for a cyclic voltammetry experiment
         """
-        def __init__(self, _master, _frame, graph, device_params, device):
+        def __init__(self, _master, _frame, graph, device_params, device: usb_comm.AmpUsb):
             """
             :param _master: the root application
             :param _frame: the tk.Frame this frame is placed in
@@ -504,6 +507,7 @@ class CVFrame(ttk.Frame):
             self.freq_var_str = tk.StringVar()
             self.current_var_str = tk.StringVar()
 
+            self.use_swv_var_str = tk.StringVar()
             self.swv_pulse_var_str = tk.StringVar()
             self.swv_inc_var_str = tk.StringVar()
             self.swv_period_var_str = tk.StringVar()
@@ -513,7 +517,8 @@ class CVFrame(ttk.Frame):
             tk.Label(self, text="Cyclic Voltammetry settings:"
                      ).pack(side='top', pady=5)
             # Make Labels to display the String variables
-            for var_str in [self.start_voltage_var_str, self.end_voltage_var_str,
+            for var_str in [self.start_voltage_var_str,
+                            self.end_voltage_var_str,
                             self.freq_var_str, self.current_var_str]:
                 tk.Label(textvariable=var_str, master=self).pack(side='top')
 
@@ -523,8 +528,8 @@ class CVFrame(ttk.Frame):
             swv_frame = tk.Frame(self)
             tk.Label(swv_frame, text="Square Wave\nVoltammetry settings:"
                      ).pack(side='top', pady=5)
-            for var_str in [self.swv_pulse_var_str, self.swv_inc_var_str,
-                            self.swv_period_var_str]:
+            for var_str in [self.use_swv_var_str, self.swv_pulse_var_str,
+                            self.swv_inc_var_str, self.swv_period_var_str]:
                 tk.Label(swv_frame, textvariable=var_str).pack(side='top')
 
             swv_frame.pack(side=tk.TOP, expand=True, fill=tk.BOTH)
@@ -552,8 +557,10 @@ class CVFrame(ttk.Frame):
                                          f"{device_params.cv_settings.end_voltage} mV")
             self.freq_var_str.set(f"Sweep rate: "
                                   f"{device_params.cv_settings.sweep_rate} V/s")
-            self.current_var_str.set(f'Current range: \u00B1 '
-                                     f'{device_params.adc_tia.current_lims:.1f} \u00B5A')
+            self.current_var_str.set(f"Current range: \u00B1 "
+                                     f"{device_params.adc_tia.current_lims:.1f} \u00B5A")
+
+            self.use_swv_var_str.set(f"Use SWV: {device_params.cv_settings.use_swv}")
 
             self.swv_pulse_var_str.set(f"Pulse height: "
                                        f"{device_params.cv_settings.swv_height} mv")
