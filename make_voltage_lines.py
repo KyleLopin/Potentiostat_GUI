@@ -22,6 +22,7 @@ def make_voltage_profile(start: int, end: int, increment: int,
     """
     Make a voltage profile with the specified parameters.  This should be the
     only function called in this file.
+
     Args:
         start (int): voltage to start at, or first voltage to go to when starting at 0V
         end (int): voltage to go to at the end, or before going back to 0V
@@ -32,7 +33,7 @@ def make_voltage_profile(start: int, end: int, increment: int,
         be "Start" to use the start voltage in the beginning or "Zero" to start at 0 V
         swv_height (int): height of the pulse to use for square wave voltammetry (swv),
         if None or 0, no swv pulses will be used
-
+        TODO: this swv_height way of controlling the swv waveform needs fixing
 
     Returns (list): list of the voltages for the specified parameters
 

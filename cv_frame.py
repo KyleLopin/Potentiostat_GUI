@@ -420,11 +420,18 @@ class CVFrame(ttk.Frame):
             #     self.data = new_data
 
             # make the voltages for the x-axis that correspond to the currents read
+            print(dir(self.params.cv_settings))
+            if self.params.cv_settings.use_swv:
+                increment = self.params.cv_settings.swv_inc
+                swv_pulse_height = self.params.cv_settings.swv_height
+            else:
+                increment = self.params.dac.voltage_step_size
+                swv_pulse_height = None
 
             x_line = make_voltage_lines.make_voltage_profile(
                 self.params.cv_settings.start_voltage, self.params.cv_settings.end_voltage,
-                self.params.dac.voltage_step_size, self.params.cv_settings.sweep_type,
-                self.params.cv_settings.sweep_start_type, self.params.asv_settings.pulse_inc)
+                increment, self.params.cv_settings.sweep_type,
+                self.params.cv_settings.sweep_start_type, swv_pulse_height)
 
             print(f"xline: {x_line}")
             if self.run_chrono:  # HACK to test chronoamp experiments
