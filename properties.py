@@ -107,7 +107,6 @@ class CVSettings(object):
         try:
             with open("settings.txt", 'r') as _file:
                 for line in _file.readlines():
-                    print(line)
                     attribute, value = line.split('=')
                     attribute = attribute.strip(' ')
                     value = value.strip()
@@ -115,7 +114,6 @@ class CVSettings(object):
                     valid_value = self.check_valid_value(attribute, value)
                     if valid_value:
                         setattr(self, attribute, valid_value)
-
         except Exception as e:
             logging.debug("Load error: ", e)
             # with open("settings.txt", "w") as _file:
@@ -123,7 +121,6 @@ class CVSettings(object):
         for key in DEFAULT_CV_SETTINGS:
             if not hasattr(self, key):
                 setattr(self, key, DEFAULT_CV_SETTINGS[key])
-
         self.delay_time = 2 * abs(self.start_voltage - self.end_voltage) / self.sweep_rate
         self.low_voltage = min([self.start_voltage, self.end_voltage])
         self.high_voltage = max([self.start_voltage, self.end_voltage])
@@ -142,10 +139,7 @@ class CVSettings(object):
         if attribute in DEFAULT_CV_SETTINGS:
             # YOU HAVE TO CHECK BOOL FIRST, THEY ARE ALSO INTS
             if isinstance(DEFAULT_CV_SETTINGS[attribute], bool):
-                try:
-                    return bool(value)
-                except:
-                    return False
+                return value == "True"
 
             elif isinstance(DEFAULT_CV_SETTINGS[attribute], int):
                 # try to convert the string to int
