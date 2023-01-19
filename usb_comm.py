@@ -36,8 +36,8 @@ FAILURE_DELAY = 500
 COMPLETE_MESSAGE = "Done"
 TERMINATION_CODE = -16384
 
-USB_VENDOR_ID = 0x1D50
-USB_PRODUCT_ID = 0x6128
+USB_VENDOR_ID = 0x04B4
+USB_PRODUCT_ID = 0xF232
 BAUD_RATE = 115200
 
 # device parameter list
@@ -478,7 +478,8 @@ class SerialComm:
     def auto_find_com_port(self):
         available_ports = serial.tools.list_ports
         for port in available_ports.comports():
-            if PRODUCT_STRING == port.product:
+            # can not use product string on Windows
+            if USB_VENDOR_ID == port.vid and USB_PRODUCT_ID == port.pid:
                 print("found device")
                 self.found = True
                 device = serial.Serial(port.device, BAUD_RATE, timeout=1.0)
