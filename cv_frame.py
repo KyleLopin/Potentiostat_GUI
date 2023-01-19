@@ -499,7 +499,7 @@ class CVFrame(ttk.Frame):
     class CVSettingDisplay(tk.Frame):
         """ Class that makes a frame displaying the settings for a cyclic voltammetry experiment
         """
-        def __init__(self, _master, _frame, graph, device_params, device: usb_comm.AmpUsb):
+        def __init__(self, _master, _frame, graph, device_params, device):
             """
             :param _master: the root application
             :param _frame: the tk.Frame this frame is placed in

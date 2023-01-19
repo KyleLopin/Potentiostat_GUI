@@ -10,6 +10,6 @@ pwm_period_value = 3840
 swv_height = 100
 swv_inc = 5
 swv_period = 100
-use_swv = False
+use_swv = True
 low_voltage = -50
 high_voltage = 55

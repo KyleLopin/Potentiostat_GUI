@@ -12,13 +12,13 @@ import time
 import tkinter as tk
 
 # local files
-import usb_comm
+from usb_comm import SerialComm
 
 
 class Monitor(tk.Tk):
     def __init__(self):
         tk.Tk.__init__(self)
-        self.device = usb_comm.SerialComm()
+        self.device = SerialComm()
         self.entry = tk.Entry(self)
         self.entry.pack()
         tk.Button(self, text="Send message", command=self.send_message).pack()
