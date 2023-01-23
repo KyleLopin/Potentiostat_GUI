@@ -122,6 +122,9 @@ class CVSettings(object):
             if not hasattr(self, key):
                 setattr(self, key, DEFAULT_CV_SETTINGS[key])
         self.delay_time = 2 * abs(self.start_voltage - self.end_voltage) / self.sweep_rate
+        if self.use_swv:  # recalculate the delay time
+            self.delay_time = 2 * self.swv_period * abs(self.start_voltage - self.end_voltage) / self.swv_inc
+
         self.low_voltage = min([self.start_voltage, self.end_voltage])
         self.high_voltage = max([self.start_voltage, self.end_voltage])
         self.start_dac_value = None  # init holder

@@ -483,6 +483,7 @@ class SerialComm:
                 print("found device")
                 self.found = True
                 device = serial.Serial(port.device, BAUD_RATE, timeout=1.0)
+                print("made serial")
                 device.write(b"I")
                 for i in range(3):
                     _input = device.readline()

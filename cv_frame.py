@@ -288,6 +288,10 @@ class CVFrame(ttk.Frame):
                 formatted_inc, increment = self.format_voltage(self.settings.swv_inc)
                 formatted_swv_height, swv_height = \
                     self.format_voltage(self.settings.swv_height)
+                formatted_freq_divider, pwm_period = \
+                    self.format_divider(int(self.settings.swv_period/2))
+                print(f"pwm period: {pwm_period}, freq divider: {formatted_freq_divider}, "
+                      f"swv period: {self.settings.swv_period}")
                 #TODO: put all the different letter commands in seperate file
                 to_amp_device = '|'.join(["G", formatted_start_volt, formatted_end_volt,
                                           formatted_inc, formatted_swv_height,
@@ -424,6 +428,7 @@ class CVFrame(ttk.Frame):
             if self.params.cv_settings.use_swv:
                 increment = self.params.cv_settings.swv_inc
                 swv_pulse_height = self.params.cv_settings.swv_height
+                swv_pulse_height = None  # don't use for plotting the data?
             else:
                 increment = self.params.dac.voltage_step_size
                 swv_pulse_height = None
