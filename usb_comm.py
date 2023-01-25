@@ -225,13 +225,15 @@ class AmpUsb(object):
                 return rolling_mean(data_array, self.samples_to_smooth)
         return full_array
 
-    def process_data(self, _raw_data):
+    def process_data(self, _raw_data, swv=False):
         """ Take in the raw adc counts and output the corresponding current values
         TODO: should put this somewhere, if the amp_frame, cv_frame get a parent class that
         is a good place to put this
         :param device: the device that has the data_save_type and TIA_resistor values to
         properly process the data
         :param _raw_data: raw adc count numbers
+        :param swv: (bool) if a square wave voltammetry was used and the
+        data has to be processed accordingly
         :return: current (micro amperes) values of the adc values
         """
         if self.master.data_save_type == "Converted":
@@ -241,6 +243,13 @@ class AmpUsb(object):
             shift = self.device_params.adc_tia.shift  # the measured voltage shift of the adc/tia
             logging.debug("count to current: %4.4f", count_to_current)
             current = [(x - shift) * count_to_current for x in _raw_data]
+            if swv:
+                swv_data = []
+                _index = 0
+                while _index <= len(current):
+                    swv_data.append(current[_index]-current[_index+1])
+                    _index += 2
+                return swv_data
 
             return current
         elif self.master.data_save_type == "Raw Counts":

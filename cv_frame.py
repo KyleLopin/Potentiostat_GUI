@@ -361,6 +361,7 @@ class CVFrame(ttk.Frame):
                 if not _delay:
                     _delay = int(200 + self.params.cv_settings.delay_time)
                 # step 2
+                print(f"delay time: {_delay}")
                 self.master.after(int(_delay), lambda: self.run_scan_continue(canvas))
             else:
                 logging.debug("Couldn't find out endpoint to send message to run")
@@ -405,13 +406,14 @@ class CVFrame(ttk.Frame):
             raw_data = self.device.get_data(self.usb_packet_count)
             print(f'raw data got {self.usb_packet_count} packets')
             print(f"raw data: {raw_data}")
+            print(f"len raw data: {len(raw_data)}")
             raw_data.pop(0)
             self.run_button.config(state='active')
             if not raw_data:  # if something is wrong just return
                 return
             # call function to convert the raw ADC values into the current that passed
             # through the working electrode
-            self.data = self.device.process_data(raw_data)  # bind data to cv_frame master
+            self.data = self.device.process_data(raw_data, swv=self.params.cv_settings.use_swv)
             # print("get and display data: ", self.params.cv_settings.sweep_type)
             # if self.params.cv_settings.sweep_type == "DPV":
             #     # hack the data
@@ -439,6 +441,7 @@ class CVFrame(ttk.Frame):
                 self.params.cv_settings.sweep_start_type, swv_pulse_height)
 
             print(f"xline: {x_line}")
+            print(f"len xline: {len(x_line)}")
             if self.run_chrono:  # HACK to test chronoamp experiments
                 x_line = range(4001)
             # Send data to the canvas where it will be saved and displayed
