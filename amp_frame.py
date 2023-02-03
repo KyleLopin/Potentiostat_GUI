@@ -97,7 +97,6 @@ class AmpFrame(ttk.Frame):
             return
 
         _file = open_file('saveas')
-        # print(_file)
         if _file:
             with open(_file, 'w', newline='') as csv_file:
 

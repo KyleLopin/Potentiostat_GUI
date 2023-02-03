@@ -413,8 +413,10 @@ class CVFrame(ttk.Frame):
                 return
             # call function to convert the raw ADC values into the current that passed
             # through the working electrode
+            print(f"raw data: {raw_data}")
             self.data = self.device.process_data(raw_data, swv=self.params.cv_settings.use_swv)
-            # print("get and display data: ", self.params.cv_settings.sweep_type)
+
+            print(f"processed data: {self.data}")
             # if self.params.cv_settings.sweep_type == "DPV":
             #     # hack the data
             #     print(self.data)

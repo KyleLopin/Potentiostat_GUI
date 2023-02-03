@@ -246,7 +246,7 @@ class AmpUsb(object):
             if swv:
                 swv_data = []
                 _index = 0
-                while _index <= len(current):
+                while _index < len(current):
                     swv_data.append(current[_index]-current[_index+1])
                     _index += 2
                 return swv_data
